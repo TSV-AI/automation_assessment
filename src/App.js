@@ -1,4 +1,20 @@
-import React, { useState } from 'react';
+// SUPER SIMPLE MATH - NO BULLSHIT
+    // Just use the hours they reported and reasonable automation %
+    const baseAutomatableHours = weeklyHours * (automationPct / 100);
+    
+    // Maybe add a few marketing hours if they have challenges, but keep it small
+    const marketingHours = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 3 : 0;
+    
+    // Total hours - honest and simple
+    const hoursAutomatable = baseAutomatableHours + marketingHours;
+    
+    // Use a reasonable hourly rate - $40/hour baseline
+    const hourlyRate = 40;
+    
+    // Calculate what they're spending on this work per month
+    const weeklyCost = hoursAutomatable * hourlyRate;
+    const monthlySavings = Math.round(weeklyCost * 4.33);
+    const annualSavings = monthlySavings * 12;import React, { useState } from 'react';
 import { ChevronRight, Clock, DollarSign, TrendingUp, CheckCircle, Zap, Target, Eye, Download, Mail } from 'lucide-react';
 
 const AutomationOpportunityFinder = () => {
@@ -193,11 +209,8 @@ const AutomationOpportunityFinder = () => {
     if (potentialMonthlySavings < budgetMidpoint * 0.8) {
       const scaleFactor = Math.min(1.3, (budgetMidpoint * 0.8) / potentialMonthlySavings); // Max 1.3x scaling
       hoursAutomatable = hoursAutomatable * scaleFactor;
-      potentialMonthlySavings = potentialMonthlySavings * scaleFactor;
-    }
-    
-    // Final calculations
-    const monthlySavings = Math.round(potentialMonthlySavings);
+      pot    // Final calculations
+    const monthlySavings = Math.round(currentMonthlyCost * complexity);
     const annualSavings = monthlySavings * 12;
     
     // Calculate opportunity score with better weighting
@@ -226,7 +239,7 @@ const AutomationOpportunityFinder = () => {
       opportunityScore,
       hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
       marketingTimeSavings,
-      weeklySavings: Math.round(potentialMonthlySavings / 4.33),
+      weeklySavings: Math.round(weeklyCost),
       monthlySavings: monthlySavings,
       annualSavings: annualSavings,
       automationPct,
