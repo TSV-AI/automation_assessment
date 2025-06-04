@@ -501,59 +501,88 @@ const AutomationOpportunityFinder = () => {
     const hiddenRecommendations = recommendations.filter(rec => !rec.preview);
     
     return (
-      <div className="w-full min-h-screen overflow-y-auto" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-        <div className="max-w-5xl mx-auto p-6">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-3" style={{color: '#ffffff'}}>Your Custom Automation Strategy</h1>
-            <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
+      <div className="w-full min-h-screen overflow-y-auto" style={{backgroundColor: '#0f0f0f', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl font-bold mb-6" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>Your Custom Automation Strategy</h1>
+            <p className="text-xl max-w-3xl mx-auto font-light" style={{color: '#a1a1aa'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
           </div>
 
-        <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-6 mb-10">
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+        <div className="grid lg:grid-cols-3 gap-8 mb-20">
+          <div className="group p-8 rounded-3xl transition-all duration-300 hover:scale-[1.02]" style={{
+            background: 'rgba(255, 255, 255, 0.03)', 
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center mb-6">
+              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
                 <Clock className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Time Savings</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Weekly hours recovered</p>
+                <h3 className="text-lg font-semibold mb-1" style={{color: '#ffffff'}}>Time Savings</h3>
+                <p className="text-sm font-normal" style={{color: '#71717a'}}>Weekly hours recovered</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">{results.hoursAutomatable}h</div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>Per week that can be automated</p>
+            <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.hoursAutomatable}h</div>
+            <p className="text-sm font-normal" style={{color: '#a1a1aa'}}>Per week that can be automated</p>
           </div>
 
-          <div className="lg:col-span-1 p-8 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)', transform: 'scale(1.1)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+          <div className="group p-10 rounded-3xl transition-all duration-300 hover:scale-[1.02] relative" style={{
+            background: 'rgba(255, 255, 255, 0.05)', 
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            backdropFilter: 'blur(10px)',
+            transform: 'scale(1.05)'
+          }}>
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <div className="px-4 py-1 rounded-full text-xs font-medium" style={{background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff'}}>
+                Primary Savings
+              </div>
+            </div>
+            <div className="flex items-center mb-6">
+              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.15)'}}>
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold" style={{color: '#ffffff'}}>Cost Savings</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Automation vs manual labor</p>
+                <h3 className="text-xl font-semibold mb-1" style={{color: '#ffffff'}}>Cost Savings</h3>
+                <p className="text-sm font-normal" style={{color: '#71717a'}}>Automation vs manual labor</p>
               </div>
             </div>
-            <div className="text-5xl font-bold text-green-400 mb-2">
-              {Math.round((1 - (1650 / results.monthlySavings)) * 100)}% Reduction
+            <div className="text-6xl font-bold mb-4" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>
+              {Math.round((1 - (1650 / results.monthlySavings)) * 100)}%
             </div>
-            <p className="text-lg" style={{color: '#b8b8b8'}}>${results.monthlySavings.toLocaleString()} → $1,650 monthly</p>
+            <div className="text-sm font-medium mb-2" style={{color: '#a1a1aa'}}>Monthly Reduction</div>
+            <div className="flex items-center justify-between p-4 rounded-2xl" style={{background: 'rgba(255, 255, 255, 0.05)'}}>
+              <div className="text-center">
+                <div className="text-lg font-semibold" style={{color: '#ffffff'}}>${results.monthlySavings.toLocaleString()}</div>
+                <div className="text-xs" style={{color: '#71717a'}}>Current</div>
+              </div>
+              <div className="text-2xl" style={{color: '#71717a'}}>→</div>
+              <div className="text-center">
+                <div className="text-lg font-semibold" style={{color: '#ffffff'}}>$1,650</div>
+                <div className="text-xs" style={{color: '#71717a'}}>With AI</div>
+              </div>
+            </div>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+          <div className="group p-8 rounded-3xl transition-all duration-300 hover:scale-[1.02]" style={{
+            background: 'rgba(255, 255, 255, 0.03)', 
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center mb-6">
+              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
                 <TrendingUp className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>ROI Potential</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Return percentage</p>
+                <h3 className="text-lg font-semibold mb-1" style={{color: '#ffffff'}}>ROI Potential</h3>
+                <p className="text-sm font-normal" style={{color: '#71717a'}}>Return percentage</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">
+            <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>
               {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : 
                results.roiPercentage < 0 ? `${results.roiPercentage}%` : 'TBD'}
             </div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>
+            <p className="text-sm font-normal" style={{color: '#a1a1aa'}}>
               {results.paybackMonths ? `${results.paybackMonths} month payback` : 
                results.roiPercentage > 0 ? 'Positive ROI projected' :
                results.roiPercentage < 0 ? 'Custom analysis needed' : 'Analysis needed'}
@@ -649,19 +678,23 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #16a34a 0%, #2563eb 100%)'}}>
-          <div className="grid md:grid-cols-3 gap-6 text-center">
+        <div className="p-12 rounded-3xl mb-16" style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div className="grid md:grid-cols-3 gap-12 text-center">
             <div>
-              <div className="text-3xl font-bold mb-2">${results.annualSavings.toLocaleString()}</div>
-              <div className="text-white/90">Projected Annual Savings</div>
+              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>${results.annualSavings.toLocaleString()}</div>
+              <div className="text-sm font-medium" style={{color: '#71717a'}}>Projected Annual Savings</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">{Math.round(results.hoursAutomatable * 52)}</div>
-              <div className="text-white/90">Hours Saved Per Year</div>
+              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{Math.round(results.hoursAutomatable * 52)}</div>
+              <div className="text-sm font-medium" style={{color: '#71717a'}}>Hours Saved Per Year</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">{results.opportunityScore}/100</div>
-              <div className="text-white/90">Opportunity Score</div>
+              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.opportunityScore}/100</div>
+              <div className="text-sm font-medium" style={{color: '#71717a'}}>Opportunity Score</div>
             </div>
           </div>
         </div>
