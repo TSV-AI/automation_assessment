@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, Clock, DollarSign, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, RefreshCw } from 'lucide-react'; // Added ArrowDownCircle, RefreshCw for new card
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react'; // Removed DollarSign, RefreshCw
 
 const AutomationOpportunityFinder = () => {
   const [currentStep, setCurrentStep] = useState(0);
