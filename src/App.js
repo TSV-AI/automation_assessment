@@ -501,92 +501,94 @@ const AutomationOpportunityFinder = () => {
     const hiddenRecommendations = recommendations.filter(rec => !rec.preview);
     
     return (
-      <div className="w-full min-h-screen overflow-y-auto" style={{backgroundColor: '#0f0f0f', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-6" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>Your Custom Automation Strategy</h1>
-            <p className="text-xl max-w-3xl mx-auto font-light" style={{color: '#a1a1aa'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
+      <div className="w-full min-h-screen overflow-y-auto" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="text-center mb-20">
+            <h1 className="text-5xl font-semibold mb-6" style={{color: '#ffffff', letterSpacing: '-0.025em', lineHeight: '1.1'}}>Your Custom Automation Strategy</h1>
+            <p className="text-lg max-w-2xl mx-auto font-normal" style={{color: '#737373', lineHeight: '1.6'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
           </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-20">
-          <div className="group p-8 rounded-3xl transition-all duration-300 hover:scale-[1.02]" style={{
-            background: 'rgba(255, 255, 255, 0.03)', 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            backdropFilter: 'blur(10px)'
+        <div className="grid lg:grid-cols-5 gap-6 mb-24" style={{height: '320px'}}>
+          {/* Time Savings Card */}
+          <div className="lg:col-span-2 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
+            background: 'rgba(255, 255, 255, 0.02)', 
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            height: '100%'
           }}>
-            <div className="flex items-center mb-6">
-              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
-                <Clock className="w-7 h-7 text-white" />
+            <div className="p-8 h-full flex flex-col justify-center text-center">
+              <div className="mb-6">
+                <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: 'rgba(255, 255, 255, 0.08)'}}>
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-base font-medium mb-1" style={{color: '#ffffff'}}>Time Savings</h3>
+                <p className="text-sm font-normal" style={{color: '#737373'}}>Weekly hours recovered</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-1" style={{color: '#ffffff'}}>Time Savings</h3>
-                <p className="text-sm font-normal" style={{color: '#71717a'}}>Weekly hours recovered</p>
-              </div>
+              <div className="text-4xl font-semibold mb-2" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.hoursAutomatable}h</div>
+              <p className="text-sm font-normal" style={{color: '#a3a3a3'}}>Per week that can be automated</p>
             </div>
-            <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.hoursAutomatable}h</div>
-            <p className="text-sm font-normal" style={{color: '#a1a1aa'}}>Per week that can be automated</p>
           </div>
 
-          <div className="group p-10 rounded-3xl transition-all duration-300 hover:scale-[1.02] relative" style={{
-            background: 'rgba(255, 255, 255, 0.05)', 
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(10px)',
-            transform: 'scale(1.05)'
+          {/* Cost Savings Card - Wider */}
+          <div className="lg:col-span-2 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
+            background: 'rgba(255, 255, 255, 0.04)', 
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            height: '100%'
           }}>
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-              <div className="px-4 py-1 rounded-full text-xs font-medium" style={{background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff'}}>
+            <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2">
+              <div className="px-4 py-1.5 rounded-b-lg text-xs font-medium" style={{background: '#000000', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.08)', borderTop: 'none'}}>
                 Primary Savings
               </div>
             </div>
-            <div className="flex items-center mb-6">
-              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.15)'}}>
-                <DollarSign className="w-8 h-8 text-white" />
+            <div className="p-8 h-full flex flex-col justify-center text-center pt-12">
+              <div className="mb-6">
+                <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: 'rgba(255, 255, 255, 0.12)'}}>
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-base font-medium mb-1" style={{color: '#ffffff'}}>Cost Savings</h3>
+                <p className="text-sm font-normal" style={{color: '#737373'}}>Automation vs manual labor</p>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-1" style={{color: '#ffffff'}}>Cost Savings</h3>
-                <p className="text-sm font-normal" style={{color: '#71717a'}}>Automation vs manual labor</p>
+              <div className="text-5xl font-semibold mb-4" style={{color: '#ffffff', letterSpacing: '-0.025em'}}>
+                {Math.round((1 - (1650 / results.monthlySavings)) * 100)}%
               </div>
-            </div>
-            <div className="text-6xl font-bold mb-4" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>
-              {Math.round((1 - (1650 / results.monthlySavings)) * 100)}%
-            </div>
-            <div className="text-sm font-medium mb-2" style={{color: '#a1a1aa'}}>Monthly Reduction</div>
-            <div className="flex items-center justify-between p-4 rounded-2xl" style={{background: 'rgba(255, 255, 255, 0.05)'}}>
-              <div className="text-center">
-                <div className="text-lg font-semibold" style={{color: '#ffffff'}}>${results.monthlySavings.toLocaleString()}</div>
-                <div className="text-xs" style={{color: '#71717a'}}>Current</div>
-              </div>
-              <div className="text-2xl" style={{color: '#71717a'}}>→</div>
-              <div className="text-center">
-                <div className="text-lg font-semibold" style={{color: '#ffffff'}}>$1,650</div>
-                <div className="text-xs" style={{color: '#71717a'}}>With AI</div>
+              <div className="text-xs font-medium mb-3" style={{color: '#a3a3a3'}}>Monthly Reduction</div>
+              <div className="flex items-center justify-center space-x-4 p-3 rounded-xl" style={{background: 'rgba(255, 255, 255, 0.04)'}}>
+                <div className="text-center">
+                  <div className="text-sm font-medium" style={{color: '#ffffff'}}>${results.monthlySavings.toLocaleString()}</div>
+                  <div className="text-xs" style={{color: '#737373'}}>Current</div>
+                </div>
+                <div className="text-lg" style={{color: '#737373'}}>→</div>
+                <div className="text-center">
+                  <div className="text-sm font-medium" style={{color: '#ffffff'}}>$1,650</div>
+                  <div className="text-xs" style={{color: '#737373'}}>With AI</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="group p-8 rounded-3xl transition-all duration-300 hover:scale-[1.02]" style={{
-            background: 'rgba(255, 255, 255, 0.03)', 
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            backdropFilter: 'blur(10px)'
+          {/* ROI Potential Card */}
+          <div className="lg:col-span-1 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
+            background: 'rgba(255, 255, 255, 0.02)', 
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            height: '100%'
           }}>
-            <div className="flex items-center mb-6">
-              <div className="p-4 rounded-2xl mr-5" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
-                <TrendingUp className="w-7 h-7 text-white" />
+            <div className="p-8 h-full flex flex-col justify-center text-center">
+              <div className="mb-6">
+                <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: 'rgba(255, 255, 255, 0.08)'}}>
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-base font-medium mb-1" style={{color: '#ffffff'}}>ROI Potential</h3>
+                <p className="text-sm font-normal" style={{color: '#737373'}}>Return percentage</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-1" style={{color: '#ffffff'}}>ROI Potential</h3>
-                <p className="text-sm font-normal" style={{color: '#71717a'}}>Return percentage</p>
+              <div className="text-4xl font-semibold mb-2" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>
+                {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : 
+                 results.roiPercentage < 0 ? `${results.roiPercentage}%` : 'TBD'}
               </div>
+              <p className="text-sm font-normal" style={{color: '#a3a3a3'}}>
+                {results.paybackMonths ? `${results.paybackMonths} month payback` : 
+                 results.roiPercentage > 0 ? 'Positive ROI projected' :
+                 results.roiPercentage < 0 ? 'Custom analysis needed' : 'Analysis needed'}
+              </p>
             </div>
-            <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>
-              {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : 
-               results.roiPercentage < 0 ? `${results.roiPercentage}%` : 'TBD'}
-            </div>
-            <p className="text-sm font-normal" style={{color: '#a1a1aa'}}>
-              {results.paybackMonths ? `${results.paybackMonths} month payback` : 
-               results.roiPercentage > 0 ? 'Positive ROI projected' :
-               results.roiPercentage < 0 ? 'Custom analysis needed' : 'Analysis needed'}
-            </p>
           </div>
         </div>
 
@@ -678,45 +680,44 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        <div className="p-12 rounded-3xl mb-16" style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)'
+        <div className="p-10 rounded-2xl mb-20" style={{
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.06)'
         }}>
-          <div className="grid md:grid-cols-3 gap-12 text-center">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>${results.annualSavings.toLocaleString()}</div>
-              <div className="text-sm font-medium" style={{color: '#71717a'}}>Projected Annual Savings</div>
+              <div className="text-3xl font-semibold mb-2" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>${results.annualSavings.toLocaleString()}</div>
+              <div className="text-sm font-medium" style={{color: '#737373'}}>Projected Annual Savings</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{Math.round(results.hoursAutomatable * 52)}</div>
-              <div className="text-sm font-medium" style={{color: '#71717a'}}>Hours Saved Per Year</div>
+              <div className="text-3xl font-semibold mb-2" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{Math.round(results.hoursAutomatable * 52)}</div>
+              <div className="text-sm font-medium" style={{color: '#737373'}}>Hours Saved Per Year</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-3" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.opportunityScore}/100</div>
-              <div className="text-sm font-medium" style={{color: '#71717a'}}>Opportunity Score</div>
+              <div className="text-3xl font-semibold mb-2" style={{color: '#ffffff', letterSpacing: '-0.02em'}}>{results.opportunityScore}/100</div>
+              <div className="text-sm font-medium" style={{color: '#737373'}}>Opportunity Score</div>
             </div>
           </div>
         </div>
 
-        <div className="p-8 rounded-2xl text-white text-center relative" style={{background: '#151515', border: '2px solid #22c55e'}}>
-          <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
-          <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
+        <div className="p-8 rounded-2xl text-white text-center" style={{background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)'}}>
+          <h3 className="text-xl font-semibold mb-3" style={{color: '#ffffff'}}>Ready to Turn This Analysis Into Reality?</h3>
+          <p className="text-sm mb-8 max-w-xl mx-auto font-normal" style={{color: '#737373', lineHeight: '1.5'}}>
             Get a detailed implementation plan tailored specifically to your business processes and goals
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105" style={{background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#ffffff', border: 'none'}}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <button className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:bg-opacity-90" style={{background: '#ffffff', color: '#000000'}}>
               Schedule Free Strategy Call
             </button>
             <button 
               onClick={() => setShowEmailCapture(true)}
-              className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105"
-              style={{background: 'transparent', color: '#22c55e', border: '2px solid #22c55e'}}
+              className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:bg-white/5"
+              style={{background: 'transparent', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.2)'}}
             >
               Download Full Report
             </button>
           </div>
-          <p className="text-sm mt-4 opacity-75">60-minute consultation • Custom roadmap included • No sales pressure</p>
+          <p className="text-xs mt-4 font-normal" style={{color: '#a3a3a3'}}>60-minute consultation • Custom roadmap included • No sales pressure</p>
         </div>
         </div>
       </div>
@@ -729,25 +730,25 @@ const AutomationOpportunityFinder = () => {
     : answers[currentQuestion.id];
 
   return (
-    <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-      <div className="flex-shrink-0 p-6" style={{borderBottom: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+    <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
+      <div className="flex-shrink-0 p-6" style={{borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(10, 10, 10, 0.95)', backdropFilter: 'blur(10px)'}}>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold" style={{color: '#ffffff'}}>AI Automation Opportunity Assessment</h1>
-              <p className="mt-2" style={{color: '#b8b8b8'}}>Discover your custom automation potential in 8 questions</p>
+              <h1 className="text-2xl font-semibold" style={{color: '#ffffff', letterSpacing: '-0.01em'}}>AI Automation Opportunity Assessment</h1>
+              <p className="mt-1 text-sm font-normal" style={{color: '#737373'}}>Discover your custom automation potential in 8 questions</p>
             </div>
             <div className="text-right">
-              <span className="text-sm" style={{color: '#888888'}}>Step {currentStep + 1} of {questions.length}</span>
-              <div className="text-2xl font-bold" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
+              <span className="text-xs font-medium" style={{color: '#a3a3a3'}}>Step {currentStep + 1} of {questions.length}</span>
+              <div className="text-xl font-semibold" style={{color: '#ffffff'}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
-          <div className="w-full rounded-full h-3" style={{backgroundColor: '#404040'}}>
+          <div className="w-full rounded-full h-1" style={{backgroundColor: 'rgba(255,255,255,0.08)'}}>
             <div 
-              className="h-3 rounded-full transition-all duration-500"
+              className="h-1 rounded-full transition-all duration-500"
               style={{ 
                 width: `${((currentStep + 1) / questions.length) * 100}%`,
-                background: 'linear-gradient(135deg, #22c55e, #3b82f6)'
+                backgroundColor: '#ffffff'
               }}
             ></div>
           </div>
@@ -755,43 +756,43 @@ const AutomationOpportunityFinder = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto p-6">
-          <div className="mb-10">
-            <h2 className="text-2xl font-bold mb-3" style={{color: '#ffffff'}}>{currentQuestion.title}</h2>
+        <div className="max-w-4xl mx-auto p-6">
+          <div className="mb-12">
+            <h2 className="text-xl font-semibold mb-3" style={{color: '#ffffff', letterSpacing: '-0.01em'}}>{currentQuestion.title}</h2>
             {currentQuestion.subtitle && (
-              <p className="mb-8" style={{color: '#b8b8b8'}}>{currentQuestion.subtitle}</p>
+              <p className="mb-10 text-sm font-normal" style={{color: '#737373', lineHeight: '1.6'}}>{currentQuestion.subtitle}</p>
             )}
             
-            <div className="space-y-4">
+            <div className="space-y-3">
               {currentQuestion.options.map((option, index) => (
                 <label key={index} className="block cursor-pointer">
                   <div 
-                    className={`p-5 rounded-xl transition-all ${
+                    className={`p-6 rounded-xl transition-all duration-200 ${
                       currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? 'shadow-md'
+                          ? 'transform translate-x-1'
                           : ''
                         : answers[currentQuestion.id] === option.value
-                          ? 'shadow-md'
+                          ? 'transform translate-x-1'
                           : ''
                     }`}
                     style={{
-                      border: '2px solid',
+                      border: '1px solid',
                       borderColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? '#60a5fa'
-                          : '#404040'
+                          ? 'rgba(255, 255, 255, 0.2)'
+                          : 'rgba(255, 255, 255, 0.06)'
                         : answers[currentQuestion.id] === option.value
-                          ? '#60a5fa'
-                          : '#404040'),
+                          ? 'rgba(255, 255, 255, 0.2)'
+                          : 'rgba(255, 255, 255, 0.06)'),
                       backgroundColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? 'rgba(96, 165, 250, 0.1)'
-                          : '#2a2a2a'
+                          ? 'rgba(255, 255, 255, 0.04)'
+                          : 'rgba(255, 255, 255, 0.02)'
                         : answers[currentQuestion.id] === option.value
-                          ? 'rgba(96, 165, 250, 0.1)'
-                          : '#2a2a2a'),
-                      minHeight: '80px',
+                          ? 'rgba(255, 255, 255, 0.04)'
+                          : 'rgba(255, 255, 255, 0.02)'),
+                      minHeight: '72px',
                       display: 'flex',
                       alignItems: 'center'
                     }}
@@ -807,13 +808,13 @@ const AutomationOpportunityFinder = () => {
                             : answers[currentQuestion.id] === option.value
                         }
                         onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
-                        className="mr-4 mt-1 scale-125 flex-shrink-0"
-                        style={{accentColor: '#60a5fa'}}
+                        className="mr-4 mt-1 scale-110 flex-shrink-0"
+                        style={{accentColor: '#ffffff'}}
                       />
                       <div className="flex-1">
-                        <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
+                        <span className="font-medium text-base" style={{color: '#ffffff'}}>{option.label}</span>
                         {option.description && (
-                          <p className="text-xs mt-1" style={{color: '#a8a8a8'}}>{option.description}</p>
+                          <p className="text-xs mt-1 font-normal" style={{color: '#a3a3a3'}}>{option.description}</p>
                         )}
                       </div>
                     </div>
@@ -825,14 +826,43 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-6" style={{borderTop: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
-        <div className="max-w-3xl mx-auto">
+      <div className="flex-shrink-0 p-6" style={{borderTop: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(10, 10, 10, 0.95)', backdropFilter: 'blur(10px)'}}>
+        <div className="max-w-4xl mx-auto">
           <div className="flex justify-between">
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className={`px-8 py-3 rounded-xl font-medium transition-colors ${
-                currentStep === 0 ? 'cursor-not-allowed' : ''
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                currentStep === 0 ? 'cursor-not-allowed' : 'hover:bg-white/5'
+              }`}
+              style={{
+                backgroundColor: currentStep === 0 ? 'rgba(255, 255, 255, 0.02)' : 'rgba(255, 255, 255, 0.04)',
+                color: currentStep === 0 ? '#737373' : '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.06)'
+              }}
+            >
+              Previous
+            </button>
+            
+            <button
+              onClick={nextStep}
+              disabled={!isAnswered}
+              className={`px-6 py-3 rounded-xl font-medium flex items-center transition-all duration-200 ${
+                !isAnswered ? 'cursor-not-allowed' : 'hover:bg-white'
+              }`}
+              style={{
+                background: !isAnswered ? 'rgba(255, 255, 255, 0.04)' : '#ffffff',
+                color: !isAnswered ? '#737373' : '#000000',
+                border: !isAnswered ? '1px solid rgba(255, 255, 255, 0.06)' : 'none'
+              }}
+            >
+              {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
+              <ChevronRight className="w-5 h-5 ml-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>'cursor-not-allowed' : ''
               }`}
               style={{
                 backgroundColor: currentStep === 0 ? '#333333' : '#404040',
