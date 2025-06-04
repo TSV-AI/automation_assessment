@@ -7,7 +7,7 @@ const AutomationOpportunityFinder = () => {
   const [showResults, setShowResults] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [showThankYou, setShowThankYou] = useState(false);
 
   const questions = [
     {
@@ -398,22 +398,41 @@ const AutomationOpportunityFinder = () => {
         })
       });
 
-      if (response.ok) {
-        console.log('Data sent successfully to webhook');
-        alert('Thank you! Your complete automation strategy report will be emailed to you within 5 minutes.');
-        setShowEmailCapture(false);
-      } else {
-        console.error('Failed to send data to webhook');
-        alert('Thank you! Your request has been received. You will receive your report shortly.');
-        setShowEmailCapture(false);
-      }
+      // Always show thank you screen (no browser alert)
+      setShowThankYou(true);
+      
     } catch (error) {
       console.error('Error sending data to webhook:', error);
-      // Still show success message to user even if webhook fails
-      alert('Thank you! Your request has been received. You will receive your report shortly.');
-      setShowEmailCapture(false);
+      // Still show thank you screen even if webhook fails
+      setShowThankYou(true);
     }
   };
+
+  if (showThankYou) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#151515', color: '#ffffff'}}>
+        <div className="w-full text-center">
+          <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
+            <CheckCircle className="w-12 h-12 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4" style={{color: '#ffffff'}}>Thank You!</h2>
+          <p className="text-lg mb-6" style={{color: '#b8b8b8'}}>Keep an eye on your email - your results will show up shortly with detailed automation recommendations.</p>
+          <button
+            onClick={() => {
+              setShowThankYou(false);
+              setShowEmailCapture(false);
+              setEmail('');
+              setName('');
+            }}
+            className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105"
+            style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff', border: 'none'}}
+          >
+            Back to Report
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (showEmailCapture) {
     return (
@@ -427,7 +446,7 @@ const AutomationOpportunityFinder = () => {
             <p className="text-lg" style={{color: '#b8b8b8'}}>Your personalized 15-page report includes detailed implementation roadmaps, ROI projections, and vendor recommendations.</p>
           </div>
 
-          <div className="p-6 rounded-2xl mb-8" style={{background: '#151515', border: '2px solid #22c55e', boxShadow: '0 0 15px rgba(34, 197, 94, 0.2)'}}>
+          <div className="p-6 rounded-2xl mb-8" style={{background: '#151515', border: '2px solid #22c55e'}}>
             <h3 className="font-bold text-lg mb-4" style={{color: '#ffffff'}}>🎯 Your Complete Report Includes:</h3>
             <div className="grid md:grid-cols-2 gap-3 text-sm">
               <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Detailed automation roadmap</div>
@@ -459,7 +478,7 @@ const AutomationOpportunityFinder = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 rounded-xl"
+                className="w-full p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                 style={{backgroundColor: '#242424', border: '2px solid #404040', color: '#ffffff'}}
                 placeholder="your.email@company.com"
               />
@@ -639,7 +658,7 @@ const AutomationOpportunityFinder = () => {
             
             {/* Overlay with CTA */}
             <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(21, 21, 21, 0.95), rgba(21, 21, 21, 0.8), transparent)'}}>
-              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: '#2a2a2a', border: '2px solid #22c55e', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(34, 197, 94, 0.3)'}}>
+              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: '#2a2a2a', border: '2px solid #22c55e'}}>
                 <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
                   <Eye className="w-8 h-8 text-white" />
                 </div>
@@ -676,8 +695,8 @@ const AutomationOpportunityFinder = () => {
           </div>
         </div>
 
-        {/* Call to Action - Simple Border */}
-        <div className="p-8 rounded-2xl text-white text-center relative" style={{background: '#151515', border: '2px solid #22c55e', boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)'}}>
+        {/* Call to Action - Clean Border */}
+        <div className="p-8 rounded-2xl text-white text-center relative" style={{background: '#151515', border: '2px solid #22c55e'}}>
           <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
           <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
             Get a detailed implementation plan tailored specifically to your business processes and goals
