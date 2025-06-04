@@ -48,6 +48,44 @@
     // Send height when React renders
     setTimeout(sendHeightToParent, 1000);
     setInterval(sendHeightToParent, 2000);
+
+    // ADD NEW SCROLL HANDLER HERE
+    document.addEventListener('DOMContentLoaded', function() {
+      // Forward scroll events to parent window
+      document.addEventListener('wheel', function(e) {
+        // Only forward if we're in an iframe
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'scroll',
+            deltaY: e.deltaY,
+            deltaX: e.deltaX
+          }, '*');
+          
+          // Prevent default scroll in iframe
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // Also handle touch scrolling for mobile
+      let startY = 0;
+      document.addEventListener('touchstart', function(e) {
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', function(e) {
+        if (window.parent && window.parent !== window) {
+          const deltaY = startY - e.touches[0].clientY;
+          window.parent.postMessage({
+            type: 'scroll',
+            deltaY: deltaY * 2, // Multiply for better scroll feel
+            deltaX: 0
+          }, '*');
+          
+          startY = e.touches[0].clientY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+    });
     </script>
     <div id="root"></div>
   </body>
