@@ -398,7 +398,7 @@ const AutomationOpportunityFinder = () => {
             <p className="text-lg" style={{color: '#b8b8b8'}}>Your personalized 15-page report includes detailed implementation roadmaps, ROI projections, and vendor recommendations.</p>
           </div>
 
-          <div className="p-6 rounded-2xl mb-8" style={{background: 'linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
+          <div className="p-6 rounded-2xl mb-8" style={{background: 'transparent', border: '2px solid transparent', backgroundImage: 'linear-gradient(#151515, #151515), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box'}}>
             <h3 className="font-bold text-lg mb-4" style={{color: '#ffffff'}}>🎯 Your Complete Report Includes:</h3>
             <div className="grid md:grid-cols-2 gap-3 text-sm">
               <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Detailed automation roadmap</div>
@@ -438,7 +438,7 @@ const AutomationOpportunityFinder = () => {
             <button
               type="submit"
               className="w-full py-4 px-8 rounded-xl font-bold text-lg transition-colors flex items-center justify-center"
-              style={{background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', color: '#ffffff'}}
+              style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff'}}
             >
               <Mail className="w-5 h-5 mr-2" />
               Send My Complete Report
@@ -610,16 +610,16 @@ const AutomationOpportunityFinder = () => {
             
             {/* Overlay with CTA */}
             <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(21, 21, 21, 0.95), rgba(21, 21, 21, 0.8), transparent)'}}>
-              <div className="text-center p-8 rounded-2xl max-w-md" style={{backgroundColor: '#2a2a2a', border: '2px solid rgba(59, 130, 246, 0.5)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'}}>
-                <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{backgroundColor: 'rgba(59, 130, 246, 0.2)'}}>
-                  <Eye className="w-8 h-8 text-blue-400" />
+              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: 'transparent', border: '2px solid transparent', backgroundImage: 'linear-gradient(#2a2a2a, #2a2a2a), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'}}>
+                <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
+                  <Eye className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-2" style={{color: '#ffffff'}}>Want to See Everything?</h3>
                 <p className="mb-4" style={{color: '#b8b8b8'}}>Get your complete automation strategy with detailed implementation guides, vendor comparisons, and ROI projections.</p>
                 <button
                   onClick={() => setShowEmailCapture(true)}
                   className="px-6 py-3 rounded-lg font-semibold transition-colors flex items-center mx-auto"
-                  style={{background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', color: '#ffffff'}}
+                  style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff'}}
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Get Full Report
@@ -647,20 +647,20 @@ const AutomationOpportunityFinder = () => {
           </div>
         </div>
 
-        {/* Call to Action - Filled Green/Blue Gradient */}
-        <div className="p-8 rounded-2xl text-white text-center relative overflow-hidden" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', boxShadow: '0 20px 40px rgba(34, 197, 94, 0.4)'}}>
+        {/* Call to Action - Gradient Outline Style */}
+        <div className="p-8 rounded-2xl text-white text-center relative overflow-hidden" style={{background: 'transparent', border: '3px solid transparent', backgroundImage: 'linear-gradient(#151515, #151515), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box'}}>
           <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
           <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
             Get a detailed implementation plan tailored specifically to your business processes and goals
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-white hover:bg-white hover:text-green-600 hover:scale-105" style={{backgroundColor: 'transparent', color: '#ffffff'}}>
+            <button className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105" style={{background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#ffffff', border: 'none'}}>
               Schedule Free Strategy Call
             </button>
             <button 
               onClick={() => setShowEmailCapture(true)}
-              className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105"
-              style={{backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '2px solid rgba(255,255,255,0.3)'}}
+              className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105"
+              style={{background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#ffffff', border: 'none'}}
             >
               Download Full Report
             </button>
@@ -730,17 +730,17 @@ const AutomationOpportunityFinder = () => {
                       border: '2px solid',
                       borderColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? '#3b82f6'
+                          ? '#22c55e'
                           : '#404040'
                         : answers[currentQuestion.id] === option.value
-                          ? '#3b82f6'
+                          ? '#22c55e'
                           : '#404040'),
                       backgroundColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? 'rgba(59, 130, 246, 0.1)'
+                          ? 'rgba(34, 197, 94, 0.1)'
                           : '#2a2a2a'
                         : answers[currentQuestion.id] === option.value
-                          ? 'rgba(59, 130, 246, 0.1)'
+                          ? 'rgba(34, 197, 94, 0.1)'
                           : '#2a2a2a'),
                       minHeight: '80px',
                       display: 'flex',
@@ -759,7 +759,7 @@ const AutomationOpportunityFinder = () => {
                         }
                         onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
                         className="mr-4 mt-1 scale-125 flex-shrink-0"
-                        style={{accentColor: '#3b82f6'}}
+                        style={{accentColor: '#22c55e'}}
                       />
                       <div className="flex-1">
                         <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
