@@ -759,17 +759,17 @@ const AutomationOpportunityFinder = () => {
                       border: '2px solid',
                       borderColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? '#22c55e'
+                          ? '#60a5fa'
                           : '#404040'
                         : answers[currentQuestion.id] === option.value
-                          ? '#22c55e'
+                          ? '#60a5fa'
                           : '#404040'),
                       backgroundColor: (currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                          ? 'rgba(34, 197, 94, 0.1)'
+                          ? 'rgba(96, 165, 250, 0.1)'
                           : '#2a2a2a'
                         : answers[currentQuestion.id] === option.value
-                          ? 'rgba(34, 197, 94, 0.1)'
+                          ? 'rgba(96, 165, 250, 0.1)'
                           : '#2a2a2a'),
                       minHeight: '80px',
                       display: 'flex',
@@ -788,7 +788,7 @@ const AutomationOpportunityFinder = () => {
                         }
                         onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
                         className="mr-4 mt-1 scale-125 flex-shrink-0"
-                        style={{accentColor: '#22c55e'}}
+                        style={{accentColor: '#60a5fa'}}
                       />
                       <div className="flex-1">
                         <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
