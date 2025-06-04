@@ -15,6 +15,40 @@
     </style>
   </head>
   <body>
+    <script>
+    // Send height updates to parent window
+    function sendHeightToParent() {
+      const height = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+      
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'resize',
+          height: height
+        }, '*');
+      }
+    }
+    
+    // Send height when content changes
+    const observer = new MutationObserver(sendHeightToParent);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
+    
+    // Send initial height
+    window.addEventListener('load', sendHeightToParent);
+    window.addEventListener('resize', sendHeightToParent);
+    
+    // Send height when React renders
+    setTimeout(sendHeightToParent, 1000);
+    setInterval(sendHeightToParent, 2000);
+    </script>
     <div id="root"></div>
   </body>
 </html>
