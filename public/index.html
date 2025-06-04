@@ -12,12 +12,106 @@
         background: #151515; 
         line-height: 1.6; 
       }
+      
+      /* Mobile responsive styles */
+      @media (max-width: 768px) {
+        body {
+          font-size: 14px;
+        }
+        
+        h1, .text-4xl {
+          font-size: 1.875rem !important; /* 30px */
+        }
+        
+        h2, .text-3xl {
+          font-size: 1.5rem !important; /* 24px */
+        }
+        
+        h3, .text-2xl {
+          font-size: 1.25rem !important; /* 20px */
+        }
+        
+        .text-xl {
+          font-size: 1.125rem !important; /* 18px */
+        }
+        
+        .text-lg {
+          font-size: 1rem !important; /* 16px */
+        }
+        
+        /* Button sizing */
+        button, .px-8 {
+          padding: 12px 20px !important;
+          font-size: 14px !important;
+        }
+        
+        /* Card padding */
+        .p-6, .p-8 {
+          padding: 16px !important;
+        }
+        
+        /* Grid adjustments */
+        .grid {
+          grid-template-columns: 1fr !important;
+          gap: 16px !important;
+        }
+        
+        /* Max width containers */
+        .max-w-3xl, .max-w-5xl {
+          max-width: 100% !important;
+          padding: 0 16px !important;
+        }
+        
+        /* Progress bar container */
+        .mb-10 {
+          margin-bottom: 32px !important;
+        }
+        
+        /* Question options */
+        .space-y-4 > * + * {
+          margin-top: 12px !important;
+        }
+        
+        /* Responsive text scaling */
+        .text-4xl { font-size: clamp(1.5rem, 4vw, 1.875rem) !important; }
+        .text-3xl { font-size: clamp(1.25rem, 3vw, 1.5rem) !important; }
+        .text-2xl { font-size: clamp(1.125rem, 2.5vw, 1.25rem) !important; }
+      }
+      
+      @media (max-width: 480px) {
+        body {
+          font-size: 13px;
+        }
+        
+        .p-6, .p-8 {
+          padding: 12px !important;
+        }
+        
+        button {
+          padding: 10px 16px !important;
+          font-size: 13px !important;
+        }
+        
+        .max-w-3xl, .max-w-5xl {
+          padding: 0 12px !important;
+        }
+        
+        h1, .text-4xl {
+          font-size: 1.5rem !important;
+        }
+        
+        h2, .text-3xl {
+          font-size: 1.25rem !important;
+        }
+      }
     </style>
   </head>
   <body>
     <script>
     // Send height updates to parent window
     function sendHeightToParent() {
+      const isMobile = window.innerWidth <= 768;
+      
       const height = Math.max(
         document.body.scrollHeight,
         document.documentElement.scrollHeight,
@@ -25,10 +119,14 @@
         document.documentElement.offsetHeight
       );
       
+      // Add extra padding for mobile
+      const adjustedHeight = isMobile ? height + 100 : height + 20;
+      
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({
           type: 'resize',
-          height: height
+          height: adjustedHeight,
+          isMobile: isMobile
         }, '*');
       }
     }
@@ -66,25 +164,50 @@
         }
       }, { passive: false });
 
-      // Also handle touch scrolling for mobile
+      // Better mobile touch handling
       let startY = 0;
+      let isScrolling = false;
+      let touchStartTime = 0;
+      
       document.addEventListener('touchstart', function(e) {
-        startY = e.touches[0].clientY;
+        // Only handle if we're in iframe and it's a single touch
+        if (window.parent && window.parent !== window && e.touches.length === 1) {
+          startY = e.touches[0].clientY;
+          touchStartTime = Date.now();
+          isScrolling = false;
+        }
       }, { passive: true });
 
       document.addEventListener('touchmove', function(e) {
-        if (window.parent && window.parent !== window) {
-          const deltaY = startY - e.touches[0].clientY;
-          window.parent.postMessage({
-            type: 'scroll',
-            deltaY: deltaY * 2, // Multiply for better scroll feel
-            deltaX: 0
-          }, '*');
+        if (window.parent && window.parent !== window && e.touches.length === 1) {
+          const currentY = e.touches[0].clientY;
+          const deltaY = startY - currentY;
+          const timeDelta = Date.now() - touchStartTime;
           
-          startY = e.touches[0].clientY;
-          e.preventDefault();
+          // Only scroll if significant movement and not too fast (avoid accidental scrolls)
+          if (Math.abs(deltaY) > 10 && timeDelta > 50) {
+            isScrolling = true;
+            
+            window.parent.postMessage({
+              type: 'scroll',
+              deltaY: deltaY * 1.5, // Smoother multiplier
+              deltaX: 0
+            }, '*');
+            
+            startY = currentY;
+            e.preventDefault();
+          }
         }
       }, { passive: false });
+      
+      // Allow normal taps/clicks by not preventing if no scrolling occurred
+      document.addEventListener('touchend', function(e) {
+        if (!isScrolling) {
+          // This was just a tap, let it through normally
+          return;
+        }
+        isScrolling = false;
+      }, { passive: true });
     });
     </script>
     <div id="root"></div>
