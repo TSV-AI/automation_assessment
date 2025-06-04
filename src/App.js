@@ -11,7 +11,7 @@ const AutomationOpportunityFinder = () => {
   const [name, setName] = useState('');
 
   const accentColor = '#92d8c8'; 
-  const accentColorDarker = '#6BAA9B'; // Darker shade for prominent CTAs
+  const accentColorDarker = '#6BAA9B'; // Darker shade for prominent CTAs and gradient border
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
@@ -317,36 +317,57 @@ const AutomationOpportunityFinder = () => {
 
   if (showEmailCapture) {
     return (
-      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div className="w-full">
-          <div className="text-center mb-8">
-            <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
-              <Download className="w-10 h-10" style={{color: accentColor}} />
+      // Centering wrapper for the modal screen
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
+        {/* Gradient Border Wrapper */}
+        <div 
+          style={{
+            borderRadius: '0.875rem', // Slightly larger to encapsulate inner rounding (14px)
+            padding: '2px', 
+            background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
+            boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+            width: '100%', 
+          }}
+        >
+          {/* Inner Content Box */}
+          <div 
+            style={{
+              background: 'rgba(17, 24, 39, 0.97)', // Dark, nearly opaque (Tailwind gray-900 like)
+              borderRadius: '0.75rem', // rounded-2xl
+              padding: '1.5rem', // p-6
+            }}
+            className="w-full"
+          >
+            <div className="text-center mb-8">
+              <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+                <Download className="w-10 h-10" style={{color: accentColor}} />
+              </div>
+              <h2 className="text-2xl font-semibold mb-3">Get Your Complete Automation Strategy</h2>
+              <p className="text-sm text-gray-400">Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <h2 className="text-2xl font-semibold mb-3">Get Your Complete Automation Strategy</h2>
-            <p className="text-sm text-gray-400">Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
-          </div>
-          <div className="p-6 rounded-2xl mb-8 bg-gray-800/30 border border-gray-700/50">
-            <h3 className="font-medium text-base mb-4">🎯 Full Report Includes:</h3>
-            <div className="grid md:grid-cols-2 gap-3 text-sm">
-              {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
-                 <div key={item} className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{color: accentColor}} />{item}</div>
-              ))}
+            <div className="p-6 rounded-2xl mb-8 bg-gray-800/40 border border-gray-700/60">
+              <h3 className="font-medium text-base mb-4">🎯 Full Report Includes:</h3>
+              <div className="grid md:grid-cols-2 gap-3 text-sm">
+                {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
+                   <div key={item} className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{color: accentColor}} />{item}</div>
+                ))}
+              </div>
             </div>
-          </div>
-          <form onSubmit={handleEmailSubmit} className="space-y-4">
-            <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                   className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
-            <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                   className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
-            <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> 
-              <Mail className="w-5 h-5 mr-2" />Send My Report
+            <form onSubmit={handleEmailSubmit} className="space-y-4">
+              <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
+                     className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+              <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
+                     className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+              <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
+                      style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
+                <Mail className="w-5 h-5 mr-2" />Send My Report
+              </button>
+            </form>
+            <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm text-gray-400 border border-gray-700/50 hover:bg-gray-700/30">
+              Back to Summary
             </button>
-          </form>
-          <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm text-gray-400 border border-gray-700/50 hover:bg-gray-700/30">
-            Back to Summary
-          </button>
-          <p className="text-center text-xs mt-4 text-gray-500">Report emailed in 5 mins. We respect your privacy.</p>
+            <p className="text-center text-xs mt-4 text-gray-500">Report emailed in 5 mins. We respect your privacy.</p>
+          </div>
         </div>
       </div>
     );
@@ -438,7 +459,7 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur pointer-events-none"> {/* Increased blur to 'blur' (Tailwind's medium) */}
+              <div className="filter blur pointer-events-none"> 
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
@@ -450,18 +471,37 @@ const AutomationOpportunityFinder = () => {
                   ))}
                 </div>
               </div>
+              {/* "Unlock Your Full Potential" Box with Gradient Border */}
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 25%, rgba(10,10,10,0.95) 50%, rgba(10,10,10,1) 75%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
-                <div className="text-center p-6 sm:p-8 rounded-2xl max-w-md bg-gray-800/80 border border-gray-700/70 backdrop-blur-sm shadow-2xl"> {/* Increased opacity of box bg */}
-                  <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
-                    <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 25%, rgba(10,10,10,0.95) 50%, rgba(10,10,10,1) 75%)'}}>
+                <div // Outer div for gradient border
+                  style={{
+                    borderRadius: '0.875rem', // rounded-2xl is 0.75rem, add padding: 12px + 2px = 14px.
+                    padding: '2px', 
+                    background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+                  }}
+                  className="max-w-md mx-auto" 
+                >
+                  <div // Inner content box
+                    className="text-center p-6 sm:p-8" 
+                    style={{
+                      background: 'rgba(17, 24, 39, 0.97)', // Dark, nearly opaque
+                      borderRadius: '0.75rem', // Tailwind's rounded-2xl
+                      backdropFilter: 'blur(3px)', 
+                    }}
+                  >
+                    <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+                      <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-medium mb-2">Unlock Your Full Potential</h3>
+                    <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
+                    <button onClick={() => setShowEmailCapture(true)}
+                      className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
+                      style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
+                      <Download className="w-4 h-4 mr-2" />Get My Full Report
+                    </button>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-medium mb-2">Unlock Your Full Potential</h3>
-                  <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
-                  <button onClick={() => setShowEmailCapture(true)}
-                    className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Darker CTA, white text */}
-                    <Download className="w-4 h-4 mr-2" />Get My Full Report
-                  </button>
                 </div>
               </div>
             </div>
@@ -474,7 +514,8 @@ const AutomationOpportunityFinder = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
-                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Darker CTA, white text */}
+                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
+                style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
