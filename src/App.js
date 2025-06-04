@@ -134,7 +134,6 @@ const AutomationOpportunityFinder = () => {
     // Get company data
     const companyData = questions[0].options.find(o => o.value === answers.company_size) || {};
     const complexity = companyData.complexity || 1;
-    const avgWage = companyData.avgWage || 50;
     
     // Get hours data
     const weeklyHours = questions[1].options.find(o => o.value === answers.manual_hours)?.hours || 0;
