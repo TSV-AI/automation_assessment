@@ -460,11 +460,12 @@ const AutomationOpportunityFinder = () => {
     const hiddenRecommendations = recommendations.filter(rec => !rec.preview);
     
     return (
-      <div className="max-w-5xl mx-auto p-6 min-h-screen" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-3" style={{color: '#ffffff'}}>Your Custom Automation Strategy</h1>
-          <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
-        </div>
+      <div className="w-full min-h-screen overflow-y-auto" style={{backgroundColor: '#151515', color: '#ffffff'}}>
+        <div className="max-w-5xl mx-auto p-6">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-3" style={{color: '#ffffff'}}>Your Custom Automation Strategy</h1>
+            <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
+          </div>
 
         {/* Key Metrics Dashboard - ALL SAME GREEN */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
@@ -665,6 +666,7 @@ const AutomationOpportunityFinder = () => {
             </button>
           </div>
           <p className="text-sm mt-4 opacity-75">60-minute consultation • Custom roadmap included • No sales pressure</p>
+        </div>
         </div>
       </div>
     );
