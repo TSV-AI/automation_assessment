@@ -678,20 +678,20 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        {/* Annual Projection - Simple Gradient Fill */}
-        <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)'}}>
+        {/* Annual Projection - Flatter Gradient, No Glow */}
+        <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #16a34a 0%, #2563eb 100%)'}}>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div>
               <div className="text-3xl font-bold mb-2">${results.annualSavings.toLocaleString()}</div>
-              <div className="text-white/80">Projected Annual Savings</div>
+              <div className="text-white/90">Projected Annual Savings</div>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">{Math.round(results.hoursAutomatable * 52)}</div>
-              <div className="text-white/80">Hours Saved Per Year</div>
+              <div className="text-white/90">Hours Saved Per Year</div>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">{results.automationPct}%</div>
-              <div className="text-white/80">Process Automation Potential</div>
+              <div className="text-white/90">Process Automation Potential</div>
             </div>
           </div>
         </div>
