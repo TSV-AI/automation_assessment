@@ -8,6 +8,7 @@ const AutomationOpportunityFinder = () => {
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [email, setEmail] = useState('');
   const [showThankYou, setShowThankYou] = useState(false);
+  const [name, setName] = useState('');
 
   const questions = [
     {
