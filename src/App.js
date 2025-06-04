@@ -11,7 +11,8 @@ const AutomationOpportunityFinder = () => {
   const [name, setName] = useState('');
 
   const accentColor = '#92d8c8'; 
-  const accentColorDarker = '#6BAA9B'; // Darker shade for prominent CTAs and gradient border
+  const accentColorDarker = '#6BAA9B'; 
+  const accentColorDarkerBrighter = '#7BC3B2'; // Approx 15% brighter than accentColorDarker
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
@@ -317,24 +318,21 @@ const AutomationOpportunityFinder = () => {
 
   if (showEmailCapture) {
     return (
-      // Centering wrapper for the modal screen
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
-        {/* Gradient Border Wrapper */}
         <div 
           style={{
-            borderRadius: '0.875rem', // Slightly larger to encapsulate inner rounding (14px)
-            padding: '2px', 
+            borderRadius: '0.875rem', 
+            padding: '1px', // Thinner border
             background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
-            boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', // Softer shadow
             width: '100%', 
           }}
         >
-          {/* Inner Content Box */}
           <div 
             style={{
-              background: 'rgba(17, 24, 39, 0.97)', // Dark, nearly opaque (Tailwind gray-900 like)
-              borderRadius: '0.75rem', // rounded-2xl
-              padding: '1.5rem', // p-6
+              background: 'rgba(17, 24, 39, 0.88)', // More transparent background
+              borderRadius: '0.8125rem', // (14px - 1px border) 13px
+              padding: '1.5rem', 
             }}
             className="w-full"
           >
@@ -359,7 +357,7 @@ const AutomationOpportunityFinder = () => {
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
                      className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
-                      style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
+                      style={{background: accentColorDarker, color: '#FFFFFF'}}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
               </button>
             </form>
@@ -471,24 +469,25 @@ const AutomationOpportunityFinder = () => {
                   ))}
                 </div>
               </div>
-              {/* "Unlock Your Full Potential" Box with Gradient Border */}
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 25%, rgba(10,10,10,0.95) 50%, rgba(10,10,10,1) 75%)'}}>
-                <div // Outer div for gradient border
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.65) 25%, rgba(10,10,10,0.95) 55%, rgba(10,10,10,1) 75%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
+                {/* Outer div for gradient border */}
+                <div 
                   style={{
-                    borderRadius: '0.875rem', // rounded-2xl is 0.75rem, add padding: 12px + 2px = 14px.
-                    padding: '2px', 
+                    borderRadius: '0.875rem', 
+                    padding: '1px', // Thinner border
                     background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
-                    boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+                    boxShadow: '0 6px 25px rgba(0,0,0,0.3)', // Softer shadow
                   }}
                   className="max-w-md mx-auto" 
                 >
-                  <div // Inner content box
+                  {/* Inner content box */}
+                  <div 
                     className="text-center p-6 sm:p-8" 
                     style={{
-                      background: 'rgba(17, 24, 39, 0.97)', // Dark, nearly opaque
-                      borderRadius: '0.75rem', // Tailwind's rounded-2xl
-                      backdropFilter: 'blur(3px)', 
+                      background: 'rgba(17, 24, 39, 0.88)', // More transparent background
+                      borderRadius: '0.8125rem', // (14px outer - 1px border = 13px inner)
+                      backdropFilter: 'blur(2px)', 
                     }}
                   >
                     <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
@@ -498,7 +497,7 @@ const AutomationOpportunityFinder = () => {
                     <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
                     <button onClick={() => setShowEmailCapture(true)}
                       className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
-                      style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
+                      style={{background: accentColorDarker, color: '#FFFFFF'}}> 
                       <Download className="w-4 h-4 mr-2" />Get My Full Report
                     </button>
                   </div>
@@ -515,7 +514,7 @@ const AutomationOpportunityFinder = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
                 className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
-                style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Prominent CTA */}
+                style={{background: accentColorDarkerBrighter, color: '#FFFFFF'}}> {/* Brighter Green CTA */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
