@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react'; // Removed DollarSign, RefreshCw
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react';
 
 const AutomationOpportunityFinder = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -10,8 +10,8 @@ const AutomationOpportunityFinder = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState('');
 
-  // Define your new accent color here
-  const accentColor = '#78ad9f'; // New Teal-like color
+  // Define your new accent color here - Lighter/Brighter Teal
+  const accentColor = '#82c4b4'; 
   // Opacity versions for backgrounds/borders (hexadecimal: 1A=10%, 26=15%, 33=20%)
   const accentColorBgLowOpacity = accentColor + '1A';
   const accentColorBgMediumOpacity = accentColor + '26';
@@ -170,7 +170,7 @@ const AutomationOpportunityFinder = () => {
     
     const hourlyRate = 40;
     const weeklyCost = hoursAutomatable * hourlyRate;
-    const currentManualMonthlyCost = Math.round(weeklyCost * 4.33); // This is the "Monthly Savings" if all automated for free
+    const currentManualMonthlyCost = Math.round(weeklyCost * 4.33); 
     const annualSavingsIfFree = currentManualMonthlyCost * 12;
     
     const scoreComponents = [
@@ -188,7 +188,7 @@ const AutomationOpportunityFinder = () => {
     const annualBudgetForAutomation = estimatedMonthlyAutomationCost * 12;
     const netAnnualSavingsFromAutomation = annualSavingsIfFree - annualBudgetForAutomation;
     
-    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); // High ROI if free and savings exist
+    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); 
     
     let paybackMonths = null;
     if (netMonthlySavingsFromAutomation > 0 && estimatedMonthlyAutomationCost > 0) {
@@ -201,10 +201,10 @@ const AutomationOpportunityFinder = () => {
       opportunityScore,
       hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
       marketingTimeSavings,
-      currentManualMonthlyCost: currentManualMonthlyCost, // For the new card
-      estimatedMonthlyAutomationCost: estimatedMonthlyAutomationCost, // For the new card
-      percentageSaving: percentageSaving, // For the new card's big number
-      annualSavings: netAnnualSavingsFromAutomation, // Actual net annual savings after automation cost
+      currentManualMonthlyCost: currentManualMonthlyCost,
+      estimatedMonthlyAutomationCost: estimatedMonthlyAutomationCost,
+      percentageSaving: percentageSaving,
+      annualSavings: netAnnualSavingsFromAutomation,
       roiPercentage: roiPercentage,
       paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null,
       complexity,
@@ -290,12 +290,12 @@ const AutomationOpportunityFinder = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', { // Replace with your webhook
+      await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', { 
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, answers, results: calculateResults(), timestamp: new Date().toISOString(), source: 'automation-assessment-v3' })
+        body: JSON.stringify({ name, email, answers, results: calculateResults(), timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) // Ensure your webhook can handle this
       });
       setShowThankYou(true);
-    } catch (error) { console.error('Webhook error:', error); setShowThankYou(true); } // Show thank you even on error for now
+    } catch (error) { console.error('Webhook error:', error); setShowThankYou(true); } 
   };
 
   if (showThankYou) {
@@ -360,16 +360,14 @@ const AutomationOpportunityFinder = () => {
     const hiddenRecs = recommendations.filter(r => !r.preview);
     
     return (
-      <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a] text-white font-['Inter,_system-ui,sans-serif']">
+      <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a] text-white" style={{fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="text-center mb-16 sm:mb-20">
             <h1 className="text-4xl sm:text-5xl font-semibold mb-6 tracking-tight leading-tight">Your Custom Automation Strategy</h1>
             <p className="text-md sm:text-lg max-w-2xl mx-auto text-gray-400 leading-relaxed">Snapshot of AI automation's potential for your business, based on your answers.</p>
           </div>
 
-          {/* --- REVISED TOP CARDS --- */}
           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
-            {/* Left Card: Hours Saved */}
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/30 border border-gray-700/50">
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
@@ -379,10 +377,9 @@ const AutomationOpportunityFinder = () => {
               <p className="text-sm text-gray-400">Est. weekly hours recoverable.</p>
             </div>
 
-            {/* Middle Card: Cost Comparison & % Saving */}
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/50 border border-gray-700/70"> {/* Slightly more prominent */}
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/50 border border-gray-700/70">
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
-                <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} /> {/* Changed Icon */}
+                <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
               <h3 className="text-base font-medium mb-1">Monthly Cost Reduction</h3>
               <p className="text-5xl font-bold my-3 tracking-tighter" style={{color: accentColor}}>{results.percentageSaving}%</p>
@@ -392,7 +389,6 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
             
-            {/* Right Card: ROI Potential */}
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/30 border border-gray-700/50">
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
@@ -406,7 +402,6 @@ const AutomationOpportunityFinder = () => {
               </p>
             </div>
           </div>
-          {/* --- END OF REVISED TOP CARDS --- */}
 
           {previewRecs.length > 0 && (
             <div className="mb-16 sm:mb-20">
@@ -428,7 +423,7 @@ const AutomationOpportunityFinder = () => {
                     </div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {rec.items.slice(0, 3).map((item, i) => (
-                        <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}> {/* Inner box with accent shade */}
+                        <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
                           <div className="flex items-start">
                             <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
                             <span>{item}</span>
@@ -444,11 +439,10 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              {/* Blurred content slightly more visible */}
               <div className="filter blur-sm pointer-events-none"> 
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
-                  {hiddenRecs.slice(0, 2).map((rec, index) => (
+                  {hiddenRecs.slice(0, 2).map((rec, index) => ( // Keep showing 2 placeholders for structure
                     <div key={index} className="p-6 sm:p-8 rounded-2xl bg-gray-800/30 border border-gray-700/50">
                       <h4 className="font-medium text-lg sm:text-xl mb-2 text-gray-500">{rec.title}</h4>
                       <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-2"></div>
@@ -457,8 +451,8 @@ const AutomationOpportunityFinder = () => {
                   ))}
                 </div>
               </div>
-              {/* Overlay less opaque */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4" style={{background: 'linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 40%, rgba(10,10,10,0.3) 100%)'}}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.5) 20%, rgba(10,10,10,0.95) 40%, rgba(10,10,10,1) 60%)'}}>
                 <div className="text-center p-6 sm:p-8 rounded-2xl max-w-md bg-gray-800/70 border border-gray-700/60 backdrop-blur-sm">
                   <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                     <Eye className="w-8 h-8" style={{color: accentColor}}/>
@@ -500,7 +494,7 @@ const AutomationOpportunityFinder = () => {
   const isAnswered = currentQuestion.type === 'multiple' ? (answers[currentQuestion.id]?.length > 0) : answers[currentQuestion.id];
 
   return (
-    <div className="w-full h-screen flex flex-col bg-[#0a0a0a] text-white font-['Inter,_system-ui,sans-serif']">
+    <div className="w-full h-screen flex flex-col bg-[#0a0a0a] text-white" style={{fontFamily: 'Inter, system-ui, sans-serif'}}>
       <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-gray-700/50 bg-[#0a0a0a]/80 backdrop-blur-md">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
