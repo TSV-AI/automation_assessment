@@ -10,12 +10,13 @@ const AutomationOpportunityFinder = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState('');
 
-  // Define your new accent color here - Lighter/Brighter Teal
-  const accentColor = '#82c4b4'; 
-  // Opacity versions for backgrounds/borders (hexadecimal: 1A=10%, 26=15%, 33=20%)
-  const accentColorBgLowOpacity = accentColor + '1A';
-  const accentColorBgMediumOpacity = accentColor + '26';
-  const accentColorBorderLowOpacity = accentColor + '33';
+  // Define your new accent color here - Even Lighter/Brighter Teal for better contrast
+  const accentColor = '#92d8c8'; 
+  // Opacity versions for backgrounds/borders (hexadecimal: 1A=10%, 26=15%, 33=20%, 4D=30%)
+  const accentColorBgLowOpacity = accentColor + '1A'; // 10%
+  const accentColorBgMediumOpacity = accentColor + '26'; // 15%
+  const accentColorBorderLowOpacity = accentColor + '33'; // 20%
+  const accentColorTextLowOpacity = accentColor + 'B3'; // 70% for text if needed
 
 
   const questions = [
@@ -292,7 +293,7 @@ const AutomationOpportunityFinder = () => {
     try {
       await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', { 
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, answers, results: calculateResults(), timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) // Ensure your webhook can handle this
+        body: JSON.stringify({ name, email, answers, results: calculateResults(), timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) 
       });
       setShowThankYou(true);
     } catch (error) { console.error('Webhook error:', error); setShowThankYou(true); } 
@@ -308,7 +309,7 @@ const AutomationOpportunityFinder = () => {
           <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
           <p className="text-sm mb-6 text-gray-400">Your personalized insights for {email} will arrive shortly.</p>
           <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
-            className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: '#ffffff'}}>
+            className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: '#0a0a0a'}}> {/* Changed text color for better contrast on new accent */}
             Back to My Report
           </button>
         </div>
@@ -340,7 +341,7 @@ const AutomationOpportunityFinder = () => {
                    className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
             <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
                    className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
-            <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90" style={{background: accentColor, color: '#ffffff'}}>
+            <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> {/* Changed text color */}
               <Mail className="w-5 h-5 mr-2" />Send My Report
             </button>
           </form>
@@ -442,7 +443,7 @@ const AutomationOpportunityFinder = () => {
               <div className="filter blur-sm pointer-events-none"> 
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
-                  {hiddenRecs.slice(0, 2).map((rec, index) => ( // Keep showing 2 placeholders for structure
+                  {hiddenRecs.slice(0, 2).map((rec, index) => ( 
                     <div key={index} className="p-6 sm:p-8 rounded-2xl bg-gray-800/30 border border-gray-700/50">
                       <h4 className="font-medium text-lg sm:text-xl mb-2 text-gray-500">{rec.title}</h4>
                       <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-2"></div>
@@ -452,7 +453,7 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.5) 20%, rgba(10,10,10,0.95) 40%, rgba(10,10,10,1) 60%)'}}>
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.85) 30%, rgba(10,10,10,0.98) 50%, rgba(10,10,10,1) 70%)'}}> {/* Adjusted Gradient */}
                 <div className="text-center p-6 sm:p-8 rounded-2xl max-w-md bg-gray-800/70 border border-gray-700/60 backdrop-blur-sm">
                   <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                     <Eye className="w-8 h-8" style={{color: accentColor}}/>
@@ -460,7 +461,7 @@ const AutomationOpportunityFinder = () => {
                   <h3 className="text-lg sm:text-xl font-medium mb-2">Unlock Your Full Potential</h3>
                   <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
                   <button onClick={() => setShowEmailCapture(true)}
-                    className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" style={{background: accentColor, color: 'white'}}>
+                    className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> {/* Changed text color */}
                     <Download className="w-4 h-4 mr-2" />Get My Full Report
                   </button>
                 </div>
@@ -475,7 +476,7 @@ const AutomationOpportunityFinder = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
-                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90" style={{background: accentColor, color: 'white'}}>
+                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> {/* Changed text color */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
@@ -552,7 +553,7 @@ const AutomationOpportunityFinder = () => {
           </button>
           <button onClick={nextStep} disabled={!isAnswered}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? '#737373' : 'white', border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}>
+                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? '#737373' : '#0a0a0a', border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> {/* Changed text color */}
             {currentStep === questions.length - 1 ? 'Get My Analysis' : 'Continue'}
             <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
           </button>
