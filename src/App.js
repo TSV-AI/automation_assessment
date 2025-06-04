@@ -352,7 +352,6 @@ const AutomationOpportunityFinder = () => {
   const nextStep = () => {
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
-      // Reset scroll to top
       setTimeout(() => {
         const scrollContainer = document.querySelector('.flex-1.overflow-y-auto');
         if (scrollContainer) {
@@ -367,7 +366,6 @@ const AutomationOpportunityFinder = () => {
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-      // Reset scroll to top
       setTimeout(() => {
         const scrollContainer = document.querySelector('.flex-1.overflow-y-auto');
         if (scrollContainer) {
@@ -381,7 +379,6 @@ const AutomationOpportunityFinder = () => {
     e.preventDefault();
     
     try {
-      // Send data to webhook
       await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', {
         method: 'POST',
         headers: {
@@ -397,12 +394,10 @@ const AutomationOpportunityFinder = () => {
         })
       });
 
-      // Always show thank you screen (no browser alert)
       setShowThankYou(true);
       
     } catch (error) {
       console.error('Error sending data to webhook:', error);
-      // Still show thank you screen even if webhook fails
       setShowThankYou(true);
     }
   };
@@ -514,7 +509,6 @@ const AutomationOpportunityFinder = () => {
             <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
           </div>
 
-        {/* Key Metrics Dashboard - ALL SAME GREEN */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
@@ -523,6 +517,25 @@ const AutomationOpportunityFinder = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Opportunity Score</h3>
+                <p className="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
+            <p className="text-sm" style={{color: '#b8b8b8'}}>
+              {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
+               results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
+               results.opportunityScore >= 45 ? '⚡ Good potential' :
+               '💡 Some opportunities'}
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
+            <div className="flex items-center mb-4">
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+                <Clock className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Time Savings</h3>
                 <p className="text-sm" style={{color: '#b8b8b8'}}>Weekly hours recovered</p>
               </div>
             </div>
@@ -566,7 +579,6 @@ const AutomationOpportunityFinder = () => {
           </div>
         </div>
 
-        {/* Preview Recommendations */}
         {previewRecommendations.length > 0 && (
           <div className="mb-10">
             <h3 className="text-2xl font-bold mb-6" style={{color: '#ffffff'}}>Your Top Automation Opportunities</h3>
@@ -601,7 +613,6 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        {/* Blurred Hidden Content */}
         {hiddenRecommendations.length > 0 && (
           <div className="mb-10 relative">
             <div className="filter blur-sm">
@@ -636,7 +647,6 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
             
-            {/* Overlay with CTA */}
             <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(21, 21, 21, 0.95), rgba(21, 21, 21, 0.8), transparent)'}}>
               <div className="text-center p-8 rounded-2xl max-w-md" style={{background: '#2a2a2a', border: '2px solid #22c55e'}}>
                 <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
@@ -657,7 +667,6 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        {/* Annual Projection - Flatter Gradient, No Glow */}
         <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #16a34a 0%, #2563eb 100%)'}}>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div>
@@ -675,7 +684,6 @@ const AutomationOpportunityFinder = () => {
           </div>
         </div>
 
-        {/* Call to Action - Clean Border */}
         <div className="p-8 rounded-2xl text-white text-center relative" style={{background: '#151515', border: '2px solid #22c55e'}}>
           <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
           <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
@@ -707,7 +715,6 @@ const AutomationOpportunityFinder = () => {
 
   return (
     <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-      {/* Fixed Header - Cleaner border */}
       <div className="flex-shrink-0 p-6" style={{borderBottom: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -732,7 +739,6 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      {/* Scrollable Question Area */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto p-6">
           <div className="mb-10">
@@ -804,7 +810,6 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      {/* Fixed Footer - Cleaner border */}
       <div className="flex-shrink-0 p-6" style={{borderTop: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-between">
@@ -844,23 +849,4 @@ const AutomationOpportunityFinder = () => {
   );
 };
 
-export default AutomationOpportunityFinder;="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>
-              {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
-               results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
-               results.opportunityScore >= 45 ? '⚡ Good potential' :
-               '💡 Some opportunities'}
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
-                <Clock className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Time Savings</h3>
-                <p className
+export default AutomationOpportunityFinder;
