@@ -403,13 +403,13 @@ const AutomationOpportunityFinder = () => {
 
   if (showThankYou) {
     return (
-      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#151515', color: '#ffffff'}}>
+      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
         <div className="w-full text-center">
-          <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
+          <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: 'rgba(255, 255, 255, 0.1)'}}>
             <CheckCircle className="w-12 h-12 text-white" />
           </div>
-          <h2 className="text-3xl font-bold mb-4" style={{color: '#ffffff'}}>Thank You!</h2>
-          <p className="text-lg mb-6" style={{color: '#b8b8b8'}}>Keep an eye on your email - your results will show up shortly with detailed automation recommendations.</p>
+          <h2 className="text-2xl font-semibold mb-4" style={{color: '#ffffff'}}>Thank You!</h2>
+          <p className="text-sm mb-6 font-normal" style={{color: '#737373'}}>Keep an eye on your email - your results will show up shortly with detailed automation recommendations.</p>
           <button
             onClick={() => {
               setShowThankYou(false);
@@ -417,8 +417,8 @@ const AutomationOpportunityFinder = () => {
               setEmail('');
               setName('');
             }}
-            className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105"
-            style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff', border: 'none'}}
+            className="px-6 py-3 rounded-xl font-medium transition-all duration-200"
+            style={{background: '#ffffff', color: '#000000'}}
           >
             Back to Report
           </button>
@@ -429,64 +429,64 @@ const AutomationOpportunityFinder = () => {
 
   if (showEmailCapture) {
     return (
-      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#151515', color: '#ffffff'}}>
+      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, -apple-system, sans-serif'}}>
         <div className="w-full">
           <div className="text-center mb-8">
-            <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{backgroundColor: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
-              <Download className="w-10 h-10 text-blue-400" />
+            <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: 'rgba(255, 255, 255, 0.1)'}}>
+              <Download className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-bold mb-3" style={{color: '#ffffff'}}>Get Your Complete Automation Strategy</h2>
-            <p className="text-lg" style={{color: '#b8b8b8'}}>Your personalized 15-page report includes detailed implementation roadmaps, ROI projections, and vendor recommendations.</p>
+            <h2 className="text-2xl font-semibold mb-3" style={{color: '#ffffff'}}>Get Your Complete Automation Strategy</h2>
+            <p className="text-sm font-normal" style={{color: '#737373'}}>Your personalized 15-page report includes detailed implementation roadmaps, ROI projections, and vendor recommendations.</p>
           </div>
 
-          <div className="p-6 rounded-2xl mb-8" style={{background: '#151515', border: '2px solid #22c55e'}}>
-            <h3 className="font-bold text-lg mb-4" style={{color: '#ffffff'}}>🎯 Your Complete Report Includes:</h3>
+          <div className="p-6 rounded-2xl mb-8" style={{background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)'}}>
+            <h3 className="font-medium text-base mb-4" style={{color: '#ffffff'}}>🎯 Your Complete Report Includes:</h3>
             <div className="grid md:grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Detailed automation roadmap</div>
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />ROI projections by quarter</div>
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Vendor comparison matrix</div>
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Implementation timeline</div>
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Risk mitigation strategies</div>
-              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Success metrics framework</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />Detailed automation roadmap</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />ROI projections by quarter</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />Vendor comparison matrix</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />Implementation timeline</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />Risk mitigation strategies</div>
+              <div className="flex items-center"><CheckCircle className="w-4 h-4 text-white mr-2" />Success metrics framework</div>
             </div>
           </div>
 
           <form onSubmit={handleEmailSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2" style={{color: '#e5e5e5'}}>Name *</label>
+              <label className="block text-sm font-medium mb-2" style={{color: '#ffffff'}}>Name *</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full p-4 rounded-xl"
-                style={{backgroundColor: '#242424', border: '2px solid #404040', color: '#ffffff'}}
+                style={{backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#ffffff'}}
                 placeholder="Your full name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2" style={{color: '#e5e5e5'}}>Business Email *</label>
+              <label className="block text-sm font-medium mb-2" style={{color: '#ffffff'}}>Business Email *</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                style={{backgroundColor: '#242424', border: '2px solid #404040', color: '#ffffff'}}
+                className="w-full p-4 rounded-xl focus:outline-none focus:ring-1 focus:ring-white"
+                style={{backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#ffffff'}}
                 placeholder="your.email@company.com"
               />
             </div>
             <button
               type="submit"
-              className="w-full py-4 px-8 rounded-xl font-bold text-lg transition-colors flex items-center justify-center"
-              style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff'}}
+              className="w-full py-4 px-8 rounded-xl font-medium transition-colors flex items-center justify-center"
+              style={{background: '#ffffff', color: '#000000'}}
             >
               <Mail className="w-5 h-5 mr-2" />
               Send My Complete Report
             </button>
           </form>
 
-          <p className="text-center text-xs mt-4" style={{color: '#888888'}}>
+          <p className="text-center text-xs mt-4 font-normal" style={{color: '#a3a3a3'}}>
             We'll email your report within 5 minutes. No spam, unsubscribe anytime.
           </p>
         </div>
@@ -509,7 +509,6 @@ const AutomationOpportunityFinder = () => {
           </div>
 
         <div className="grid lg:grid-cols-5 gap-6 mb-24" style={{height: '320px'}}>
-          {/* Time Savings Card */}
           <div className="lg:col-span-2 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
             background: 'rgba(255, 255, 255, 0.02)', 
             border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -528,7 +527,6 @@ const AutomationOpportunityFinder = () => {
             </div>
           </div>
 
-          {/* Cost Savings Card - Wider */}
           <div className="lg:col-span-2 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
             background: 'rgba(255, 255, 255, 0.04)', 
             border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -565,7 +563,6 @@ const AutomationOpportunityFinder = () => {
             </div>
           </div>
 
-          {/* ROI Potential Card */}
           <div className="lg:col-span-1 group relative overflow-hidden rounded-2xl transition-all duration-300 hover:border-white/10" style={{
             background: 'rgba(255, 255, 255, 0.02)', 
             border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -593,29 +590,29 @@ const AutomationOpportunityFinder = () => {
         </div>
 
         {previewRecommendations.length > 0 && (
-          <div className="mb-10">
-            <h3 className="text-2xl font-bold mb-6" style={{color: '#ffffff'}}>Your Top Automation Opportunities</h3>
+          <div className="mb-20">
+            <h3 className="text-2xl font-semibold mb-12" style={{color: '#ffffff'}}>Your Top Automation Opportunities</h3>
             <div className="space-y-6">
               {previewRecommendations.map((rec, index) => (
-                <div key={index} className="p-6 rounded-xl transition-colors" style={{backgroundColor: '#2a2a2a', border: '2px solid #404040'}}>
-                  <div className="flex justify-between items-start mb-4">
+                <div key={index} className="p-8 rounded-2xl transition-colors" style={{background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)'}}>
+                  <div className="flex justify-between items-start mb-6">
                     <div>
-                      <h4 className="font-bold text-xl mb-2 flex items-center" style={{color: '#ffffff'}}>
-                        <div className={`w-3 h-3 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? '#ef4444' : '#f97316'}}></div>
+                      <h4 className="font-medium text-lg mb-2 flex items-center" style={{color: '#ffffff'}}>
+                        <div className={`w-2 h-2 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? '#ffffff' : '#737373'}}></div>
                         {rec.title}
                       </h4>
-                      <div className="flex gap-4 text-sm" style={{color: '#b8b8b8'}}>
-                        <span className="flex items-center"><Clock className="w-4 h-4 mr-1" />{rec.timeline}</span>
-                        <span className="flex items-center"><Zap className="w-4 h-4 mr-1" />{rec.impact}</span>
+                      <div className="flex gap-6 text-sm" style={{color: '#737373'}}>
+                        <span className="flex items-center"><Clock className="w-4 h-4 mr-2" />{rec.timeline}</span>
+                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2" />{rec.impact}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="grid md:grid-cols-3 gap-3">
+                  <div className="grid md:grid-cols-3 gap-4">
                     {rec.items.slice(0, 3).map((item, i) => (
-                      <div key={i} className="p-3 rounded-lg text-sm" style={{backgroundColor: '#242424'}}>
+                      <div key={i} className="p-4 rounded-xl text-sm" style={{background: 'rgba(255, 255, 255, 0.04)'}}>
                         <div className="flex items-start">
-                          <CheckCircle className="w-4 h-4 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                          <span style={{color: '#e5e5e5'}}>{item}</span>
+                          <CheckCircle className="w-4 h-4 text-white mr-3 mt-0.5 flex-shrink-0" />
+                          <span style={{color: '#ffffff'}}>{item}</span>
                         </div>
                       </div>
                     ))}
@@ -627,30 +624,30 @@ const AutomationOpportunityFinder = () => {
         )}
 
         {hiddenRecommendations.length > 0 && (
-          <div className="mb-10 relative">
+          <div className="mb-20 relative">
             <div className="filter blur-sm">
-              <h3 className="text-2xl font-bold mb-6" style={{color: '#ffffff'}}>Advanced Automation Strategies</h3>
+              <h3 className="text-2xl font-semibold mb-12" style={{color: '#ffffff'}}>Advanced Automation Strategies</h3>
               <div className="space-y-6">
                 {hiddenRecommendations.slice(0, 2).map((rec, index) => (
-                  <div key={index} className="p-6 rounded-xl" style={{backgroundColor: '#2a2a2a', border: '2px solid #404040'}}>
-                    <div className="flex justify-between items-start mb-4">
+                  <div key={index} className="p-8 rounded-2xl" style={{background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)'}}>
+                    <div className="flex justify-between items-start mb-6">
                       <div>
-                        <h4 className="font-bold text-xl mb-2 flex items-center" style={{color: '#ffffff'}}>
-                          <div className="w-3 h-3 rounded-full mr-3" style={{backgroundColor: '#3b82f6'}}></div>
+                        <h4 className="font-medium text-lg mb-2 flex items-center" style={{color: '#ffffff'}}>
+                          <div className="w-2 h-2 rounded-full mr-3" style={{backgroundColor: '#737373'}}></div>
                           {rec.title}
                         </h4>
-                        <div className="flex gap-4 text-sm" style={{color: '#b8b8b8'}}>
-                          <span className="flex items-center"><Clock className="w-4 h-4 mr-1" />{rec.timeline}</span>
-                          <span className="flex items-center"><Zap className="w-4 h-4 mr-1" />{rec.impact}</span>
+                        <div className="flex gap-6 text-sm" style={{color: '#737373'}}>
+                          <span className="flex items-center"><Clock className="w-4 h-4 mr-2" />{rec.timeline}</span>
+                          <span className="flex items-center"><Zap className="w-4 h-4 mr-2" />{rec.impact}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-3">
+                    <div className="grid md:grid-cols-3 gap-4">
                       {rec.items.slice(0, 3).map((item, i) => (
-                        <div key={i} className="p-3 rounded-lg text-sm" style={{backgroundColor: '#242424'}}>
+                        <div key={i} className="p-4 rounded-xl text-sm" style={{background: 'rgba(255, 255, 255, 0.04)'}}>
                           <div className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                            <span style={{color: '#e5e5e5'}}>{item}</span>
+                            <CheckCircle className="w-4 h-4 text-white mr-3 mt-0.5 flex-shrink-0" />
+                            <span style={{color: '#ffffff'}}>{item}</span>
                           </div>
                         </div>
                       ))}
@@ -660,17 +657,17 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
             
-            <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(21, 21, 21, 0.95), rgba(21, 21, 21, 0.8), transparent)'}}>
-              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: '#2a2a2a', border: '2px solid #22c55e'}}>
-                <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
+            <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(10, 10, 10, 0.95), rgba(10, 10, 10, 0.8), transparent)'}}>
+              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)'}}>
+                <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'rgba(255, 255, 255, 0.1)'}}>
                   <Eye className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2" style={{color: '#ffffff'}}>Want to See Everything?</h3>
-                <p className="mb-4" style={{color: '#b8b8b8'}}>Get your complete automation strategy with detailed implementation guides, vendor comparisons, and ROI projections.</p>
+                <h3 className="text-lg font-medium mb-2" style={{color: '#ffffff'}}>Want to See Everything?</h3>
+                <p className="mb-6 text-sm" style={{color: '#737373'}}>Get your complete automation strategy with detailed implementation guides, vendor comparisons, and ROI projections.</p>
                 <button
                   onClick={() => setShowEmailCapture(true)}
-                  className="px-6 py-3 rounded-lg font-semibold transition-colors flex items-center mx-auto"
-                  style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', color: '#ffffff'}}
+                  className="px-6 py-3 rounded-xl font-medium transition-colors flex items-center mx-auto"
+                  style={{background: '#ffffff', color: '#000000'}}
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Get Full Report
@@ -854,34 +851,6 @@ const AutomationOpportunityFinder = () => {
                 background: !isAnswered ? 'rgba(255, 255, 255, 0.04)' : '#ffffff',
                 color: !isAnswered ? '#737373' : '#000000',
                 border: !isAnswered ? '1px solid rgba(255, 255, 255, 0.06)' : 'none'
-              }}
-            >
-              {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>'cursor-not-allowed' : ''
-              }`}
-              style={{
-                backgroundColor: currentStep === 0 ? '#333333' : '#404040',
-                color: currentStep === 0 ? '#666666' : '#e5e5e5'
-              }}
-            >
-              Previous
-            </button>
-            
-            <button
-              onClick={nextStep}
-              disabled={!isAnswered}
-              className={`px-8 py-3 rounded-xl font-medium flex items-center transition-colors ${
-                !isAnswered ? 'cursor-not-allowed' : ''
-              }`}
-              style={{
-                background: !isAnswered ? '#333333' : 'linear-gradient(135deg, #22c55e, #3b82f6)',
-                color: !isAnswered ? '#666666' : '#ffffff',
-                boxShadow: !isAnswered ? 'none' : '0 10px 15px -3px rgba(34, 197, 94, 0.3)'
               }}
             >
               {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
