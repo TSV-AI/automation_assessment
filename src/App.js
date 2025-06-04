@@ -453,6 +453,7 @@ const AutomationOpportunityFinder = () => {
         </div>
 
         {/* Key Metrics Dashboard */}
+{/* Key Metrics Dashboard */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
@@ -473,9 +474,9 @@ const AutomationOpportunityFinder = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(22, 163, 74, 0.15)', border: '1px solid rgba(22, 163, 74, 0.4)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#16a34a'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
                 <Clock className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -487,9 +488,9 @@ const AutomationOpportunityFinder = () => {
             <p className="text-sm" style={{color: '#b8b8b8'}}>Per week that can be automated</p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(21, 128, 61, 0.15)', border: '1px solid rgba(21, 128, 61, 0.4)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#15803d'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
                 <DollarSign className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -501,9 +502,9 @@ const AutomationOpportunityFinder = () => {
             <p className="text-sm" style={{color: '#b8b8b8'}}>Estimated monthly savings</p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(20, 83, 45, 0.15)', border: '1px solid rgba(20, 83, 45, 0.4)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#14532d'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
                 <TrendingUp className="w-7 h-7 text-white" />
               </div>
               <div>
