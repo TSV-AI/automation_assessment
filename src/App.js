@@ -12,7 +12,7 @@ const AutomationOpportunityFinder = () => {
 
   // Define your accent color here for easy customization
   const accentColor = '#60A5FA'; // Example: A pleasant blue. You can change this.
-  const lightAccentColor = '#BFDBFE'; // A lighter shade for borders or less prominent accents
+  // const lightAccentColor = '#BFDBFE'; // Removed as it was unused
 
   const questions = [
     {
