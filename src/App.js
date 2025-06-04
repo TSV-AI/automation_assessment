@@ -196,19 +196,20 @@ const AutomationOpportunityFinder = () => {
       marketingBonus                     // Bonus for marketing automation needs
     ));
     
-    // ROI calculation based on typical implementation costs
+    // Calculate ROI properly: (net savings) / investment * 100
     const budgetData = questions[7].options.find(o => o.value === answers.budget_sense) || {};
     const budgetMidpoint = budgetData.value ? 
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
        parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 15000;
     
-    // Calculate ROI properly: (savings - costs) / costs * 100
+    // Calculate ROI properly: (net savings) / investment * 100
     const annualBudget = budgetMidpoint * 12;
     const netAnnualSavings = annualSavings - annualBudget;
     const roiPercentage = annualBudget > 0 ? Math.round((netAnnualSavings / annualBudget) * 100) : 0;
     
     // Payback period: how many months to recover investment
-    const paybackMonths = monthlySavings > 0 ? Math.round((budgetMidpoint / monthlySavings) * 10) / 10 : null;
+    const paybackMonths = monthlySavings > budgetMidpoint ? 
+      Math.round((budgetMidpoint / (monthlySavings - budgetMidpoint)) * 10) / 10 : null;
 
     return {
       opportunityScore,
@@ -451,7 +452,7 @@ const AutomationOpportunityFinder = () => {
           <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
         </div>
 
-{/* Key Metrics Dashboard */}
+        {/* Key Metrics Dashboard */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
@@ -690,7 +691,7 @@ const AutomationOpportunityFinder = () => {
           <p className="mb-8" style={{color: '#b8b8b8'}}>{currentQuestion.subtitle}</p>
         )}
         
-<div className="space-y-4">
+        <div className="space-y-4">
           {currentQuestion.options.map((option, index) => (
             <label key={index} className="block cursor-pointer">
               <div 
@@ -749,6 +750,7 @@ const AutomationOpportunityFinder = () => {
             </label>
           ))}
         </div>
+      </div>
 
       <div className="flex justify-between">
         <button
