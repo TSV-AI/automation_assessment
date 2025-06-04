@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, Clock, DollarSign, Users, TrendingUp, CheckCircle, AlertCircle, Zap, Target, Eye, EyeOff, Download, Mail } from 'lucide-react';
+import { ChevronRight, Clock, DollarSign, TrendingUp, CheckCircle, Zap, Target, Eye, Download, Mail } from 'lucide-react';
 
 const AutomationOpportunityFinder = () => {
   const [currentStep, setCurrentStep] = useState(0);
