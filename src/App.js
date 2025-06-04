@@ -384,7 +384,7 @@ const AutomationOpportunityFinder = () => {
     
     try {
       // Send data to webhook
-      const response = await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', {
+      await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
