@@ -170,33 +170,28 @@ const AutomationOpportunityFinder = () => {
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
        parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 3500;
     
-    // SMARTER CALCULATION - ADJUST AUTOMATION SCOPE TO BUDGET
-    // Base automation potential
-    const maxAutomatableHours = weeklyHours * 0.7; // Increased from 0.6
+    // HONEST CALCULATION - NO SKETCHY INFLATION
+    // Base automation potential - keep it realistic
+    const maxAutomatableHours = weeklyHours * 0.6; // Conservative 60% cap
     let effectiveHours = Math.min(weeklyHours * (automationPct / 100), maxAutomatableHours);
     
-    // Marketing automation hours
-    const marketingHours = Math.min(marketingTimeSavings * 0.5, 10); // Increased caps
+    // Marketing automation hours - much more conservative
+    const marketingHours = Math.min(marketingTimeSavings * 0.3, 6); // Max 6 hours/week
     
-    // Apply intelligence multipliers based on business factors
-    const urgencyMultiplier = urgency >= 80 ? 1.3 : urgency >= 60 ? 1.15 : 1.0;
-    const toolsMultiplier = integrationScore >= 80 ? 1.25 : integrationScore >= 40 ? 1.1 : 1.0;
-    const complexityMultiplier = complexity;
+    // Apply MODEST multipliers - no crazy inflation
+    const urgencyMultiplier = urgency >= 90 ? 1.15 : urgency >= 70 ? 1.05 : 1.0; // Much smaller
+    const toolsMultiplier = integrationScore >= 80 ? 1.1 : integrationScore >= 50 ? 1.05 : 1.0; // Much smaller
     
-    // Total automatable hours with intelligence multipliers
+    // Total automatable hours - keep it honest
     let hoursAutomatable = (effectiveHours + marketingHours) * urgencyMultiplier * toolsMultiplier;
     
-    // BUDGET-INFORMED SCOPING: Scale hours to ensure positive ROI
-    const conservativeWage = avgWage * 0.9; // Less discount
-    let potentialMonthlySavings = hoursAutomatable * conservativeWage * 4.33 * complexityMultiplier;
+    // REMOVE THE SKETCHY BUDGET SCALING - keep hours realistic
+    const conservativeWage = avgWage * 0.9;
+    let potentialMonthlySavings = hoursAutomatable * conservativeWage * 4.33 * complexity;
     
-    // If savings are too low relative to budget, intelligently scale up automation scope
-    const minDesiredROI = 50; // Target at least 50% ROI
-    const minMonthlySavings = budgetMidpoint * (1 + minDesiredROI/100);
-    
-    if (potentialMonthlySavings < minMonthlySavings) {
-      // Scale up automation scope intelligently
-      const scaleFactor = Math.min(2.5, minMonthlySavings / potentialMonthlySavings);
+    // Only do MINIMAL scaling if savings are extremely low
+    if (potentialMonthlySavings < budgetMidpoint * 0.8) {
+      const scaleFactor = Math.min(1.3, (budgetMidpoint * 0.8) / potentialMonthlySavings); // Max 1.3x scaling
       hoursAutomatable = hoursAutomatable * scaleFactor;
       potentialMonthlySavings = potentialMonthlySavings * scaleFactor;
     }
