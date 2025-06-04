@@ -452,8 +452,7 @@ const AutomationOpportunityFinder = () => {
           <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
         </div>
 
-        {/* Key Metrics Dashboard */}
-{/* Key Metrics Dashboard */}
+        {/* Key Metrics Dashboard - ALL SAME GREEN */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
@@ -662,7 +661,7 @@ const AutomationOpportunityFinder = () => {
     ? (answers[currentQuestion.id] && answers[currentQuestion.id].length > 0)
     : answers[currentQuestion.id];
 
-return (
+  return (
     <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#151515', color: '#ffffff'}}>
       {/* Fixed Header */}
       <div className="flex-shrink-0 p-6 border-b" style={{borderColor: '#404040'}}>
@@ -796,42 +795,6 @@ return (
             </button>
           </div>
         </div>
-      </div>
-    </div>
-  );
-
-      <div className="flex justify-between">
-        <button
-          onClick={prevStep}
-          disabled={currentStep === 0}
-          className={`px-8 py-3 rounded-xl font-medium transition-colors ${
-            currentStep === 0
-              ? 'cursor-not-allowed'
-              : ''
-          }`}
-          style={{
-            backgroundColor: currentStep === 0 ? '#333333' : '#404040',
-            color: currentStep === 0 ? '#666666' : '#e5e5e5'
-          }}
-        >
-          Previous
-        </button>
-        
-        <button
-          onClick={nextStep}
-          disabled={!isAnswered}
-          className={`px-8 py-3 rounded-xl font-medium flex items-center transition-colors ${
-            !isAnswered ? 'cursor-not-allowed' : ''
-          }`}
-          style={{
-            background: !isAnswered ? '#333333' : 'linear-gradient(to right, #3b82f6, #8b5cf6)',
-            color: !isAnswered ? '#666666' : '#ffffff',
-            boxShadow: !isAnswered ? 'none' : '0 10px 15px -3px rgba(0, 0, 0, 0.3)'
-          }}
-        >
-          {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
-          <ChevronRight className="w-5 h-5 ml-2" />
-        </button>
       </div>
     </div>
   );
