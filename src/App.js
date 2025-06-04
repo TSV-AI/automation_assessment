@@ -378,12 +378,41 @@ const AutomationOpportunityFinder = () => {
     }
   };
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    // Here you would normally send the email to your backend
-    console.log('Email submitted:', { name, email, answers });
-    alert('Thank you! Your complete automation strategy report will be emailed to you within 5 minutes.');
-    setShowEmailCapture(false);
+    
+    try {
+      // Send data to webhook
+      const response = await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          answers: answers,
+          results: calculateResults(),
+          timestamp: new Date().toISOString(),
+          source: 'automation-assessment'
+        })
+      });
+
+      if (response.ok) {
+        console.log('Data sent successfully to webhook');
+        alert('Thank you! Your complete automation strategy report will be emailed to you within 5 minutes.');
+        setShowEmailCapture(false);
+      } else {
+        console.error('Failed to send data to webhook');
+        alert('Thank you! Your request has been received. You will receive your report shortly.');
+        setShowEmailCapture(false);
+      }
+    } catch (error) {
+      console.error('Error sending data to webhook:', error);
+      // Still show success message to user even if webhook fails
+      alert('Thank you! Your request has been received. You will receive your report shortly.');
+      setShowEmailCapture(false);
+    }
   };
 
   if (showEmailCapture) {
