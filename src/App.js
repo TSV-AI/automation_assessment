@@ -427,7 +427,7 @@ const AutomationOpportunityFinder = () => {
             <p className="text-lg" style={{color: '#b8b8b8'}}>Your personalized 15-page report includes detailed implementation roadmaps, ROI projections, and vendor recommendations.</p>
           </div>
 
-          <div className="p-6 rounded-2xl mb-8" style={{background: 'transparent', border: '1px solid transparent', backgroundImage: 'linear-gradient(#151515, #151515), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box'}}>
+          <div className="p-6 rounded-2xl mb-8" style={{background: '#151515', border: '2px solid #22c55e', boxShadow: '0 0 15px rgba(34, 197, 94, 0.2)'}}>
             <h3 className="font-bold text-lg mb-4" style={{color: '#ffffff'}}>🎯 Your Complete Report Includes:</h3>
             <div className="grid md:grid-cols-2 gap-3 text-sm">
               <div className="flex items-center"><CheckCircle className="w-4 h-4 text-green-400 mr-2" />Detailed automation roadmap</div>
@@ -639,7 +639,7 @@ const AutomationOpportunityFinder = () => {
             
             {/* Overlay with CTA */}
             <div className="absolute inset-0 flex items-center justify-center" style={{background: 'linear-gradient(to top, rgba(21, 21, 21, 0.95), rgba(21, 21, 21, 0.8), transparent)'}}>
-              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: 'transparent', border: '1px solid transparent', backgroundImage: 'linear-gradient(#2a2a2a, #2a2a2a), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'}}>
+              <div className="text-center p-8 rounded-2xl max-w-md" style={{background: '#2a2a2a', border: '2px solid #22c55e', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(34, 197, 94, 0.3)'}}>
                 <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)'}}>
                   <Eye className="w-8 h-8 text-white" />
                 </div>
@@ -658,7 +658,7 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        {/* Annual Projection - Updated Green/Blue Theme */}
+        {/* Annual Projection - Simple Gradient Fill */}
         <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)'}}>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div>
@@ -676,8 +676,8 @@ const AutomationOpportunityFinder = () => {
           </div>
         </div>
 
-        {/* Call to Action - Thin Gradient Outline + Mixed Buttons */}
-        <div className="p-8 rounded-2xl text-white text-center relative overflow-hidden" style={{background: 'transparent', border: '1px solid transparent', backgroundImage: 'linear-gradient(#151515, #151515), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box'}}>
+        {/* Call to Action - Simple Border */}
+        <div className="p-8 rounded-2xl text-white text-center relative" style={{background: '#151515', border: '2px solid #22c55e', boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)'}}>
           <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
           <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
             Get a detailed implementation plan tailored specifically to your business processes and goals
@@ -689,7 +689,7 @@ const AutomationOpportunityFinder = () => {
             <button 
               onClick={() => setShowEmailCapture(true)}
               className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105"
-              style={{background: 'transparent', color: '#ffffff', border: '2px solid transparent', backgroundImage: 'linear-gradient(#151515, #151515), linear-gradient(135deg, #22c55e, #3b82f6)', backgroundOrigin: 'border-box', backgroundClip: 'content-box, border-box'}}
+              style={{background: 'transparent', color: '#22c55e', border: '2px solid #22c55e'}}
             >
               Download Full Report
             </button>
