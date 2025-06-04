@@ -690,7 +690,7 @@ const AutomationOpportunityFinder = () => {
           <p className="mb-8" style={{color: '#b8b8b8'}}>{currentQuestion.subtitle}</p>
         )}
         
-        <div className="space-y-4">
+<div className="space-y-4">
           {currentQuestion.options.map((option, index) => (
             <label key={index} className="block cursor-pointer">
               <div 
@@ -718,10 +718,13 @@ const AutomationOpportunityFinder = () => {
                       : '#2a2a2a'
                     : answers[currentQuestion.id] === option.value
                       ? 'rgba(59, 130, 246, 0.1)'
-                      : '#2a2a2a')
+                      : '#2a2a2a'),
+                  minHeight: '80px',
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
               >
-                <div className="flex items-start">
+                <div className="flex items-start w-full">
                   <input
                     type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'}
                     name={currentQuestion.id}
@@ -732,7 +735,7 @@ const AutomationOpportunityFinder = () => {
                         : answers[currentQuestion.id] === option.value
                     }
                     onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
-                    className="mr-4 mt-1 scale-125"
+                    className="mr-4 mt-1 scale-125 flex-shrink-0"
                     style={{accentColor: '#3b82f6'}}
                   />
                   <div className="flex-1">
@@ -746,7 +749,6 @@ const AutomationOpportunityFinder = () => {
             </label>
           ))}
         </div>
-      </div>
 
       <div className="flex justify-between">
         <button
