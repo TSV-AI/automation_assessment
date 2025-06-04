@@ -10,13 +10,11 @@ const AutomationOpportunityFinder = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState('');
 
-  // Define your new accent color here - Even Lighter/Brighter Teal for better contrast
   const accentColor = '#92d8c8'; 
-  // Opacity versions for backgrounds/borders (hexadecimal: 1A=10%, 26=15%, 33=20%, 4D=30%)
-  const accentColorBgLowOpacity = accentColor + '1A'; // 10%
-  const accentColorBgMediumOpacity = accentColor + '26'; // 15%
-  const accentColorBorderLowOpacity = accentColor + '33'; // 20%
-  // const accentColorTextLowOpacity = accentColor + 'B3'; // Removed as it was unused
+  const accentColorDarker = '#6BAA9B'; // Darker shade for prominent CTAs
+  const accentColorBgLowOpacity = accentColor + '1A'; 
+  const accentColorBgMediumOpacity = accentColor + '26'; 
+  const accentColorBorderLowOpacity = accentColor + '33'; 
 
 
   const questions = [
@@ -145,7 +143,7 @@ const AutomationOpportunityFinder = () => {
     const weeklyHours = questions[1].options.find(o => o.value === answers.manual_hours)?.hours || 0;
     const painPoint = questions[2].options.find(o => o.value === answers.biggest_pain) || {};
     const automationPct = painPoint.automation || 50;
-    const marketingChallenges = answers.marketing_challenges || []; // Defined here
+    const marketingChallenges = answers.marketing_challenges || [];
     const marketingTimeSavings = marketingChallenges.reduce((total, challenge) => {
       const challengeData = questions[3].options.find(o => o.value === challenge);
       return total + (challengeData?.time_savings || 0);
@@ -180,7 +178,7 @@ const AutomationOpportunityFinder = () => {
         (priority * 0.20),
         (Math.min(integrationScore, 100) * 0.15),
         (Math.min(weeklyHours / 2.5, 40) * 0.10),
-        (marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 5 : 0) // Uses marketingChallenges
+        (marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 5 : 0)
     ];
     const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0)));
     
@@ -211,7 +209,7 @@ const AutomationOpportunityFinder = () => {
       complexity,
       painPoint: painPoint.label,
       growthFocus: growthPain.focus,
-      marketingChallenges, // Returned here
+      marketingChallenges,
       budgetTier: budgetData.tier,
     };
   };
@@ -224,7 +222,6 @@ const AutomationOpportunityFinder = () => {
         items: getQuickWinsByPainPoint(results.painPoint), impact: `Up to ${results.automationPct}% efficiency gain in this area`, preview: true
       });
     }
-    // Accessing results.marketingChallenges correctly
     if (results.marketingChallenges && results.marketingChallenges.length > 0 && !results.marketingChallenges.includes('none')) {
       recommendations.push({
         type: 'marketing', title: 'Marketing & Social Media Automation', priority: 'high', timeline: '3-6 weeks',
@@ -260,8 +257,7 @@ const AutomationOpportunityFinder = () => {
     return recommendations;
   };
 
-  // Parameter here is 'challenges', not 'marketingChallenges'
-  const getMarketingAutomations = (challenges) => { 
+  const getMarketingAutomations = (challenges) => {
     const map = { 'content_creation': 'AI-assisted content generation', 'lead_generation': 'Automated lead capture & basic scoring', 'email_sequences': 'Foundational email nurture sequences', 'social_engagement': 'Social media scheduling & monitoring', 'competitor_tracking': 'Automated alerts for competitor news', 'performance_reporting': 'Basic automated marketing KPI dashboard' };
     return challenges.filter(c => c !== 'none').map(c => map[c] || 'Custom marketing process optimization').slice(0, 3);
   };
@@ -442,7 +438,7 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur-sm pointer-events-none"> 
+              <div className="filter blur pointer-events-none"> {/* Increased blur to 'blur' (Tailwind's medium) */}
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
@@ -455,15 +451,15 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.85) 30%, rgba(10,10,10,0.98) 50%, rgba(10,10,10,1) 70%)'}}> 
-                <div className="text-center p-6 sm:p-8 rounded-2xl max-w-md bg-gray-800/70 border border-gray-700/60 backdrop-blur-sm">
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 25%, rgba(10,10,10,0.95) 50%, rgba(10,10,10,1) 75%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
+                <div className="text-center p-6 sm:p-8 rounded-2xl max-w-md bg-gray-800/80 border border-gray-700/70 backdrop-blur-sm shadow-2xl"> {/* Increased opacity of box bg */}
                   <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                     <Eye className="w-8 h-8" style={{color: accentColor}}/>
                   </div>
                   <h3 className="text-lg sm:text-xl font-medium mb-2">Unlock Your Full Potential</h3>
                   <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
                   <button onClick={() => setShowEmailCapture(true)}
-                    className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> 
+                    className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Darker CTA, white text */}
                     <Download className="w-4 h-4 mr-2" />Get My Full Report
                   </button>
                 </div>
@@ -478,7 +474,7 @@ const AutomationOpportunityFinder = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
-                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90" style={{background: accentColor, color: '#0a0a0a'}}> 
+                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" style={{background: accentColorDarker, color: '#FFFFFF'}}> {/* Darker CTA, white text */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
