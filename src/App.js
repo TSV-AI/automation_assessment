@@ -145,7 +145,7 @@ const AutomationOpportunityFinder = () => {
     const weeklyHours = questions[1].options.find(o => o.value === answers.manual_hours)?.hours || 0;
     const painPoint = questions[2].options.find(o => o.value === answers.biggest_pain) || {};
     const automationPct = painPoint.automation || 50;
-    const marketingChallenges = answers.marketing_challenges || [];
+    const marketingChallenges = answers.marketing_challenges || []; // Defined here
     const marketingTimeSavings = marketingChallenges.reduce((total, challenge) => {
       const challengeData = questions[3].options.find(o => o.value === challenge);
       return total + (challengeData?.time_savings || 0);
@@ -180,7 +180,7 @@ const AutomationOpportunityFinder = () => {
         (priority * 0.20),
         (Math.min(integrationScore, 100) * 0.15),
         (Math.min(weeklyHours / 2.5, 40) * 0.10),
-        (marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 5 : 0)
+        (marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 5 : 0) // Uses marketingChallenges
     ];
     const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0)));
     
@@ -211,7 +211,7 @@ const AutomationOpportunityFinder = () => {
       complexity,
       painPoint: painPoint.label,
       growthFocus: growthPain.focus,
-      marketingChallenges,
+      marketingChallenges, // Returned here
       budgetTier: budgetData.tier,
     };
   };
@@ -224,7 +224,8 @@ const AutomationOpportunityFinder = () => {
         items: getQuickWinsByPainPoint(results.painPoint), impact: `Up to ${results.automationPct}% efficiency gain in this area`, preview: true
       });
     }
-    if (results.marketingChallenges && results.marketingChallenges.length > 0 && !marketingChallenges.includes('none')) {
+    // Accessing results.marketingChallenges correctly
+    if (results.marketingChallenges && results.marketingChallenges.length > 0 && !results.marketingChallenges.includes('none')) {
       recommendations.push({
         type: 'marketing', title: 'Marketing & Social Media Automation', priority: 'high', timeline: '3-6 weeks',
         items: getMarketingAutomations(results.marketingChallenges), impact: `Save ~${Math.round(results.marketingTimeSavings * 0.35)}-${Math.round(results.marketingTimeSavings * 0.65)} hrs/week`, preview: true
@@ -259,7 +260,8 @@ const AutomationOpportunityFinder = () => {
     return recommendations;
   };
 
-  const getMarketingAutomations = (challenges) => {
+  // Parameter here is 'challenges', not 'marketingChallenges'
+  const getMarketingAutomations = (challenges) => { 
     const map = { 'content_creation': 'AI-assisted content generation', 'lead_generation': 'Automated lead capture & basic scoring', 'email_sequences': 'Foundational email nurture sequences', 'social_engagement': 'Social media scheduling & monitoring', 'competitor_tracking': 'Automated alerts for competitor news', 'performance_reporting': 'Basic automated marketing KPI dashboard' };
     return challenges.filter(c => c !== 'none').map(c => map[c] || 'Custom marketing process optimization').slice(0, 3);
   };
