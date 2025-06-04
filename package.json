@@ -8,7 +8,8 @@
     "react-scripts": "5.0.1",
     "lucide-react": "^0.263.1",
     "web-vitals": "^2.1.4",
-    "node-sass": "^7.0.3"
+    "node-sass": "^7.0.3",
+    "csv-parser": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
