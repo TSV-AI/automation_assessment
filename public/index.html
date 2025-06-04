@@ -108,7 +108,7 @@
   </head>
   <body>
     <script>
-    // Send height updates to parent window
+    // ONLY height updates - NO SCROLL INTERFERENCE
     function sendHeightToParent() {
       const isMobile = window.innerWidth <= 768;
       
@@ -119,7 +119,6 @@
         document.documentElement.offsetHeight
       );
       
-      // Add extra padding for mobile
       const adjustedHeight = isMobile ? height + 100 : height + 20;
       
       if (window.parent && window.parent !== window) {
@@ -146,69 +145,8 @@
     // Send height when React renders
     setTimeout(sendHeightToParent, 1000);
     setInterval(sendHeightToParent, 2000);
-
-    // ADD NEW SCROLL HANDLER HERE
-    document.addEventListener('DOMContentLoaded', function() {
-      // Forward scroll events to parent window
-      document.addEventListener('wheel', function(e) {
-        // Only forward if we're in an iframe
-        if (window.parent && window.parent !== window) {
-          window.parent.postMessage({
-            type: 'scroll',
-            deltaY: e.deltaY,
-            deltaX: e.deltaX
-          }, '*');
-          
-          // Prevent default scroll in iframe
-          e.preventDefault();
-        }
-      }, { passive: false });
-
-      // Better mobile touch handling
-      let startY = 0;
-      let isScrolling = false;
-      let touchStartTime = 0;
-      
-      document.addEventListener('touchstart', function(e) {
-        // Only handle if we're in iframe and it's a single touch
-        if (window.parent && window.parent !== window && e.touches.length === 1) {
-          startY = e.touches[0].clientY;
-          touchStartTime = Date.now();
-          isScrolling = false;
-        }
-      }, { passive: true });
-
-      document.addEventListener('touchmove', function(e) {
-        if (window.parent && window.parent !== window && e.touches.length === 1) {
-          const currentY = e.touches[0].clientY;
-          const deltaY = startY - currentY;
-          const timeDelta = Date.now() - touchStartTime;
-          
-          // Only scroll if significant movement and not too fast (avoid accidental scrolls)
-          if (Math.abs(deltaY) > 10 && timeDelta > 50) {
-            isScrolling = true;
-            
-            window.parent.postMessage({
-              type: 'scroll',
-              deltaY: deltaY * 1.5, // Smoother multiplier
-              deltaX: 0
-            }, '*');
-            
-            startY = currentY;
-            e.preventDefault();
-          }
-        }
-      }, { passive: false });
-      
-      // Allow normal taps/clicks by not preventing if no scrolling occurred
-      document.addEventListener('touchend', function(e) {
-        if (!isScrolling) {
-          // This was just a tap, let it through normally
-          return;
-        }
-        isScrolling = false;
-      }, { passive: true });
-    });
+    
+    // NO SCROLL HANDLING - LET IT WORK NATURALLY
     </script>
     <div id="root"></div>
   </body>
