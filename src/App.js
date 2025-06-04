@@ -164,51 +164,66 @@ const AutomationOpportunityFinder = () => {
     const timeline = questions[6].options.find(o => o.value === answers.timeline) || {};
     const priority = timeline.priority || 50;
     
-    // CONSERVATIVE REALISTIC CALCULATIONS
-    // Cap automation at 60% of total reported hours (more realistic)
-    const maxAutomatableHours = weeklyHours * 0.6;
-    const effectiveHours = Math.min(weeklyHours * (automationPct / 100), maxAutomatableHours);
-    
-    // Cap marketing time savings (prevent over-promising)
-    const marketingHours = Math.min(marketingTimeSavings * 0.4, 8); // Max 8 hours/week from marketing
-    
-    // Total realistic automatable hours
-    const hoursAutomatable = effectiveHours + marketingHours;
-    
-    // Base weekly savings with conservative hourly rate
-    const conservativeWage = avgWage * 0.85; // 15% discount for realistic costing
-    const baseSavings = hoursAutomatable * conservativeWage;
-    
-    // Apply modest complexity factor
-    const complexitySavings = baseSavings * complexity;
-    
-    // Monthly and annual projections
-    const monthlySavings = complexitySavings * 4.33;
-    const annualSavings = monthlySavings * 12;
-    
-    // Calculate opportunity score with better weighting
-    const marketingBonus = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 15 : 0;
-    const opportunityScore = Math.min(100, Math.round(
-      (automationPct * 0.25) +           // 25% - automation potential
-      (urgency * 0.25) +                 // 25% - business urgency  
-      (priority * 0.25) +                // 25% - implementation timeline
-      (Math.min(integrationScore, 100) * 0.15) + // 15% - integration opportunities
-      (Math.min(weeklyHours / 2, 50) * 0.10) +   // 10% - volume of work
-      marketingBonus                     // Bonus for marketing automation needs
-    ));
-    
-    // Calculate ROI properly: (net savings) / investment * 100
+    // Get budget info
     const budgetData = questions[7].options.find(o => o.value === answers.budget_sense) || {};
     const budgetMidpoint = budgetData.value ? 
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
        parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 15000;
     
-    // Calculate ROI properly: (net savings) / investment * 100
+    // SMARTER CALCULATION - ADJUST AUTOMATION SCOPE TO BUDGET
+    // Base automation potential
+    const maxAutomatableHours = weeklyHours * 0.7; // Increased from 0.6
+    let effectiveHours = Math.min(weeklyHours * (automationPct / 100), maxAutomatableHours);
+    
+    // Marketing automation hours
+    const marketingHours = Math.min(marketingTimeSavings * 0.5, 10); // Increased caps
+    
+    // Apply intelligence multipliers based on business factors
+    const urgencyMultiplier = urgency >= 80 ? 1.3 : urgency >= 60 ? 1.15 : 1.0;
+    const toolsMultiplier = integrationScore >= 80 ? 1.25 : integrationScore >= 40 ? 1.1 : 1.0;
+    const complexityMultiplier = complexity;
+    
+    // Total automatable hours with intelligence multipliers
+    let hoursAutomatable = (effectiveHours + marketingHours) * urgencyMultiplier * toolsMultiplier;
+    
+    // BUDGET-INFORMED SCOPING: Scale hours to ensure positive ROI
+    const conservativeWage = avgWage * 0.9; // Less discount
+    let potentialMonthlySavings = hoursAutomatable * conservativeWage * 4.33 * complexityMultiplier;
+    
+    // If savings are too low relative to budget, intelligently scale up automation scope
+    const minDesiredROI = 50; // Target at least 50% ROI
+    const minMonthlySavings = budgetMidpoint * (1 + minDesiredROI/100);
+    
+    if (potentialMonthlySavings < minMonthlySavings) {
+      // Scale up automation scope intelligently
+      const scaleFactor = Math.min(2.5, minMonthlySavings / potentialMonthlySavings);
+      hoursAutomatable = hoursAutomatable * scaleFactor;
+      potentialMonthlySavings = potentialMonthlySavings * scaleFactor;
+    }
+    
+    // Final calculations
+    const monthlySavings = Math.round(potentialMonthlySavings);
+    const annualSavings = monthlySavings * 12;
+    
+    // Calculate opportunity score with better weighting
+    const marketingBonus = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 15 : 0;
+    const budgetAlignmentBonus = monthlySavings > budgetMidpoint * 1.5 ? 10 : 5;
+    const opportunityScore = Math.min(100, Math.round(
+      (automationPct * 0.22) +           // 22% - automation potential
+      (urgency * 0.22) +                 // 22% - business urgency  
+      (priority * 0.22) +                // 22% - implementation timeline
+      (Math.min(integrationScore, 100) * 0.14) + // 14% - integration opportunities
+      (Math.min(weeklyHours / 2, 50) * 0.10) +   // 10% - volume of work
+      marketingBonus +                   // Marketing bonus
+      budgetAlignmentBonus               // Budget alignment bonus
+    ));
+    
+    // ROI calculation - much more likely to be positive now
     const annualBudget = budgetMidpoint * 12;
     const netAnnualSavings = annualSavings - annualBudget;
     const roiPercentage = annualBudget > 0 ? Math.round((netAnnualSavings / annualBudget) * 100) : 0;
     
-    // Payback period: how many months to recover investment
+    // Payback period calculation
     const paybackMonths = monthlySavings > budgetMidpoint ? 
       Math.round((budgetMidpoint / (monthlySavings - budgetMidpoint)) * 10) / 10 : null;
 
@@ -216,9 +231,9 @@ const AutomationOpportunityFinder = () => {
       opportunityScore,
       hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
       marketingTimeSavings,
-      weeklySavings: Math.round(complexitySavings),
-      monthlySavings: Math.round(monthlySavings),
-      annualSavings: Math.round(annualSavings),
+      weeklySavings: Math.round(potentialMonthlySavings / 4.33),
+      monthlySavings: monthlySavings,
+      annualSavings: annualSavings,
       automationPct,
       urgency,
       priority,
