@@ -662,96 +662,143 @@ const AutomationOpportunityFinder = () => {
     ? (answers[currentQuestion.id] && answers[currentQuestion.id].length > 0)
     : answers[currentQuestion.id];
 
-  return (
-    <div className="max-w-3xl mx-auto p-6 min-h-screen" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold" style={{color: '#ffffff'}}>AI Automation Opportunity Assessment</h1>
-            <p className="mt-2" style={{color: '#b8b8b8'}}>Discover your custom automation potential in 8 questions</p>
+return (
+    <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#151515', color: '#ffffff'}}>
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-6 border-b" style={{borderColor: '#404040'}}>
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold" style={{color: '#ffffff'}}>AI Automation Opportunity Assessment</h1>
+              <p className="mt-2" style={{color: '#b8b8b8'}}>Discover your custom automation potential in 8 questions</p>
+            </div>
+            <div className="text-right">
+              <span className="text-sm" style={{color: '#888888'}}>Step {currentStep + 1} of {questions.length}</span>
+              <div className="text-2xl font-bold text-blue-400">{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
+            </div>
           </div>
-          <div className="text-right">
-            <span className="text-sm" style={{color: '#888888'}}>Step {currentStep + 1} of {questions.length}</span>
-            <div className="text-2xl font-bold text-blue-400">{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
+          <div className="w-full rounded-full h-3" style={{backgroundColor: '#404040'}}>
+            <div 
+              className="h-3 rounded-full transition-all duration-500"
+              style={{ 
+                width: `${((currentStep + 1) / questions.length) * 100}%`,
+                background: 'linear-gradient(to right, #3b82f6, #8b5cf6)'
+              }}
+            ></div>
           </div>
-        </div>
-        <div className="w-full rounded-full h-3" style={{backgroundColor: '#404040'}}>
-          <div 
-            className="h-3 rounded-full transition-all duration-500"
-            style={{ 
-              width: `${((currentStep + 1) / questions.length) * 100}%`,
-              background: 'linear-gradient(to right, #3b82f6, #8b5cf6)'
-            }}
-          ></div>
         </div>
       </div>
 
-      <div className="mb-10">
-        <h2 className="text-2xl font-bold mb-3" style={{color: '#ffffff'}}>{currentQuestion.title}</h2>
-        {currentQuestion.subtitle && (
-          <p className="mb-8" style={{color: '#b8b8b8'}}>{currentQuestion.subtitle}</p>
-        )}
-        
-        <div className="space-y-4">
-          {currentQuestion.options.map((option, index) => (
-            <label key={index} className="block cursor-pointer">
-              <div 
-                className={`p-5 rounded-xl transition-all ${
-                  currentQuestion.type === 'multiple'
-                    ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                      ? 'shadow-md'
-                      : ''
-                    : answers[currentQuestion.id] === option.value
-                      ? 'shadow-md'
-                      : ''
-                }`}
-                style={{
-                  border: '2px solid',
-                  borderColor: (currentQuestion.type === 'multiple'
-                    ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                      ? '#3b82f6'
-                      : '#404040'
-                    : answers[currentQuestion.id] === option.value
-                      ? '#3b82f6'
-                      : '#404040'),
-                  backgroundColor: (currentQuestion.type === 'multiple'
-                    ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : '#2a2a2a'
-                    : answers[currentQuestion.id] === option.value
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : '#2a2a2a'),
-                  minHeight: '80px',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-              >
-                <div className="flex items-start w-full">
-                  <input
-                    type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'}
-                    name={currentQuestion.id}
-                    value={option.value}
-                    checked={
+      {/* Scrollable Question Area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto p-6">
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold mb-3" style={{color: '#ffffff'}}>{currentQuestion.title}</h2>
+            {currentQuestion.subtitle && (
+              <p className="mb-8" style={{color: '#b8b8b8'}}>{currentQuestion.subtitle}</p>
+            )}
+            
+            <div className="space-y-4">
+              {currentQuestion.options.map((option, index) => (
+                <label key={index} className="block cursor-pointer">
+                  <div 
+                    className={`p-5 rounded-xl transition-all ${
                       currentQuestion.type === 'multiple'
                         ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
+                          ? 'shadow-md'
+                          : ''
                         : answers[currentQuestion.id] === option.value
-                    }
-                    onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
-                    className="mr-4 mt-1 scale-125 flex-shrink-0"
-                    style={{accentColor: '#3b82f6'}}
-                  />
-                  <div className="flex-1">
-                    <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
-                    {option.description && (
-                      <p className="text-sm mt-1" style={{color: '#b8b8b8'}}>{option.description}</p>
-                    )}
+                          ? 'shadow-md'
+                          : ''
+                    }`}
+                    style={{
+                      border: '2px solid',
+                      borderColor: (currentQuestion.type === 'multiple'
+                        ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
+                          ? '#3b82f6'
+                          : '#404040'
+                        : answers[currentQuestion.id] === option.value
+                          ? '#3b82f6'
+                          : '#404040'),
+                      backgroundColor: (currentQuestion.type === 'multiple'
+                        ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : '#2a2a2a'
+                        : answers[currentQuestion.id] === option.value
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : '#2a2a2a'),
+                      minHeight: '80px',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div className="flex items-start w-full">
+                      <input
+                        type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'}
+                        name={currentQuestion.id}
+                        value={option.value}
+                        checked={
+                          currentQuestion.type === 'multiple'
+                            ? (answers[currentQuestion.id] && answers[currentQuestion.id].includes(option.value))
+                            : answers[currentQuestion.id] === option.value
+                        }
+                        onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
+                        className="mr-4 mt-1 scale-125 flex-shrink-0"
+                        style={{accentColor: '#3b82f6'}}
+                      />
+                      <div className="flex-1">
+                        <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
+                        {option.description && (
+                          <p className="text-sm mt-1" style={{color: '#b8b8b8'}}>{option.description}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </label>
-          ))}
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Fixed Footer */}
+      <div className="flex-shrink-0 p-6 border-t" style={{borderColor: '#404040'}}>
+        <div className="max-w-3xl mx-auto">
+          <div className="flex justify-between">
+            <button
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className={`px-8 py-3 rounded-xl font-medium transition-colors ${
+                currentStep === 0 ? 'cursor-not-allowed' : ''
+              }`}
+              style={{
+                backgroundColor: currentStep === 0 ? '#333333' : '#404040',
+                color: currentStep === 0 ? '#666666' : '#e5e5e5'
+              }}
+            >
+              Previous
+            </button>
+            
+            <button
+              onClick={nextStep}
+              disabled={!isAnswered}
+              className={`px-8 py-3 rounded-xl font-medium flex items-center transition-colors ${
+                !isAnswered ? 'cursor-not-allowed' : ''
+              }`}
+              style={{
+                background: !isAnswered ? '#333333' : 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+                color: !isAnswered ? '#666666' : '#ffffff',
+                boxShadow: !isAnswered ? 'none' : '0 10px 15px -3px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
+              <ChevronRight className="w-5 h-5 ml-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
       <div className="flex justify-between">
         <button
