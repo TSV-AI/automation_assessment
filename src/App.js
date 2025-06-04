@@ -508,26 +508,7 @@ const AutomationOpportunityFinder = () => {
             <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
           </div>
 
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
-                <Target className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Opportunity Score</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>
-              {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
-               results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
-               results.opportunityScore >= 45 ? '⚡ Good potential' :
-               '💡 Some opportunities'}
-            </p>
-          </div>
-
+        <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-6 mb-10">
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
               <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
@@ -542,18 +523,20 @@ const AutomationOpportunityFinder = () => {
             <p className="text-sm" style={{color: '#b8b8b8'}}>Per week that can be automated</p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
+          <div className="lg:col-span-1 p-8 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)', transform: 'scale(1.1)'}}>
             <div className="flex items-center mb-4">
               <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
-                <DollarSign className="w-7 h-7 text-white" />
+                <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Monthly Impact</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Cost savings potential</p>
+                <h3 className="text-xl font-semibold" style={{color: '#ffffff'}}>Cost Savings</h3>
+                <p className="text-sm" style={{color: '#b8b8b8'}}>Automation vs manual labor</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">${results.monthlySavings.toLocaleString()}</div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>Estimated monthly savings</p>
+            <div className="text-5xl font-bold text-green-400 mb-2">
+              {Math.round((1 - (1650 / results.monthlySavings)) * 100)}% Reduction
+            </div>
+            <p className="text-lg" style={{color: '#b8b8b8'}}>${results.monthlySavings.toLocaleString()} → $1,650 monthly</p>
           </div>
 
           <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
@@ -677,8 +660,8 @@ const AutomationOpportunityFinder = () => {
               <div className="text-white/90">Hours Saved Per Year</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">{results.automationPct}%</div>
-              <div className="text-white/90">Process Automation Potential</div>
+              <div className="text-3xl font-bold mb-2">{results.opportunityScore}/100</div>
+              <div className="text-white/90">Opportunity Score</div>
             </div>
           </div>
         </div>
