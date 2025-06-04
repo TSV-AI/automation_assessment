@@ -353,6 +353,13 @@ const AutomationOpportunityFinder = () => {
   const nextStep = () => {
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
+      // Reset scroll to top
+      setTimeout(() => {
+        const scrollContainer = document.querySelector('.flex-1.overflow-y-auto');
+        if (scrollContainer) {
+          scrollContainer.scrollTop = 0;
+        }
+      }, 50);
     } else {
       setShowResults(true);
     }
@@ -361,6 +368,13 @@ const AutomationOpportunityFinder = () => {
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      // Reset scroll to top
+      setTimeout(() => {
+        const scrollContainer = document.querySelector('.flex-1.overflow-y-auto');
+        if (scrollContainer) {
+          scrollContainer.scrollTop = 0;
+        }
+      }, 50);
     }
   };
 
@@ -614,38 +628,38 @@ const AutomationOpportunityFinder = () => {
           </div>
         )}
 
-        {/* Annual Projection */}
-        <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(to right, #111827, #1e3a8a)'}}>
+        {/* Annual Projection - Updated Green/Blue Theme */}
+        <div className="p-8 rounded-2xl text-white mb-8" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)'}}>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div>
               <div className="text-3xl font-bold mb-2">${results.annualSavings.toLocaleString()}</div>
-              <div className="text-blue-200">Projected Annual Savings</div>
+              <div className="text-white/80">Projected Annual Savings</div>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">{Math.round(results.hoursAutomatable * 52)}</div>
-              <div className="text-blue-200">Hours Saved Per Year</div>
+              <div className="text-white/80">Hours Saved Per Year</div>
             </div>
             <div>
               <div className="text-3xl font-bold mb-2">{results.automationPct}%</div>
-              <div className="text-blue-200">Process Automation Potential</div>
+              <div className="text-white/80">Process Automation Potential</div>
             </div>
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{background: 'linear-gradient(to right, #3b82f6, #8b5cf6)'}}>
+        {/* Call to Action - Filled Green/Blue Gradient */}
+        <div className="p-8 rounded-2xl text-white text-center relative overflow-hidden" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', boxShadow: '0 20px 40px rgba(34, 197, 94, 0.4)'}}>
           <h3 className="text-2xl font-bold mb-3">Ready to Turn This Analysis Into Reality?</h3>
           <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
             Get a detailed implementation plan tailored specifically to your business processes and goals
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 rounded-xl font-bold text-lg transition-colors" style={{backgroundColor: '#ffffff', color: '#3b82f6'}}>
+            <button className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-white hover:bg-white hover:text-green-600 hover:scale-105" style={{backgroundColor: 'transparent', color: '#ffffff'}}>
               Schedule Free Strategy Call
             </button>
             <button 
               onClick={() => setShowEmailCapture(true)}
-              className="px-8 py-4 rounded-xl font-bold text-lg transition-colors"
-              style={{border: '2px solid #ffffff', color: '#ffffff', backgroundColor: 'transparent'}}
+              className="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105"
+              style={{backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '2px solid rgba(255,255,255,0.3)'}}
             >
               Download Full Report
             </button>
@@ -663,8 +677,8 @@ const AutomationOpportunityFinder = () => {
 
   return (
     <div className="w-full h-screen flex flex-col" style={{backgroundColor: '#151515', color: '#ffffff'}}>
-      {/* Fixed Header */}
-      <div className="flex-shrink-0 p-6 border-b" style={{borderColor: '#404040'}}>
+      {/* Fixed Header - Cleaner border */}
+      <div className="flex-shrink-0 p-6" style={{borderBottom: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -673,7 +687,7 @@ const AutomationOpportunityFinder = () => {
             </div>
             <div className="text-right">
               <span className="text-sm" style={{color: '#888888'}}>Step {currentStep + 1} of {questions.length}</span>
-              <div className="text-2xl font-bold text-blue-400">{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
+              <div className="text-2xl font-bold" style={{background: 'linear-gradient(135deg, #22c55e, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
           <div className="w-full rounded-full h-3" style={{backgroundColor: '#404040'}}>
@@ -681,7 +695,7 @@ const AutomationOpportunityFinder = () => {
               className="h-3 rounded-full transition-all duration-500"
               style={{ 
                 width: `${((currentStep + 1) / questions.length) * 100}%`,
-                background: 'linear-gradient(to right, #3b82f6, #8b5cf6)'
+                background: 'linear-gradient(135deg, #22c55e, #3b82f6)'
               }}
             ></div>
           </div>
@@ -760,8 +774,8 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      {/* Fixed Footer */}
-      <div className="flex-shrink-0 p-6 border-t" style={{borderColor: '#404040'}}>
+      {/* Fixed Footer - Cleaner border */}
+      <div className="flex-shrink-0 p-6" style={{borderTop: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(21, 21, 21, 0.95)', backdropFilter: 'blur(10px)'}}>
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-between">
             <button
@@ -785,9 +799,9 @@ const AutomationOpportunityFinder = () => {
                 !isAnswered ? 'cursor-not-allowed' : ''
               }`}
               style={{
-                background: !isAnswered ? '#333333' : 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+                background: !isAnswered ? '#333333' : 'linear-gradient(135deg, #22c55e, #3b82f6)',
                 color: !isAnswered ? '#666666' : '#ffffff',
-                boxShadow: !isAnswered ? 'none' : '0 10px 15px -3px rgba(0, 0, 0, 0.3)'
+                boxShadow: !isAnswered ? 'none' : '0 10px 15px -3px rgba(34, 197, 94, 0.3)'
               }}
             >
               {currentStep === questions.length - 1 ? 'Get My Custom Analysis' : 'Continue'}
