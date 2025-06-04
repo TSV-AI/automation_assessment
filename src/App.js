@@ -1,20 +1,4 @@
-// SUPER SIMPLE MATH - NO BULLSHIT
-    // Just use the hours they reported and reasonable automation %
-    const baseAutomatableHours = weeklyHours * (automationPct / 100);
-    
-    // Maybe add a few marketing hours if they have challenges, but keep it small
-    const marketingHours = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 3 : 0;
-    
-    // Total hours - honest and simple
-    const hoursAutomatable = baseAutomatableHours + marketingHours;
-    
-    // Use a reasonable hourly rate - $40/hour baseline
-    const hourlyRate = 40;
-    
-    // Calculate what they're spending on this work per month
-    const weeklyCost = hoursAutomatable * hourlyRate;
-    const monthlySavings = Math.round(weeklyCost * 4.33);
-    const annualSavings = monthlySavings * 12;import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronRight, Clock, DollarSign, TrendingUp, CheckCircle, Zap, Target, Eye, Download, Mail } from 'lucide-react';
 
 const AutomationOpportunityFinder = () => {
@@ -186,31 +170,22 @@ const AutomationOpportunityFinder = () => {
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
        parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 3500;
     
-    // HONEST CALCULATION - NO SKETCHY INFLATION
-    // Base automation potential - keep it realistic
-    const maxAutomatableHours = weeklyHours * 0.6; // Conservative 60% cap
-    let effectiveHours = Math.min(weeklyHours * (automationPct / 100), maxAutomatableHours);
+    // SUPER SIMPLE MATH - NO BULLSHIT
+    // Just use the hours they reported and reasonable automation %
+    const baseAutomatableHours = weeklyHours * (automationPct / 100);
     
-    // Marketing automation hours - much more conservative
-    const marketingHours = Math.min(marketingTimeSavings * 0.3, 6); // Max 6 hours/week
+    // Maybe add a few marketing hours if they have challenges, but keep it small
+    const marketingHours = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 3 : 0;
     
-    // Apply MODEST multipliers - no crazy inflation
-    const urgencyMultiplier = urgency >= 90 ? 1.15 : urgency >= 70 ? 1.05 : 1.0; // Much smaller
-    const toolsMultiplier = integrationScore >= 80 ? 1.1 : integrationScore >= 50 ? 1.05 : 1.0; // Much smaller
+    // Total hours - honest and simple
+    const hoursAutomatable = baseAutomatableHours + marketingHours;
     
-    // Total automatable hours - keep it honest
-    let hoursAutomatable = (effectiveHours + marketingHours) * urgencyMultiplier * toolsMultiplier;
+    // Use a reasonable hourly rate - $40/hour baseline
+    const hourlyRate = 40;
     
-    // REMOVE THE SKETCHY BUDGET SCALING - keep hours realistic
-    const conservativeWage = avgWage * 0.9;
-    let potentialMonthlySavings = hoursAutomatable * conservativeWage * 4.33 * complexity;
-    
-    // Only do MINIMAL scaling if savings are extremely low
-    if (potentialMonthlySavings < budgetMidpoint * 0.8) {
-      const scaleFactor = Math.min(1.3, (budgetMidpoint * 0.8) / potentialMonthlySavings); // Max 1.3x scaling
-      hoursAutomatable = hoursAutomatable * scaleFactor;
-      pot    // Final calculations
-    const monthlySavings = Math.round(currentMonthlyCost * complexity);
+    // Calculate what they're spending on this work per month
+    const weeklyCost = hoursAutomatable * hourlyRate;
+    const monthlySavings = Math.round(weeklyCost * 4.33);
     const annualSavings = monthlySavings * 12;
     
     // Calculate opportunity score with better weighting
@@ -548,25 +523,6 @@ const AutomationOpportunityFinder = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Opportunity Score</h3>
-                <p className="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
-            <p className="text-sm" style={{color: '#b8b8b8'}}>
-              {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
-               results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
-               results.opportunityScore >= 45 ? '⚡ Good potential' :
-               '💡 Some opportunities'}
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
-            <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
-                <Clock className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Time Savings</h3>
                 <p className="text-sm" style={{color: '#b8b8b8'}}>Weekly hours recovered</p>
               </div>
             </div>
@@ -888,4 +844,23 @@ const AutomationOpportunityFinder = () => {
   );
 };
 
-export default AutomationOpportunityFinder;
+export default AutomationOpportunityFinder;="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
+            <p className="text-sm" style={{color: '#b8b8b8'}}>
+              {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
+               results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
+               results.opportunityScore >= 45 ? '⚡ Good potential' :
+               '💡 Some opportunities'}
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
+            <div className="flex items-center mb-4">
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+                <Clock className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold" style={{color: '#ffffff'}}>Time Savings</h3>
+                <p className
