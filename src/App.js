@@ -451,11 +451,11 @@ const AutomationOpportunityFinder = () => {
           <p className="text-xl max-w-3xl mx-auto" style={{color: '#b8b8b8'}}>Based on your specific business needs, here's what AI automation could do for your company</p>
         </div>
 
-        {/* Key Metrics Dashboard */}
+{/* Key Metrics Dashboard */}
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-10">
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#3b82f6'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
                 <Target className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -463,7 +463,7 @@ const AutomationOpportunityFinder = () => {
                 <p className="text-sm" style={{color: '#b8b8b8'}}>Implementation readiness</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-blue-400 mb-2">{results.opportunityScore}/100</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">{results.opportunityScore}/100</div>
             <p className="text-sm" style={{color: '#b8b8b8'}}>
               {results.opportunityScore >= 80 ? '🚀 Excellent potential!' : 
                results.opportunityScore >= 65 ? '✅ Strong opportunities' : 
@@ -472,9 +472,9 @@ const AutomationOpportunityFinder = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(22, 163, 74, 0.15)', border: '1px solid rgba(22, 163, 74, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#22c55e'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#16a34a'}}>
                 <Clock className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -486,9 +486,9 @@ const AutomationOpportunityFinder = () => {
             <p className="text-sm" style={{color: '#b8b8b8'}}>Per week that can be automated</p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(21, 128, 61, 0.15)', border: '1px solid rgba(21, 128, 61, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#8b5cf6'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#15803d'}}>
                 <DollarSign className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -496,13 +496,13 @@ const AutomationOpportunityFinder = () => {
                 <p className="text-sm" style={{color: '#b8b8b8'}}>Cost savings potential</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-purple-400 mb-2">${results.monthlySavings.toLocaleString()}</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">${results.monthlySavings.toLocaleString()}</div>
             <p className="text-sm" style={{color: '#b8b8b8'}}>Estimated monthly savings</p>
           </div>
 
-          <div className="p-6 rounded-2xl" style={{background: 'rgba(249, 115, 22, 0.1)', border: '1px solid rgba(249, 115, 22, 0.3)'}}>
+          <div className="p-6 rounded-2xl" style={{background: 'rgba(20, 83, 45, 0.15)', border: '1px solid rgba(20, 83, 45, 0.4)'}}>
             <div className="flex items-center mb-4">
-              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#f97316'}}>
+              <div className="p-3 rounded-xl mr-4" style={{backgroundColor: '#14532d'}}>
                 <TrendingUp className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -510,7 +510,7 @@ const AutomationOpportunityFinder = () => {
                 <p className="text-sm" style={{color: '#b8b8b8'}}>Return percentage</p>
               </div>
             </div>
-            <div className="text-4xl font-bold text-orange-400 mb-2">
+            <div className="text-4xl font-bold text-green-400 mb-2">
               {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : 
                results.roiPercentage < 0 ? `${results.roiPercentage}%` : 'TBD'}
             </div>
