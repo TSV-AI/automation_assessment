@@ -110,10 +110,10 @@ const AutomationOpportunityFinder = () => {
       subtitle: 'This helps us recommend the right scope of automation',
       type: 'select',
       options: [
-        { value: '2000-8000', label: '$2,000 - $8,000/month', tier: 'starter' },
-        { value: '8000-20000', label: '$8,000 - $20,000/month', tier: 'growth' },
-        { value: '20000-50000', label: '$20,000 - $50,000/month', tier: 'scale' },
-        { value: '50000+', label: '$50,000+/month', tier: 'enterprise' }
+        { value: '800-2500', label: '$800 - $2,500/month', tier: 'starter', description: '~1-2 virtual specialists working 24/7' },
+        { value: '2500-6000', label: '$2,500 - $6,000/month', tier: 'growth', description: '~2-3 virtual specialists handling core processes' },
+        { value: '6000-15000', label: '$6,000 - $15,000/month', tier: 'scale', description: '~3-5 virtual specialists across departments' },
+        { value: '15000+', label: '$15,000+/month', tier: 'enterprise', description: 'Full virtual workforce for complex operations' }
       ]
     }
   ];
@@ -168,7 +168,7 @@ const AutomationOpportunityFinder = () => {
     const budgetData = questions[7].options.find(o => o.value === answers.budget_sense) || {};
     const budgetMidpoint = budgetData.value ? 
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
-       parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 15000;
+       parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 3500;
     
     // SMARTER CALCULATION - ADJUST AUTOMATION SCOPE TO BUDGET
     // Base automation potential
@@ -828,7 +828,7 @@ const AutomationOpportunityFinder = () => {
                       <div className="flex-1">
                         <span className="font-medium text-lg" style={{color: '#ffffff'}}>{option.label}</span>
                         {option.description && (
-                          <p className="text-sm mt-1" style={{color: '#b8b8b8'}}>{option.description}</p>
+                          <p className="text-xs mt-1" style={{color: '#a8a8a8'}}>{option.description}</p>
                         )}
                       </div>
                     </div>
