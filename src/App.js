@@ -124,12 +124,12 @@ const AutomationOpportunityFinder = () => {
   const textColorPrimary = '#efefea';       
   const textColorSecondary = '#c8c8c4';   
   const textColorMuted = '#a1a19b';       
-  const textColorVeryMuted = '#6B7280';    
+  const textColorVeryMuted = '#6B7280';    // Used for the new gray border
 
   const accentColor = '#92d8c8'; 
   const accentColorDarker = '#6BAA9B'; 
   
-  const popupBorderColorWithOpacity = '#0e9f7bBF'; 
+  const popupBorderColorWithOpacity = '#0e9f7bBF'; // Green border for default popups
   const brighterMainCtaColor = '#4DCFB9'; 
   const popupCtaTextColor = '#0A0A0A'; 
 
@@ -138,7 +138,7 @@ const AutomationOpportunityFinder = () => {
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
   const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)'; 
-  const calendlyPopupContentBg = '#040404'; 
+  const calendlyPopupOuterBg = '#040404'; // Background for the Calendly popup container itself
 
 
   useEffect(() => {
@@ -385,7 +385,7 @@ const AutomationOpportunityFinder = () => {
     } 
   };
 
-  // Base style for the modal wrapper (used for green border effect if needed)
+  // Base style for the modal wrapper (used for green border effect if needed for OTHER popups)
   const modalWrapperBaseStyle = {
     borderRadius: '0.875rem', // 14px
     padding: '1px', 
@@ -418,18 +418,27 @@ const AutomationOpportunityFinder = () => {
     padding: '2rem',
   };
 
-  // Styles specific to the Calendly popup's content area (no green border directly on this)
-  const calendlyPopupContentAreaStyle = {
-    background: calendlyPopupContentBg, // #040404
-    borderRadius: '0.875rem', // Rounded corners for the content box itself
-    padding: '0.5rem', // Minimal padding around the widget as per screenshot
-    boxShadow: '0 10px 30px rgba(0,0,0,0.35)', // Shadow directly on content box
-    width: '100%',
-    maxWidth: '900px', // To make it wider like the screenshot
-    maxHeight: 'calc(100vh - 4rem)', // Ensure it fits viewport with margin
-    overflowY: 'auto', // Allow scroll if content is taller
+  // Styles for the main container of the Calendly popup (this is the #040404 box)
+  const calendlyModalOuterContainerStyle = {
+    background: calendlyPopupOuterBg, // #040404
+    borderRadius: '0.875rem',        // Main popup radius
+    padding: '0.5rem',               // Minimal padding for close button and to house the bordered widget
+    boxShadow: '0 10px 30px rgba(0,0,0,0.5)', 
+    width: '95vw',                   // Responsive width
+    maxWidth: '960px',               // Max width for desktop to ensure wide format
+    maxHeight: 'calc(100vh - 2rem)', // Max height with viewport margin
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden', // Clip inner content, especially the bordered widget's corners
+  };
+
+  // Styles for the div that gets the gray border, directly wrapping the Calendly widget
+  const calendlyWidgetWrapperStyle = {
+    border: `1px solid ${textColorVeryMuted}`, // Medium gray border
+    borderRadius: '0.625rem', // Slightly smaller radius than the outer container
+    overflow: 'hidden',       // Crucial to clip the Calendly iframe to these rounded corners
+    flexGrow: 1,              // Allow this wrapper to take up available vertical space
+    display: 'flex',          // Helps ensure the inner widget div can fill it
   };
 
 
@@ -504,31 +513,32 @@ const AutomationOpportunityFinder = () => {
         className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4" 
         onClick={() => setShowCalendlyPopup(false)} 
       >
-        {/* This div is now the direct container for the Calendly content, no green border wrapper */}
         <div 
-          style={calendlyPopupContentAreaStyle}
+          style={calendlyModalOuterContainerStyle} // This is the main #040404 box
           onClick={e => e.stopPropagation()} 
         >
-            <div className="flex justify-end mb-1" style={{ flexShrink: 0 }}> 
+            <div className="flex justify-end" style={{ flexShrink: 0, marginBottom: '0.25rem' }}> {/* Adjusted margin */}
               <button 
                 onClick={() => setShowCalendlyPopup(false)} 
-                className="p-1 rounded-full hover:bg-slate-700/30 text-slate-300 hover:text-slate-100 transition-colors" // Adjusted hover for dark bg
+                className="p-1 rounded-full hover:bg-slate-700/30 text-slate-300 hover:text-slate-100 transition-colors"
                 aria-label="Close"
               >
                 <XIcon className="w-5 h-5" /> 
               </button>
             </div>
-            <div 
-              className="calendly-inline-widget"
-              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f&month=2025-06&date=2025-06-10"
-              style={{ 
-                minWidth:'320px', 
-                width: '100%', 
-                height:'700px', // Calendly's fixed height
-                overflow: 'hidden', // Let Calendly handle its internal scroll if any
-              }} 
-            >
-              {/* Calendly script will populate this */}
+            {/* This div gets the gray border and wraps the Calendly widget */}
+            <div style={calendlyWidgetWrapperStyle}> 
+              <div 
+                className="calendly-inline-widget"
+                data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f&month=2025-06&date=2025-06-10"
+                style={{ 
+                  minWidth:'320px', 
+                  width: '100%',    // Fill the bordered wrapper
+                  height:'700px',   // Fixed height for Calendly widget
+                }} 
+              >
+                {/* Calendly script populates this */}
+              </div>
             </div>
         </div>
       </div>
