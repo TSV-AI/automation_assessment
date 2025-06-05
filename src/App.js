@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, Shuffle } from 'lucide-react';
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb } from 'lucide-react';
 
 // --- Color Palette (retained for UI consistency) ---
 const pageBgColor = '#0a0a0a';
