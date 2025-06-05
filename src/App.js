@@ -150,7 +150,7 @@ const AutomationOpportunityFinder = () => {
       }
     });
     setAnswers(initialAnswers);
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, [questions]); // Empty dependency array ensures this runs only once on mount
 
 
   const handleAnswer = (questionId, value, isMultiple = false) => {
