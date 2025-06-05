@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, Building, Briefcase, HelpCircle, Cpu, Lightbulb, Shuffle } from 'lucide-react'; // Added Cpu, Lightbulb, Shuffle
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, Shuffle } from 'lucide-react';
 
 // --- Color Palette (retained for UI consistency) ---
 const pageBgColor = '#0a0a0a';
@@ -15,8 +15,7 @@ const popupCtaTextColor = '#0A0A0A';
 const accentColorBgLowOpacity = accentColor + '1A'; 
 const accentColorBgMediumOpacity = accentColor + '26'; 
 const accentColorBorderLowOpacity = accentColor + '33'; 
-const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)'; 
-const calendlyPopupOuterBg = '#040404';
+const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)';
 
 // --- Funny Loading Messages ---
 const funnyLoadingMessages = [
@@ -297,7 +296,7 @@ const AutomationOpportunityFinder = () => {
             responseSchema: expectedSchema || { type: "OBJECT", properties: {"output": {type: "STRING"}} } 
         };
     }
-    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY || ""; // API_KEY FROM ENVIRONMENT VARIABLE
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     try {
         const response = await fetch(apiUrl, {
