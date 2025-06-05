@@ -15,16 +15,15 @@ const AutomationOpportunityFinder = () => {
   const accentColor = '#92d8c8'; // Softer teal for secondary accents, icons, progress, selections
   const accentColorDarker = '#6BAA9B'; // For CTAs within popups (e.g., "Get Full Report")
   
-  const popupBorderColor = '#2CE0A6'; // Vibrant green for popup borders
-  const brighterMainCtaColor = '#38F0B5'; // Brighter green for main "Schedule Call" CTA
+  const popupBorderColorWithOpacity = '#2caa9cBF'; // New green with 75% opacity for popup borders
+  const brighterMainCtaColor = '#4DCFB9'; // Approx 15% brighter than #2caa9c for main page CTA
   const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green backgrounds
 
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  // Consistent dark background for popup content areas (semi-transparent)
-  const popupContentBg = 'rgba(20, 25, 35, 0.85)'; // Dark blue-gray, 85% opacity
+  const popupContentBg = 'rgba(20, 25, 35, 0.85)'; // Dark blue-gray, 85% opacity for popup content
 
   const questions = [
     {
@@ -331,7 +330,7 @@ const AutomationOpportunityFinder = () => {
           style={{
             borderRadius: '0.875rem', 
             padding: '1px', 
-            background: popupBorderColor, 
+            background: popupBorderColorWithOpacity, // New border color with opacity
             boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             width: '100%', 
           }}
@@ -404,7 +403,7 @@ const AutomationOpportunityFinder = () => {
               <p className="text-sm text-gray-400">Est. weekly hours recoverable.</p>
             </div>
 
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border border-slate-600/50"> {/* Slightly more prominent card */}
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border border-slate-600/50"> 
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -466,7 +465,7 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur-sm pointer-events-none"> {/* Using Tailwind 'blur-sm' for 4px blur */}
+              <div className="filter blur-sm pointer-events-none"> {/* Changed to blur-sm for a lighter blur */}
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
@@ -479,12 +478,12 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.0) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
+                   style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.3) 25%, rgba(10,10,10,0.85) 55%, rgba(10,10,10,1) 80%)'}}> {/* Reversed gradient to be lighter at top */}
                 <div 
                   style={{
                     borderRadius: '0.875rem', 
                     padding: '1px', 
-                    background: popupBorderColor, 
+                    background: popupBorderColorWithOpacity, 
                     boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
                   }}
                   className="max-w-md mx-auto" 
@@ -541,7 +540,7 @@ const AutomationOpportunityFinder = () => {
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0a0a0a] text-white" style={{fontFamily: 'Inter, system-ui, sans-serif'}}>
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> {/* Consistent slate border */}
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
@@ -553,7 +552,7 @@ const AutomationOpportunityFinder = () => {
               <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
-          <div className="w-full rounded-full h-1.5 sm:h-2 bg-slate-700/50"> {/* Consistent slate progress bg */}
+          <div className="w-full rounded-full h-1.5 sm:h-2 bg-slate-700/50"> 
             <div className="h-full rounded-full transition-all duration-300"
                  style={{ width: `${((currentStep + 1) / questions.length) * 100}%`, backgroundColor: accentColor }} />
           </div>
@@ -589,7 +588,7 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> {/* Consistent slate border */}
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
         <div className="max-w-4xl mx-auto flex justify-between">
           <button onClick={prevStep} disabled={currentStep === 0}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border border-slate-600/70 hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
