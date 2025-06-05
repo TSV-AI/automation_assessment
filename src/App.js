@@ -1,156 +1,156 @@
 import React, { useState, useEffect } from 'react'; // Added useEffect
 import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react';
 
+// Moved questions array outside the component to ensure it's a stable reference
+const questions = [
+  {
+    id: 'company_size',
+    title: 'What\'s your company size?',
+    subtitle: 'This helps us understand your operational complexity',
+    type: 'select',
+    options: [
+      { value: '1-10', label: '1-10 employees', complexity: 1.0, avgWage: 45 },
+      { value: '11-50', label: '11-50 employees', complexity: 1.2, avgWage: 55 },
+      { value: '51-200', label: '51-200 employees', complexity: 1.4, avgWage: 65 },
+      { value: '200+', label: '200+ employees', complexity: 1.6, avgWage: 75 }
+    ]
+  },
+  {
+    id: 'manual_hours',
+    title: 'Approximately how many total hours per week does your company spend on repetitive manual tasks?',
+    subtitle: 'Think company-wide: data entry, reporting, follow-ups, scheduling, content creation, etc.',
+    type: 'select',
+    options: [
+      { value: '10-25', label: '10-25 hours per week', hours: 17.5 },
+      { value: '26-50', label: '26-50 hours per week', hours: 38 },
+      { value: '51-100', label: '51-100 hours per week', hours: 75 },
+      { value: '100+', label: '100+ hours per week', hours: 125 }
+    ]
+  },
+  {
+    id: 'biggest_pain',
+    title: 'What\'s your biggest operational bottleneck right now?',
+    subtitle: 'Choose the area causing the most delays or frustration',
+    type: 'select',
+    options: [
+      { value: 'data_entry', label: 'Data entry and file management', automation: 90, impact: 'high', category: 'operations' },
+      { value: 'customer_comm', label: 'Customer follow-up and communication', automation: 75, impact: 'high', category: 'customer' },
+      { value: 'content_creation', label: 'Content creation and social media management', automation: 85, impact: 'high', category: 'marketing' },
+      { value: 'reporting', label: 'Creating reports and dashboards', automation: 95, impact: 'medium', category: 'analytics' },
+      { value: 'lead_mgmt', label: 'Lead generation and qualification', automation: 85, impact: 'high', category: 'sales' },
+      { value: 'scheduling', label: 'Scheduling and calendar coordination', automation: 80, impact: 'medium', category: 'operations' }
+    ]
+  },
+  {
+    id: 'marketing_challenges',
+    title: 'Which marketing and social media challenges are slowing you down?',
+    subtitle: 'Select all that apply - these represent major automation opportunities',
+    type: 'multiple',
+    options: [
+      { value: 'content_creation', label: 'Creating consistent social media content', automation: 85, time_savings: 15 },
+      { value: 'lead_generation', label: 'Generating qualified leads online', automation: 80, time_savings: 20 },
+      { value: 'email_sequences', label: 'Setting up email marketing sequences', automation: 90, time_savings: 12 },
+      { value: 'social_engagement', label: 'Managing social media engagement and responses', automation: 75, time_savings: 18 },
+      { value: 'competitor_tracking', label: 'Tracking competitors and industry trends', automation: 95, time_savings: 8 },
+      { value: 'performance_reporting', label: 'Creating marketing performance reports', automation: 90, time_savings: 10 },
+      { value: 'none', label: 'Marketing isn\'t a major challenge for us', automation: 0, time_savings: 0 }
+    ]
+  },
+  {
+    id: 'current_tools',
+    title: 'Which systems does your team currently use?',
+    subtitle: 'Select all that apply - more tools often mean more automation opportunities',
+    type: 'multiple',
+    options: [
+      { value: 'crm', label: 'CRM (Salesforce, HubSpot, Pipedrive)', integration: 25, description: 'Great for workflow automation' },
+      { value: 'email_marketing', label: 'Email marketing platforms', integration: 20, description: 'Sequence automation potential' },
+      { value: 'social_media', label: 'Social media management tools', integration: 30, description: 'Content automation opportunities' },
+      { value: 'project_mgmt', label: 'Project management tools (Asana, Monday)', integration: 30, description: 'Task automation opportunities' },
+      { value: 'spreadsheets', label: 'Heavy Excel/Google Sheets usage', integration: 35, description: 'High automation potential' },
+      { value: 'accounting', label: 'Accounting/ERP software', integration: 25, description: 'Financial process automation' },
+      { value: 'basic_only', label: 'Mostly email and basic tools', integration: 10, description: 'Clean slate opportunity' }
+    ]
+  },
+  {
+    id: 'growth_pain',
+    title: 'What\'s your biggest growth challenge right now?',
+    subtitle: 'This helps us prioritize which automations will have the most impact',
+    type: 'select',
+    options: [
+      { value: 'scaling_team', label: 'Can\'t hire and train fast enough', urgency: 90, focus: 'workflow' },
+      { value: 'customer_service', label: 'Customer service taking too much time', urgency: 85, focus: 'customer' },
+      { value: 'marketing_roi', label: 'Marketing not generating enough quality leads', urgency: 88, focus: 'marketing' },
+      { value: 'manual_processes', label: 'Manual processes slowing everything down', urgency: 95, focus: 'process' },
+      { value: 'data_chaos', label: 'Information scattered across systems', urgency: 80, focus: 'integration' }
+    ]
+  },
+  {
+    id: 'timeline',
+    title: 'When are you looking to implement automation solutions?',
+    subtitle: 'Honest timeline helps us suggest the right approach',
+    type: 'select',
+    options: [
+      { value: 'asap', label: 'ASAP - this is urgent', priority: 100, timeline: 'immediate' },
+      { value: '1-3months', label: 'Within 1-3 months', priority: 80, timeline: 'near' },
+      { value: '3-6months', label: '3-6 months out', priority: 60, timeline: 'medium' },
+      { value: 'exploring', label: 'Just exploring options for now', priority: 30, timeline: 'future' }
+    ]
+  },
+  {
+    id: 'budget_sense',
+    title: 'What\'s your sense of monthly budget for automation solutions?',
+    subtitle: 'This helps us recommend the right scope of automation',
+    type: 'select',
+    options: [
+      { value: '800-2500', label: '$800 - $2,500/month', tier: 'starter', description: '~1-2 virtual specialists working 24/7' },
+      { value: '2500-6000', label: '$2,500 - $6,000/month', tier: 'growth', description: '~2-3 virtual specialists handling core processes' },
+      { value: '6000-15000', label: '$6,000 - $15,000/month', tier: 'scale', description: '~3-5 virtual specialists across departments' },
+      { value: '15000+', label: '$15,000+/month', tier: 'enterprise', description: 'Full virtual workforce for complex operations' }
+    ]
+  }
+];
+
 const AutomationOpportunityFinder = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  // Initialize answers state with default values for all questions
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
-  const [email, setEmail] = useState(''); // Initialized as empty string
+  const [email, setEmail] = useState(''); 
   const [showThankYou, setShowThankYou] = useState(false);
-  const [name, setName] = useState(''); // Initialized as empty string
+  const [name, setName] = useState(''); 
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
-  const textColorPrimary = '#efefea';       // Main text color (our "white")
-  const textColorSecondary = '#c8c8c4';   // Subtitles, descriptions
-  const textColorMuted = '#a1a19b';       // Less important text
-  const textColorVeryMuted = '#6B7280';    // Very subtle text
+  const textColorPrimary = '#efefea';       
+  const textColorSecondary = '#c8c8c4';   
+  const textColorMuted = '#a1a19b';       
+  const textColorVeryMuted = '#6B7280';    
 
-  const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
-  const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups 
+  const accentColor = '#92d8c8'; 
+  const accentColorDarker = '#6BAA9B'; 
   
-  const popupBorderColorWithOpacity = '#0e9f7bBF'; // New border color with 75% opacity
-  const brighterMainCtaColor = '#4DCFB9'; // Brighter green for main page "Schedule Call" CTA
-  const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green/teal backgrounds
+  const popupBorderColorWithOpacity = '#0e9f7bBF'; 
+  const brighterMainCtaColor = '#4DCFB9'; 
+  const popupCtaTextColor = '#0A0A0A'; 
 
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const popupContentBg = 'rgba(20, 25, 35, 0.70)'; // Dark blue-gray, 70% opacity for popup content
-
-  const questions = [
-    {
-      id: 'company_size',
-      title: 'What\'s your company size?',
-      subtitle: 'This helps us understand your operational complexity',
-      type: 'select',
-      options: [
-        { value: '1-10', label: '1-10 employees', complexity: 1.0, avgWage: 45 },
-        { value: '11-50', label: '11-50 employees', complexity: 1.2, avgWage: 55 },
-        { value: '51-200', label: '51-200 employees', complexity: 1.4, avgWage: 65 },
-        { value: '200+', label: '200+ employees', complexity: 1.6, avgWage: 75 }
-      ]
-    },
-    {
-      id: 'manual_hours',
-      title: 'Approximately how many total hours per week does your company spend on repetitive manual tasks?',
-      subtitle: 'Think company-wide: data entry, reporting, follow-ups, scheduling, content creation, etc.',
-      type: 'select',
-      options: [
-        { value: '10-25', label: '10-25 hours per week', hours: 17.5 },
-        { value: '26-50', label: '26-50 hours per week', hours: 38 },
-        { value: '51-100', label: '51-100 hours per week', hours: 75 },
-        { value: '100+', label: '100+ hours per week', hours: 125 }
-      ]
-    },
-    {
-      id: 'biggest_pain',
-      title: 'What\'s your biggest operational bottleneck right now?',
-      subtitle: 'Choose the area causing the most delays or frustration',
-      type: 'select',
-      options: [
-        { value: 'data_entry', label: 'Data entry and file management', automation: 90, impact: 'high', category: 'operations' },
-        { value: 'customer_comm', label: 'Customer follow-up and communication', automation: 75, impact: 'high', category: 'customer' },
-        { value: 'content_creation', label: 'Content creation and social media management', automation: 85, impact: 'high', category: 'marketing' },
-        { value: 'reporting', label: 'Creating reports and dashboards', automation: 95, impact: 'medium', category: 'analytics' },
-        { value: 'lead_mgmt', label: 'Lead generation and qualification', automation: 85, impact: 'high', category: 'sales' },
-        { value: 'scheduling', label: 'Scheduling and calendar coordination', automation: 80, impact: 'medium', category: 'operations' }
-      ]
-    },
-    {
-      id: 'marketing_challenges',
-      title: 'Which marketing and social media challenges are slowing you down?',
-      subtitle: 'Select all that apply - these represent major automation opportunities',
-      type: 'multiple',
-      options: [
-        { value: 'content_creation', label: 'Creating consistent social media content', automation: 85, time_savings: 15 },
-        { value: 'lead_generation', label: 'Generating qualified leads online', automation: 80, time_savings: 20 },
-        { value: 'email_sequences', label: 'Setting up email marketing sequences', automation: 90, time_savings: 12 },
-        { value: 'social_engagement', label: 'Managing social media engagement and responses', automation: 75, time_savings: 18 },
-        { value: 'competitor_tracking', label: 'Tracking competitors and industry trends', automation: 95, time_savings: 8 },
-        { value: 'performance_reporting', label: 'Creating marketing performance reports', automation: 90, time_savings: 10 },
-        { value: 'none', label: 'Marketing isn\'t a major challenge for us', automation: 0, time_savings: 0 }
-      ]
-    },
-    {
-      id: 'current_tools',
-      title: 'Which systems does your team currently use?',
-      subtitle: 'Select all that apply - more tools often mean more automation opportunities',
-      type: 'multiple',
-      options: [
-        { value: 'crm', label: 'CRM (Salesforce, HubSpot, Pipedrive)', integration: 25, description: 'Great for workflow automation' },
-        { value: 'email_marketing', label: 'Email marketing platforms', integration: 20, description: 'Sequence automation potential' },
-        { value: 'social_media', label: 'Social media management tools', integration: 30, description: 'Content automation opportunities' },
-        { value: 'project_mgmt', label: 'Project management tools (Asana, Monday)', integration: 30, description: 'Task automation opportunities' },
-        { value: 'spreadsheets', label: 'Heavy Excel/Google Sheets usage', integration: 35, description: 'High automation potential' },
-        { value: 'accounting', label: 'Accounting/ERP software', integration: 25, description: 'Financial process automation' },
-        { value: 'basic_only', label: 'Mostly email and basic tools', integration: 10, description: 'Clean slate opportunity' }
-      ]
-    },
-    {
-      id: 'growth_pain',
-      title: 'What\'s your biggest growth challenge right now?',
-      subtitle: 'This helps us prioritize which automations will have the most impact',
-      type: 'select',
-      options: [
-        { value: 'scaling_team', label: 'Can\'t hire and train fast enough', urgency: 90, focus: 'workflow' },
-        { value: 'customer_service', label: 'Customer service taking too much time', urgency: 85, focus: 'customer' },
-        { value: 'marketing_roi', label: 'Marketing not generating enough quality leads', urgency: 88, focus: 'marketing' },
-        { value: 'manual_processes', label: 'Manual processes slowing everything down', urgency: 95, focus: 'process' },
-        { value: 'data_chaos', label: 'Information scattered across systems', urgency: 80, focus: 'integration' }
-      ]
-    },
-    {
-      id: 'timeline',
-      title: 'When are you looking to implement automation solutions?',
-      subtitle: 'Honest timeline helps us suggest the right approach',
-      type: 'select',
-      options: [
-        { value: 'asap', label: 'ASAP - this is urgent', priority: 100, timeline: 'immediate' },
-        { value: '1-3months', label: 'Within 1-3 months', priority: 80, timeline: 'near' },
-        { value: '3-6months', label: '3-6 months out', priority: 60, timeline: 'medium' },
-        { value: 'exploring', label: 'Just exploring options for now', priority: 30, timeline: 'future' }
-      ]
-    },
-    {
-      id: 'budget_sense',
-      title: 'What\'s your sense of monthly budget for automation solutions?',
-      subtitle: 'This helps us recommend the right scope of automation',
-      type: 'select',
-      options: [
-        { value: '800-2500', label: '$800 - $2,500/month', tier: 'starter', description: '~1-2 virtual specialists working 24/7' },
-        { value: '2500-6000', label: '$2,500 - $6,000/month', tier: 'growth', description: '~2-3 virtual specialists handling core processes' },
-        { value: '6000-15000', label: '$6,000 - $15,000/month', tier: 'scale', description: '~3-5 virtual specialists across departments' },
-        { value: '15000+', label: '$15,000+/month', tier: 'enterprise', description: 'Full virtual workforce for complex operations' }
-      ]
-    }
-  ];
+  const popupContentBg = 'rgba(20, 25, 35, 0.70)'; 
 
   // Initialize answers state once on component mount
   useEffect(() => {
     const initialAnswers = {};
     questions.forEach(q => {
       if (q.type === 'multiple') {
-        initialAnswers[q.id] = []; // Default for multiple choice is an empty array
+        initialAnswers[q.id] = []; 
       } else {
-        initialAnswers[q.id] = ''; // Default for single choice (select/radio) is an empty string
+        initialAnswers[q.id] = ''; 
       }
     });
     setAnswers(initialAnswers);
-  }, [questions]); // Empty dependency array ensures this runs only once on mount
+  }, []); // Empty dependency array because 'questions' is now stable (defined outside component)
 
 
   const handleAnswer = (questionId, value, isMultiple = false) => {
@@ -168,7 +168,6 @@ const AutomationOpportunityFinder = () => {
   };
 
   const calculateResults = () => {
-    // Ensure answers are defined before trying to find them in options
     const companySizeAnswer = answers.company_size || '';
     const manualHoursAnswer = answers.manual_hours || '';
     const biggestPainAnswer = answers.biggest_pain || '';
@@ -178,12 +177,11 @@ const AutomationOpportunityFinder = () => {
     const timelineAnswer = answers.timeline || '';
     const budgetSenseAnswer = answers.budget_sense || '';
 
-
     const companyData = questions.find(q => q.id === 'company_size')?.options.find(o => o.value === companySizeAnswer) || {};
     const complexity = companyData.complexity || 1;
     const weeklyHours = questions.find(q => q.id === 'manual_hours')?.options.find(o => o.value === manualHoursAnswer)?.hours || 0;
     const painPoint = questions.find(q => q.id === 'biggest_pain')?.options.find(o => o.value === biggestPainAnswer) || {};
-    const automationPct = painPoint.automation || 50; // Default if not found
+    const automationPct = painPoint.automation || 50; 
     
     const marketingTimeSavings = marketingChallengesAnswers.reduce((total, challengeValue) => {
       const challengeData = questions.find(q => q.id === 'marketing_challenges')?.options.find(o => o.value === challengeValue);
@@ -196,23 +194,23 @@ const AutomationOpportunityFinder = () => {
     }, 0);
 
     const growthPainData = questions.find(q => q.id === 'growth_pain')?.options.find(o => o.value === growthPainAnswer) || {};
-    const urgency = growthPainData.urgency || 50; // Default if not found
+    const urgency = growthPainData.urgency || 50; 
 
     const timelineData = questions.find(q => q.id === 'timeline')?.options.find(o => o.value === timelineAnswer) || {};
-    const priority = timelineData.priority || 50; // Default
+    const priority = timelineData.priority || 50; 
 
     const budgetData = questions.find(q => q.id === 'budget_sense')?.options.find(o => o.value === budgetSenseAnswer) || {};
     const budgetMidpoint = budgetData.value ? 
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
        parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 
-      : 3500; // Default budget midpoint
+      : 3500; 
     
     const baseAutomatableHours = weeklyHours * (automationPct / 100);
     const marketingHoursBonus = marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 
                                 Math.min(marketingTimeSavings * 0.25, 5) : 0;
     const hoursAutomatable = baseAutomatableHours + marketingHoursBonus;
     
-    const hourlyRate = 40; // Consider making this configurable or dynamic
+    const hourlyRate = 40; 
     const weeklyCost = hoursAutomatable * hourlyRate;
     const currentManualMonthlyCost = Math.round(weeklyCost * 4.33); 
     const annualSavingsIfFree = currentManualMonthlyCost * 12;
@@ -221,40 +219,40 @@ const AutomationOpportunityFinder = () => {
         (automationPct * 0.25),
         (urgency * 0.20),
         (priority * 0.20),
-        (Math.min(integrationScore, 100) * 0.15), // Cap integration score influence
-        (Math.min(weeklyHours / 2.5, 40) * 0.10), // Cap weekly hours influence
-        (marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 5 : 0) // Bonus for marketing challenges
+        (Math.min(integrationScore, 100) * 0.15), 
+        (Math.min(weeklyHours / 2.5, 40) * 0.10), 
+        (marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 5 : 0) 
     ];
-    const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0))); // Cap score at 100
+    const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0))); 
     
     const estimatedMonthlyAutomationCost = budgetMidpoint;
     const netMonthlySavingsFromAutomation = currentManualMonthlyCost - estimatedMonthlyAutomationCost;
     const annualBudgetForAutomation = estimatedMonthlyAutomationCost * 12;
     const netAnnualSavingsFromAutomation = annualSavingsIfFree - annualBudgetForAutomation;
     
-    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); // Avoid division by zero, handle free case
+    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); 
     
     let paybackMonths = null;
     if (netMonthlySavingsFromAutomation > 0 && estimatedMonthlyAutomationCost > 0) {
-      paybackMonths = Math.round((estimatedMonthlyAutomationCost / netMonthlySavingsFromAutomation) * 10) / 10; // Calculate payback in months
+      paybackMonths = Math.round((estimatedMonthlyAutomationCost / netMonthlySavingsFromAutomation) * 10) / 10; 
     }
 
-    const percentageSaving = currentManualMonthlyCost > 0 ? Math.round(((currentManualMonthlyCost - estimatedMonthlyAutomationCost) / currentManualMonthlyCost) * 100) : 0; // Avoid division by zero
+    const percentageSaving = currentManualMonthlyCost > 0 ? Math.round(((currentManualMonthlyCost - estimatedMonthlyAutomationCost) / currentManualMonthlyCost) * 100) : 0; 
 
     return {
       opportunityScore,
       hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
-      marketingTimeSavings, // Raw marketing time savings
+      marketingTimeSavings, 
       currentManualMonthlyCost: currentManualMonthlyCost,
       estimatedMonthlyAutomationCost: estimatedMonthlyAutomationCost,
       percentageSaving: percentageSaving,
       annualSavings: netAnnualSavingsFromAutomation,
       roiPercentage: roiPercentage,
-      paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null, // Realistic payback period
+      paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null, 
       complexity,
       painPoint: painPoint.label,
       growthFocus: growthPainData.focus,
-      marketingChallenges: marketingChallengesAnswers, // Pass through selected marketing challenges
+      marketingChallenges: marketingChallengesAnswers, 
       budgetTier: budgetData.tier,
     };
   };
@@ -345,11 +343,7 @@ const AutomationOpportunityFinder = () => {
     e.preventDefault();
     if (!email.includes('@') || !name.trim()) {
         console.error('Invalid name or email');
-        // Replace alert with a user-friendly modal in a real app
-        // For this context, we'll log and proceed to thank you page if webhook fails.
-        // This alert will not be visible in the iframe.
-        // alert('Please enter a valid name and email address.'); 
-        setShowThankYou(true); // Show thank you even if validation fails locally, for consistency if webhook fails.
+        setShowThankYou(true); 
         return;
     }
     try {
@@ -393,7 +387,7 @@ const AutomationOpportunityFinder = () => {
             <h2 className="text-2xl font-semibold mb-4" style={{color: textColorPrimary}}>Thank You, {name || 'Valued User'}!</h2>
             <p className="text-sm mb-8" style={{color: textColorSecondary}}>Your personalized insights {email ? `for ${email}` : ''} will arrive shortly. Keep an eye on your inbox!</p>
             <button 
-              onClick={() => { setShowThankYou(false); setShowEmailCapture(false); setShowResults(true); }} // Go back to results
+              onClick={() => { setShowThankYou(false); setShowEmailCapture(false); setShowResults(true); }} 
               className="px-6 py-3 rounded-xl font-medium" 
               style={{background: accentColor, color: popupCtaTextColor}}
             > 
@@ -447,9 +441,8 @@ const AutomationOpportunityFinder = () => {
     );
   }
 
-  // Wait until answers are initialized before rendering questions or results
   if (Object.keys(answers).length === 0 && questions.length > 0) {
-    return ( // Basic loading state
+    return ( 
       <div className="w-full h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary}}>
         Loading Assessment...
       </div>
@@ -607,11 +600,10 @@ const AutomationOpportunityFinder = () => {
   }
 
   const currentQuestion = questions[currentStep];
-  if (!currentQuestion) { // Should not happen if currentStep is managed correctly
+  if (!currentQuestion) { 
     return <div style={{color: textColorPrimary}}>Error: Question not found.</div>;
   }
 
-  // Ensure answers for the current question are initialized
   const currentQuestionAnswer = answers[currentQuestion.id];
   const isAnswered = currentQuestion.type === 'multiple'
     ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
@@ -648,7 +640,6 @@ const AutomationOpportunityFinder = () => {
               {currentQuestion.options.map((option) => {
                 let isSelected;
                 if (currentQuestion.type === 'multiple') {
-                    // Ensure answers[currentQuestion.id] is an array before calling .includes()
                     isSelected = Array.isArray(answers[currentQuestion.id]) && answers[currentQuestion.id].includes(option.value);
                 } else {
                     isSelected = answers[currentQuestion.id] === option.value;
@@ -668,7 +659,7 @@ const AutomationOpportunityFinder = () => {
                         type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'} 
                         name={currentQuestion.id} 
                         value={option.value} 
-                        checked={isSelected} // Relies on answers[currentQuestion.id] being initialized
+                        checked={isSelected} 
                         onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
                         className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" 
                         style={{accentColor: accentColor}} 
