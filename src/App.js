@@ -172,10 +172,6 @@ const AutomationOpportunityFinder = () => {
   const [name, setName] = useState(''); 
   const [showCalendlyPopup, setShowCalendlyPopup] = useState(false); 
   const [calendlyKey, setCalendlyKey] = useState(Date.now());
-  
-  const [aiTopRecNextSteps, setAiTopRecNextSteps] = useState({});
-  const [isGeneratingNextSteps, setIsGeneratingNextSteps] = useState({});
-  const [aiNextStepsError, setAiNextStepsError] = useState({});
 
 
   const isQuestionDisplayable = useCallback((question, currentAnswers) => {
@@ -614,38 +610,6 @@ const AutomationOpportunityFinder = () => {
     };
   };
   
-  const getDetailedRecommendations = (results) => { 
-      const questionsToUse = processedQuestions || baseQuestions;
-      const painPointAnswer = answers.biggest_pain_generic;
-      const painPointOption = questionsToUse.find(q=>q.id === 'biggest_pain_generic')?.options.find(o=>o.value === painPointAnswer);
-      const painPointLabel = painPointOption?.label || "your key challenge area";
-
-      let recs = [];
-      recs.push({
-          id: 'quick_wins', title: 'Quick Wins: High-Impact Automations for [Business Name]',
-          timeline: '1-2 Weeks', impact: 'High', priority: 'high', preview: true,
-          items: [
-              `Address "${personalizeText(painPointLabel)}" with targeted automation (est. ${Math.round(results.hoursAutomatable * 0.3)} hrs/wk savings).`,
-              `Implement automated reminders/follow-ups for key processes related to your pain point.`,
-              `Set up basic automated reporting for metrics relevant to "${personalizeText(painPointLabel)}".`
-          ]
-      });
-      
-      const techStackAnswer = answers.tech_stack_generic || [];
-      if (techStackAnswer.includes('basic_office_tools') || techStackAnswer.includes('spreadsheets_docs_generic')) {
-          recs.push({
-              id: 'foundational_tech', title: 'Build a Strong Tech Foundation for [Business Name]',
-              timeline: '2-4 Weeks', impact: 'High', priority: 'high', preview: true,
-              items: [
-                  `Evaluate and implement a central CRM or industry-specific management system relevant to '${selectedIndustry}'.`,
-                  `Automate data migration from spreadsheets to the new system.`,
-                  `Integrate email and calendar with your new core system.`
-              ]
-          });
-      }
-      return recs;
-  };
-
   const handleEmailSubmit = async (e) => { 
       e.preventDefault();
       if (!emailConsent) {
@@ -657,36 +621,6 @@ const AutomationOpportunityFinder = () => {
       setShowThankYou(true); 
   };
   
-  const handleGenerateNextSteps = async (recommendationTitle, recommendationItems, recId) => { 
-        setIsGeneratingNextSteps(prev => ({...prev, [recId]: true}));
-    setAiNextStepsError(prev => ({...prev, [recId]: ''}));
-    
-    const prompt = `
-      Recommendation Title: "${recommendationTitle}"
-      Recommendation Items: ${recommendationItems.join(", ")}
-      Business Name: "${businessName || 'This Business'}"
-      Industry: "${selectedIndustry || 'General Business'}"
-
-      Provide 2-3 specific, actionable next steps (each a short phrase or sentence) for ${businessName || 'this business'} to start implementing the above recommendation.
-      Format as a JSON array of strings. For example: ["Research X tool", "Draft Y process", "Assign Z task"]
-    `;
-    try {
-      const nextSteps = await callGeminiAPI(prompt, true, { type: "ARRAY", items: { type: "STRING" } });
-      if (Array.isArray(nextSteps)) {
-        setAiTopRecNextSteps(prev => ({...prev, [recId]: nextSteps}));
-      } else {
-        throw new Error("AI Next Steps were not in the expected array format.");
-      }
-    } catch (error) {
-      console.error(`Failed to generate AI next steps for ${recId}:`, error);
-      setAiNextStepsError(prev => ({...prev, [recId]: error.message || "Could not generate next steps."}));
-      setAiTopRecNextSteps(prev => ({...prev, [recId]: ["Define current process for these items.", "Identify key team members for this initiative.", "Explore relevant software solutions." ]})); 
-    } finally {
-      setIsGeneratingNextSteps(prev => ({...prev, [recId]: false}));
-    }
-   };
-  
-
   const modalWrapperBaseStyle = { 
     borderRadius: '0.875rem', 
     padding: '1px', 
@@ -951,9 +885,6 @@ const AutomationOpportunityFinder = () => {
 
   if (showResults) {
     const results = calculateResults();
-    const recommendations = getDetailedRecommendations(results); 
-    const previewRecs = recommendations.filter(r => r.preview);
-    const hiddenRecs = recommendations.filter(r => !r.preview);
     
     return (
       <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
