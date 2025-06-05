@@ -12,18 +12,18 @@ const AutomationOpportunityFinder = () => {
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
-  const accentColor = '#92d8c8'; // Softer teal for secondary accents, icons, progress, selections
-  const accentColorDarker = '#6BAA9B'; // For CTAs within popups (e.g., "Get Full Report")
+  const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
+  const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups (e.g., "Get Full Report" on Email Capture)
   
-  const popupBorderColorWithOpacity = '#2caa9cBF'; // New green with 75% opacity for popup borders
-  const brighterMainCtaColor = '#4DCFB9'; // Approx 15% brighter than #2caa9c for main page CTA
-  const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green backgrounds
+  const popupBorderColorWithOpacity = '#2caa9cBF'; // Green with 75% opacity for popup borders
+  const brighterMainCtaColor = '#4DCFB9'; // Brighter green for main page "Schedule Call" CTA
+  const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green/teal backgrounds
 
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const popupContentBg = 'rgba(20, 25, 35, 0.85)'; // Dark blue-gray, 85% opacity for popup content
+  const popupContentBg = 'rgba(20, 25, 35, 0.80)'; // Dark blue-gray, 80% opacity for popup content
 
   const questions = [
     {
@@ -307,17 +307,36 @@ const AutomationOpportunityFinder = () => {
 
   if (showThankYou) {
     return (
-      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div className="w-full text-center">
-          <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
-            <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div 
+          style={{
+            borderRadius: '0.875rem', 
+            padding: '1px', 
+            background: popupBorderColorWithOpacity, 
+            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
+            width: '100%', 
+            maxWidth: '560px', // Added max-width for Thank You card
+          }}
+        >
+          <div 
+            style={{
+              background: popupContentBg, 
+              borderRadius: '0.8125rem', 
+              padding: '2rem', // Increased padding for Thank You card content
+              backdropFilter: 'blur(2px)',
+            }}
+            className="w-full text-center"
+          >
+            <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+              <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
+            </div>
+            <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
+            <p className="text-sm mb-8 text-gray-400">Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p>
+            <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
+              className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
+              Back to My Report
+            </button>
           </div>
-          <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
-          <p className="text-sm mb-6 text-gray-400">Your personalized insights for {email} will arrive shortly.</p>
-          <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
-            className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
-            Back to My Report
-          </button>
         </div>
       </div>
     );
@@ -330,7 +349,7 @@ const AutomationOpportunityFinder = () => {
           style={{
             borderRadius: '0.875rem', 
             padding: '1px', 
-            background: popupBorderColorWithOpacity, // New border color with opacity
+            background: popupBorderColorWithOpacity, 
             boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             width: '100%', 
           }}
@@ -465,7 +484,7 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur-sm pointer-events-none"> {/* Changed to blur-sm for a lighter blur */}
+              <div className="filter blur-sm pointer-events-none"> {/* Maintained blur-sm for underlying cards */}
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
@@ -478,7 +497,7 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.3) 25%, rgba(10,10,10,0.85) 55%, rgba(10,10,10,1) 80%)'}}> {/* Reversed gradient to be lighter at top */}
+                   style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> {/* Reversed Gradient */}
                 <div 
                   style={{
                     borderRadius: '0.875rem', 
@@ -512,23 +531,37 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
         
-          <div className="p-6 sm:p-10 rounded-2xl text-center" style={{background: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-3">Ready to Transform Your Business?</h3>
-            <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto text-gray-300 leading-relaxed">
-              Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-              <button onClick={() => alert('Schedule Call function to be implemented.')}
-                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
-                style={{background: brighterMainCtaColor, color: popupCtaTextColor }}> {/* Brighter Green CTA */}
-                Schedule Free Strategy Call
-              </button>
-              <button onClick={() => setShowEmailCapture(true)}
-                className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto text-white border border-gray-400/40 hover:bg-white/10">
-                Download Report Again
-              </button>
+          {/* Final CTA Block - Styled to match "Unlock" modal */}
+          <div 
+            style={{
+              borderRadius: '0.875rem', 
+              padding: '1px', 
+              background: popupBorderColorWithOpacity, 
+              boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
+            }}
+            className="mx-auto" // Centering the block if max-w is applied to inner
+          >
+            <div 
+              className="p-6 sm:p-10 rounded-[0.8125rem] text-center" // Inner radius adjusted for 1px border
+              style={{background: popupContentBg, backdropFilter: 'blur(2px)' }}
+            >
+              <h3 className="text-xl sm:text-2xl font-semibold mb-3">Ready to Transform Your Business?</h3>
+              <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto text-gray-300 leading-relaxed">
+                Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <button onClick={() => alert('Schedule Call function to be implemented.')}
+                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
+                  style={{background: brighterMainCtaColor, color: popupCtaTextColor }}> 
+                  Schedule Free Strategy Call
+                </button>
+                <button onClick={() => setShowEmailCapture(true)}
+                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto text-white border border-gray-400/40 hover:bg-white/10">
+                  Download Report Again
+                </button>
+              </div>
+              <p className="text-xs mt-4 text-gray-500">Personalized consultation • Custom roadmap • No pressure</p>
             </div>
-            <p className="text-xs mt-4 text-gray-500">Personalized consultation • Custom roadmap • No pressure</p>
           </div>
         </div>
       </div>
