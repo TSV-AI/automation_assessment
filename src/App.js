@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, Brain, AlertTriangle, Droplets } from 'lucide-react';
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, AlertTriangle } from 'lucide-react';
 
 // --- Color Palette (retained for UI consistency) ---
 const pageBgColor = '#0a0a0a';
@@ -21,10 +21,10 @@ const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)';
 const loadingMessages = [
   { text: "Sacrificing a USB cable to the tech gods for faster processing...", icon: <Zap className="w-8 h-8 mr-3 text-red-400" /> },
   { text: "Loading... please wait while we pretend this is complicated.", icon: <Clock className="w-8 h-8 mr-3 text-blue-400" /> },
-  { text: "Please hold while our AI argues with itself about your answers...", icon: <Brain className="w-8 h-8 mr-3 text-pink-400 animate-pulse" /> },
+  { text: "Please hold while our AI argues with itself about your answers...", icon: <Cpu className="w-8 h-8 mr-3 text-pink-400 animate-pulse" /> },
   { text: "Our AI is having an existential crisis... give it a moment to pull itself together.", icon: <AlertTriangle className="w-8 h-8 mr-3 text-yellow-400 animate-bounce" /> },
   { text: "Feeding our overworked algorithms some energy drinks and false hope...", icon: <Zap className="w-8 h-8 mr-3 text-purple-400 animate-pulse" /> },
-  { text: "Our servers are powered by tears of frustrated developers... almost ready!", icon: <Droplets className="w-8 h-8 mr-3 text-blue-400" /> }
+  { text: "Our servers are powered by tears of frustrated developers... almost ready!", icon: <Sparkles className="w-8 h-8 mr-3 text-blue-400" /> }
 ];
 
 
