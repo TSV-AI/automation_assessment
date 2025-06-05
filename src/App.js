@@ -297,7 +297,7 @@ const AutomationOpportunityFinder = () => {
             responseSchema: expectedSchema || { type: "OBJECT", properties: {"output": {type: "STRING"}} } 
         };
     }
-    const apiKey = "AIzaSyBO22-mK7am5AwLEMrV7UIuBRK66dPlChg"; // API_KEY REMOVED FOR SECURITY
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     try {
         const response = await fetch(apiUrl, {
