@@ -10,9 +10,12 @@ const AutomationOpportunityFinder = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState('');
 
-  const accentColor = '#92d8c8'; 
-  const accentColorDarker = '#6BAA9B'; 
-  const accentColorDarkerBrighter = '#7BC3B2'; // Approx 15% brighter than accentColorDarker
+  const accentColor = '#92d8c8'; // Main UI accent (icons, progress, selections)
+  const accentColorDarker = '#6BAA9B'; // For pop-up CTAs like "Get Full Report"
+  
+  const popupBorderColor = '#2CE0A6'; // New vibrant green for popup borders & main page CTA
+  const popupCtaTextColor = '#0A0A0A'; // Dark text for popupBorderColor buttons
+
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
@@ -323,15 +326,15 @@ const AutomationOpportunityFinder = () => {
           style={{
             borderRadius: '0.875rem', 
             padding: '1px', // Thinner border
-            background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
-            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', // Softer shadow
+            background: popupBorderColor, // Solid color border
+            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             width: '100%', 
           }}
         >
           <div 
             style={{
-              background: 'rgba(17, 24, 39, 0.88)', // More transparent background
-              borderRadius: '0.8125rem', // (14px - 1px border) 13px
+              background: 'rgba(17, 24, 39, 0.80)', // More transparent background for content
+              borderRadius: '0.8125rem', 
               padding: '1.5rem', 
             }}
             className="w-full"
@@ -470,23 +473,21 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.65) 25%, rgba(10,10,10,0.95) 55%, rgba(10,10,10,1) 75%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
-                {/* Outer div for gradient border */}
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.4) 25%, rgba(10,10,10,0.9) 50%, rgba(10,10,10,1) 70%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
                 <div 
                   style={{
                     borderRadius: '0.875rem', 
                     padding: '1px', // Thinner border
-                    background: `linear-gradient(to bottom, ${accentColor} 0%, ${accentColorDarker} 50%, ${accentColor} 100%)`,
-                    boxShadow: '0 6px 25px rgba(0,0,0,0.3)', // Softer shadow
+                    background: popupBorderColor, // Solid color border
+                    boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
                   }}
                   className="max-w-md mx-auto" 
                 >
-                  {/* Inner content box */}
                   <div 
                     className="text-center p-6 sm:p-8" 
                     style={{
-                      background: 'rgba(17, 24, 39, 0.88)', // More transparent background
-                      borderRadius: '0.8125rem', // (14px outer - 1px border = 13px inner)
+                      background: 'rgba(17, 24, 39, 0.80)', // More transparent background for content
+                      borderRadius: '0.8125rem', 
                       backdropFilter: 'blur(2px)', 
                     }}
                   >
@@ -514,7 +515,7 @@ const AutomationOpportunityFinder = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
                 className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
-                style={{background: accentColorDarkerBrighter, color: '#FFFFFF'}}> {/* Brighter Green CTA */}
+                style={{background: popupBorderColor, color: popupCtaTextColor }}> {/* Brighter Green CTA */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
