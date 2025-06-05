@@ -1,160 +1,215 @@
-import React, { useState, useEffect } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react'; 
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, Building, Briefcase, HelpCircle, Cpu, Lightbulb, Shuffle } from 'lucide-react'; // Added Cpu, Lightbulb, Shuffle
 
-const questions = [
+// --- Color Palette (retained for UI consistency) ---
+const pageBgColor = '#0a0a0a';
+const textColorPrimary = '#efefea';       
+const textColorSecondary = '#c8c8c4';   
+const textColorMuted = '#a1a19b';       
+const textColorVeryMuted = '#6B7280'; 
+const accentColor = '#92d8c8'; 
+const accentColorDarker = '#6BAA9B'; 
+const popupBorderColorWithOpacity = '#0e9f7bBF'; 
+const brighterMainCtaColor = '#4DCFB9'; 
+const popupCtaTextColor = '#0A0A0A'; 
+const accentColorBgLowOpacity = accentColor + '1A'; 
+const accentColorBgMediumOpacity = accentColor + '26'; 
+const accentColorBorderLowOpacity = accentColor + '33'; 
+const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)'; 
+const calendlyPopupOuterBg = '#040404';
+
+// --- Funny Loading Messages ---
+const funnyLoadingMessages = [
+  { text: "Summoning the AI gnomes to tailor your questions...", icon: <Sparkles className="w-8 h-8 mr-3 text-yellow-400" /> },
+  { text: "Our digital hamsters are running as fast as they can!", icon: <Shuffle className="w-8 h-8 mr-3 text-purple-400 animate-pulse" /> },
+  { text: "Brewing a fresh batch of personalized insights...", icon: <Lightbulb className="w-8 h-8 mr-3 text-green-400" /> },
+  { text: "Don't worry, we haven't forgotten about you... just teaching the AI some manners.", icon: <Clock className="w-8 h-8 mr-3 text-blue-400" /> },
+  { text: "Analyzing your info with our team of tiny AI helpers...", icon: <Cpu className="w-8 h-8 mr-3 text-teal-400 animate-bounce" /> }
+];
+
+
+// --- Initial Questions Setup ---
+const industries = [
+  "Retail & E-commerce", "Healthcare", "Manufacturing", "Real Estate", "Financial Services", 
+  "Technology (Software/SaaS)", "Professional Services (Consulting, Legal, Accounting)", 
+  "Hospitality & Tourism", "Education", "Construction", "Marketing & Advertising", 
+  "Logistics & Transportation", "Non-Profit", "Other"
+];
+
+// Base questions structure - AI will attempt to modify titles, subtitles, and options
+const baseQuestions = [
   {
-    id: 'company_size',
-    title: 'What\'s your company size?',
-    subtitle: 'This helps us understand your operational complexity',
+    id: 'company_scale_generic', 
+    title: 'What is the operational scale of [Business Name,fallback=your company]?', 
+    subtitle: 'Understanding your size helps us tailor complexity assessments.', 
     type: 'select',
-    options: [
-      { value: '1-10', label: '1-10 employees', complexity: 1.0, avgWage: 45 },
-      { value: '11-50', label: '11-50 employees', complexity: 1.2, avgWage: 55 },
-      { value: '51-200', label: '51-200 employees', complexity: 1.4, avgWage: 65 },
-      { value: '200+', label: '200+ employees', complexity: 1.6, avgWage: 75 }
-    ]
+    options: [ 
+      { value: 'small_scale', label: 'Small Scale / Low Volume' },
+      { value: 'medium_scale', label: 'Medium Scale / Moderate Volume' },
+      { value: 'large_scale', label: 'Large Scale / High Volume' },
+      { value: 'very_large_scale', label: 'Very Large Scale / Very High Volume' }
+    ],
+    customizableOptions: true, 
+    customizableQuestion: true, 
   },
   {
     id: 'manual_hours',
-    title: 'Approximately how many total hours per week does your company spend on repetitive manual tasks?',
+    title: 'Approximately how many total hours per week does [Business Name,fallback=your company] spend on repetitive manual tasks?',
     subtitle: 'Think company-wide: data entry, reporting, follow-ups, scheduling, content creation, etc.',
     type: 'select',
-    options: [
-      { value: '10-25', label: '10-25 hours per week', hours: 17.5 },
-      { value: '26-50', label: '26-50 hours per week', hours: 38 },
-      { value: '51-100', label: '51-100 hours per week', hours: 75 },
-      { value: '100+', label: '100+ hours per week', hours: 125 }
-    ]
+    options: [ 
+      { value: '10_25', label: '10-25 hours per week', hours: 17.5, avgWageModifier: 1.0 },
+      { value: '26_50', label: '26-50 hours per week', hours: 38, avgWageModifier: 1.1 },
+      { value: '51_100', label: '51-100 hours per week', hours: 75, avgWageModifier: 1.2 },
+      { value: '100_plus', label: '100+ hours per week', hours: 125, avgWageModifier: 1.3 }
+    ],
+    customizableOptions: true, 
+    customizableQuestion: false, 
+    contextualHelp: { 
+      'Healthcare': "For Healthcare, this might include time spent on patient record updates, insurance claim processing, or appointment scheduling.",
+      'Manufacturing': "In Manufacturing, consider time on order processing, supply chain coordination, or quality control documentation."
+    }
   },
   {
-    id: 'biggest_pain',
-    title: 'What\'s your biggest operational bottleneck right now?',
-    subtitle: 'Choose the area causing the most delays or frustration',
+    id: 'biggest_pain_generic', 
+    title: 'What is the biggest operational bottleneck or primary pain point for [Business Name,fallback=your business] right now?', 
+    subtitle: 'Choose the area causing the most delays or frustration. AI will refine these options for your industry.', 
     type: 'select',
-    options: [
-      { value: 'data_entry', label: 'Data entry and file management', automation: 90, impact: 'high', category: 'operations' },
-      { value: 'customer_comm', label: 'Customer follow-up and communication', automation: 75, impact: 'high', category: 'customer' },
-      { value: 'content_creation', label: 'Content creation and social media management', automation: 85, impact: 'high', category: 'marketing' },
-      { value: 'reporting', label: 'Creating reports and dashboards', automation: 95, impact: 'medium', category: 'analytics' },
-      { value: 'lead_mgmt', label: 'Lead generation and qualification', automation: 85, impact: 'high', category: 'sales' },
-      { value: 'scheduling', label: 'Scheduling and calendar coordination', automation: 80, impact: 'medium', category: 'operations' }
-    ]
+    options: [ 
+      { value: 'data_handling', label: 'Data entry and information management', automationPotential: 0.7 },
+      { value: 'customer_interactions', label: 'Customer communication and follow-up', automationPotential: 0.6 },
+      { value: 'content_marketing_ops', label: 'Content creation and marketing operations', automationPotential: 0.5 },
+      { value: 'reporting_analytics', label: 'Reporting and data analysis tasks', automationPotential: 0.8 },
+      { value: 'sales_lead_mgmt', label: 'Sales process and lead management', automationPotential: 0.65 },
+      { value: 'internal_coordination', label: 'Internal scheduling and coordination', automationPotential: 0.55 }
+    ],
+    customizableOptions: true,
+    customizableQuestion: true, 
   },
-  {
-    id: 'marketing_challenges',
-    title: 'Which marketing and social media challenges are slowing you down?',
-    subtitle: 'Select all that apply - these represent major automation opportunities',
+  { 
+    id: 'customer_comm_specifics',
+    title: 'Regarding customer communication challenges for [Business Name,fallback=your business], which specific areas are most time-consuming or problematic?',
+    subtitle: 'Select all that apply. This helps us pinpoint key automation opportunities within your customer interactions.',
     type: 'multiple',
-    options: [
-      { value: 'content_creation', label: 'Creating consistent social media content', automation: 85, time_savings: 15 },
-      { value: 'lead_generation', label: 'Generating qualified leads online', automation: 80, time_savings: 20 },
-      { value: 'email_sequences', label: 'Setting up email marketing sequences', automation: 90, time_savings: 12 },
-      { value: 'social_engagement', label: 'Managing social media engagement and responses', automation: 75, time_savings: 18 },
-      { value: 'competitor_tracking', label: 'Tracking competitors and industry trends', automation: 95, time_savings: 8 },
-      { value: 'performance_reporting', label: 'Creating marketing performance reports', automation: 90, time_savings: 10 },
-      { value: 'none', label: 'Marketing isn\'t a major challenge for us', automation: 0, time_savings: 0 }
-    ]
+    options: [ 
+      { value: 'initial_outreach', label: 'Initial customer outreach and first contact' },
+      { value: 'follow_up_sequences', label: 'Managing and personalizing follow-up sequences' },
+      { value: 'handling_complaints', label: 'Responding to and resolving customer complaints/issues' },
+      { value: 'personalized_messaging', label: 'Delivering personalized messages at scale (e.g., updates, offers)' },
+      { value: 'appointment_reminders', label: 'Sending appointment or event reminders' },
+      { value: 'feedback_collection', label: 'Collecting customer feedback systematically' }
+    ],
+    customizableOptions: false, 
+    customizableQuestion: false,
+    dependsOn: { questionId: 'biggest_pain_generic', answerValue: 'customer_interactions' } 
   },
   {
-    id: 'current_tools',
-    title: 'Which systems does your team currently use?',
-    subtitle: 'Select all that apply - more tools often mean more automation opportunities',
+    id: 'tech_stack_generic', 
+    title: 'What types of systems or tools does [Business Name,fallback=your team] currently use most?', 
+    subtitle: 'Select all that apply. More tools often mean more integration and automation opportunities. AI will provide industry-specific examples.',
     type: 'multiple',
-    options: [
-      { value: 'crm', label: 'CRM (Salesforce, HubSpot, Pipedrive)', integration: 25, description: 'Great for workflow automation' },
-      { value: 'email_marketing', label: 'Email marketing platforms', integration: 20, description: 'Sequence automation potential' },
-      { value: 'social_media', label: 'Social media management tools', integration: 30, description: 'Content automation opportunities' },
-      { value: 'project_mgmt', label: 'Project management tools (Asana, Monday)', integration: 30, description: 'Task automation opportunities' },
-      { value: 'spreadsheets', label: 'Heavy Excel/Google Sheets usage', integration: 35, description: 'High automation potential' },
-      { value: 'accounting', label: 'Accounting/ERP software', integration: 25, description: 'Financial process automation' },
-      { value: 'basic_only', label: 'Mostly email and basic tools', integration: 10, description: 'Clean slate opportunity' }
-    ]
+    options: [ 
+      { value: 'crm_generic', label: 'CRM / Client Management System' },
+      { value: 'email_marketing_generic', label: 'Email Marketing Platform' },
+      { value: 'project_mgmt_generic', label: 'Project/Task Management Tool' },
+      { value: 'spreadsheets_docs_generic', label: 'Heavy use of Spreadsheets/Documents for core processes' },
+      { value: 'industry_specific_software_generic', label: 'Specialized Industry-Specific Software (e.g., EHR, MES, PMS)' },
+      { value: 'basic_office_tools', label: 'Mostly standard office tools (email, calendar, basic docs)' }
+    ],
+    customizableOptions: true,
+    customizableQuestion: true,
   },
   {
-    id: 'growth_pain',
-    title: 'What\'s your biggest growth challenge right now?',
-    subtitle: 'This helps us prioritize which automations will have the most impact',
+    id: 'growth_challenge_generic', 
+    title: 'What is the biggest growth challenge for [Business Name,fallback=your business] right now?', 
+    subtitle: 'This helps us prioritize which automations will have the most impact. AI will tailor options to your industry.',
     type: 'select',
-    options: [
-      { value: 'scaling_team', label: 'Can\'t hire and train fast enough', urgency: 90, focus: 'workflow' },
-      { value: 'customer_service', label: 'Customer service taking too much time', urgency: 85, focus: 'customer' },
-      { value: 'marketing_roi', label: 'Marketing not generating enough quality leads', urgency: 88, focus: 'marketing' },
-      { value: 'manual_processes', label: 'Manual processes slowing everything down', urgency: 95, focus: 'process' },
-      { value: 'data_chaos', label: 'Information scattered across systems', urgency: 80, focus: 'integration' }
-    ]
+    options: [ 
+      { value: 'scaling_operations', label: 'Scaling operations without proportionally increasing costs/staff' },
+      { value: 'improving_customer_experience', label: 'Improving customer service and experience at scale' },
+      { value: 'marketing_lead_gen_roi', label: 'Marketing effectiveness and lead generation ROI' },
+      { value: 'process_efficiency_bottlenecks', label: 'Manual processes creating bottlenecks and slowing growth' },
+      { value: 'data_utilization_insights', label: 'Utilizing data effectively for decision-making and insights' }
+    ],
+    customizableOptions: true,
+    customizableQuestion: true,
   },
   {
     id: 'timeline',
-    title: 'When are you looking to implement automation solutions?',
-    subtitle: 'Honest timeline helps us suggest the right approach',
+    title: 'When is [Business Name,fallback=your company] looking to implement automation solutions?',
+    subtitle: 'Honest timeline helps us suggest the right approach.',
     type: 'select',
     options: [
-      { value: 'asap', label: 'ASAP - this is urgent', priority: 100, timeline: 'immediate' },
-      { value: '1-3months', label: 'Within 1-3 months', priority: 80, timeline: 'near' },
-      { value: '3-6months', label: '3-6 months out', priority: 60, timeline: 'medium' },
-      { value: 'exploring', label: 'Just exploring options for now', priority: 30, timeline: 'future' }
-    ]
+      { value: 'asap', label: 'ASAP - this is urgent', priority: 100 },
+      { value: '1_3months', label: 'Within 1-3 months', priority: 80 },
+      { value: '3_6months', label: '3-6 months out', priority: 60 },
+      { value: 'exploring', label: 'Just exploring options for now', priority: 30 }
+    ],
+    customizableOptions: false, 
+    customizableQuestion: false,
   },
-  {
-    id: 'budget_sense',
-    title: 'What\'s your sense of monthly budget for automation solutions?',
-    subtitle: 'This helps us recommend the right scope of automation',
-    type: 'select',
-    options: [
-      { value: '800-2500', label: '$800 - $2,500/month', tier: 'starter', description: '~1-2 virtual specialists working 24/7' },
-      { value: '2500-6000', label: '$2,500 - $6,000/month', tier: 'growth', description: '~2-3 virtual specialists handling core processes' },
-      { value: '6000-15000', label: '$6,000 - $15,000/month', tier: 'scale', description: '~3-5 virtual specialists across departments' },
-      { value: '15000+', label: '$15,000+/month', tier: 'enterprise', description: 'Full virtual workforce for complex operations' }
-    ]
-  }
 ];
 
 const AutomationOpportunityFinder = () => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [assessmentStage, setAssessmentStage] = useState('initialName'); 
+  const [businessName, setBusinessName] = useState('');
+  const [selectedIndustry, setSelectedIndustry] = useState('');
+  
   const [answers, setAnswers] = useState({});
+  const [processedQuestions, setProcessedQuestions] = useState(JSON.parse(JSON.stringify(baseQuestions))); 
+
+  const [displayableQuestionsOrder, setDisplayableQuestionsOrder] = useState([]); 
+  const [currentStepInDisplayable, setCurrentStepInDisplayable] = useState(0);
+
+  const [funnyLoadingMessageIndex, setFunnyLoadingMessageIndex] = useState(0);
+
+
   const [showResults, setShowResults] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [email, setEmail] = useState(''); 
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState(''); 
   const [showCalendlyPopup, setShowCalendlyPopup] = useState(false); 
-
-  // Color Palette
-  const pageBgColor = '#0a0a0a';
-  const textColorPrimary = '#efefea';       
-  const textColorSecondary = '#c8c8c4';   
-  const textColorMuted = '#a1a19b';       
-  const textColorVeryMuted = '#6B7280'; // Used for the gray border on Calendly widget   
-
-  const accentColor = '#92d8c8'; 
-  const accentColorDarker = '#6BAA9B'; 
+  const [calendlyKey, setCalendlyKey] = useState(Date.now());
   
-  const popupBorderColorWithOpacity = '#0e9f7bBF'; // Green border for default popups
-  const brighterMainCtaColor = '#4DCFB9'; 
-  const popupCtaTextColor = '#0A0A0A'; 
+  const [aiTopRecNextSteps, setAiTopRecNextSteps] = useState({});
+  const [isGeneratingNextSteps, setIsGeneratingNextSteps] = useState({});
+  const [aiNextStepsError, setAiNextStepsError] = useState({});
 
-  const accentColorBgLowOpacity = accentColor + '1A'; 
-  const accentColorBgMediumOpacity = accentColor + '26'; 
-  const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)'; 
-  const calendlyPopupOuterBg = '#040404'; // Background for the Calendly popup container
+  const isQuestionDisplayable = useCallback((question, currentAnswers) => {
+    if (!question.dependsOn) return true;
+    const dependentQuestionAnswer = currentAnswers[question.dependsOn.questionId];
+    return dependentQuestionAnswer === question.dependsOn.answerValue;
+  }, []);
+
+  useEffect(() => {
+    const initialMainAnswers = {};
+    (processedQuestions || baseQuestions).forEach(q => {
+      initialMainAnswers[q.id] = q.type === 'multiple' ? [] : '';
+    });
+    setAnswers(initialMainAnswers);
+  }, [processedQuestions]);
 
 
   useEffect(() => {
-    const initialAnswers = {};
-    questions.forEach(q => {
-      if (q.type === 'multiple') {
-        initialAnswers[q.id] = []; 
-      } else {
-        initialAnswers[q.id] = ''; 
+    const order = [];
+    (processedQuestions || baseQuestions).forEach((q, index) => {
+      const questionToCheck = processedQuestions.find(pq => pq.id === q.id) || q; 
+      if (isQuestionDisplayable(questionToCheck, answers)) {
+        const idxInProcessed = processedQuestions.findIndex(pq => pq.id === q.id);
+        if (idxInProcessed !== -1) {
+            order.push(idxInProcessed);
+        }
       }
     });
-    setAnswers(initialAnswers);
-  }, []); 
+    setDisplayableQuestionsOrder(order);
+  }, [answers, processedQuestions, isQuestionDisplayable]);
+
 
   useEffect(() => {
     if (showCalendlyPopup) {
+      setCalendlyKey(Date.now()); 
       const scriptId = 'calendly-widget-script';
       let script = document.getElementById(scriptId);
       if (!script) {
@@ -164,278 +219,517 @@ const AutomationOpportunityFinder = () => {
         script.src = 'https://assets.calendly.com/assets/external/widget.js';
         script.async = true;
         document.body.appendChild(script);
-      }
-
-      const handleEscape = (event) => {
-        if (event.key === 'Escape') {
-          setShowCalendlyPopup(false);
+      } else {
+        if (window.Calendly && typeof window.Calendly.initInlineWidgets === 'function') {
+           window.Calendly.initInlineWidgets();
         }
+      }
+      const handleEscape = (event) => {
+        if (event.key === 'Escape') setShowCalendlyPopup(false);
       };
       document.addEventListener('keydown', handleEscape);
-      return () => {
-        document.removeEventListener('keydown', handleEscape);
-      };
+      return () => document.removeEventListener('keydown', handleEscape);
     }
   }, [showCalendlyPopup]);
+
+  // Effect for cycling funny loading messages
+  useEffect(() => {
+    let intervalId;
+    if (assessmentStage === 'personalizing') {
+      intervalId = setInterval(() => {
+        setFunnyLoadingMessageIndex(prevIndex => (prevIndex + 1) % funnyLoadingMessages.length);
+      }, 6000); // Changed interval to 6 seconds
+    }
+    return () => clearInterval(intervalId);
+  }, [assessmentStage]);
 
 
   const handleAnswer = (questionId, value, isMultiple = false) => {
     setAnswers(prevAnswers => {
+      let newAnswerForQuestion;
       if (isMultiple) {
         const currentAnswersForQuestion = prevAnswers[questionId] || [];
-        const newAnswersForQuestion = currentAnswersForQuestion.includes(value)
+        newAnswerForQuestion = currentAnswersForQuestion.includes(value)
           ? currentAnswersForQuestion.filter(a => a !== value)
           : [...currentAnswersForQuestion, value];
-        return { ...prevAnswers, [questionId]: newAnswersForQuestion };
       } else {
-        return { ...prevAnswers, [questionId]: value };
+        newAnswerForQuestion = value;
       }
+      const newAnswers = { ...prevAnswers, [questionId]: newAnswerForQuestion };
+      
+      (processedQuestions || baseQuestions).forEach(q => {
+        if (q.dependsOn && q.dependsOn.questionId === questionId && newAnswerForQuestion !== q.dependsOn.answerValue) {
+          if (newAnswers[q.id] !== undefined) { 
+            newAnswers[q.id] = q.type === 'multiple' ? [] : ''; 
+          }
+        }
+      });
+      return newAnswers;
     });
   };
-
-  const calculateResults = () => {
-    const companySizeAnswer = answers.company_size || '';
-    const manualHoursAnswer = answers.manual_hours || '';
-    const biggestPainAnswer = answers.biggest_pain || '';
-    const marketingChallengesAnswers = answers.marketing_challenges || [];
-    const currentToolsAnswers = answers.current_tools || [];
-    const growthPainAnswer = answers.growth_pain || '';
-    const timelineAnswer = answers.timeline || '';
-    const budgetSenseAnswer = answers.budget_sense || '';
-
-    const companyData = questions.find(q => q.id === 'company_size')?.options.find(o => o.value === companySizeAnswer) || {};
-    const complexity = companyData.complexity || 1;
-    const weeklyHours = questions.find(q => q.id === 'manual_hours')?.options.find(o => o.value === manualHoursAnswer)?.hours || 0;
-    const painPoint = questions.find(q => q.id === 'biggest_pain')?.options.find(o => o.value === biggestPainAnswer) || {};
-    const automationPct = painPoint.automation || 50; 
-    
-    const marketingTimeSavings = marketingChallengesAnswers.reduce((total, challengeValue) => {
-      const challengeData = questions.find(q => q.id === 'marketing_challenges')?.options.find(o => o.value === challengeValue);
-      return total + (challengeData?.time_savings || 0);
-    }, 0);
-
-    const integrationScore = currentToolsAnswers.reduce((total, toolValue) => {
-      const score = questions.find(q => q.id === 'current_tools')?.options.find(o => o.value === toolValue)?.integration || 0;
-      return total + score;
-    }, 0);
-
-    const growthPainData = questions.find(q => q.id === 'growth_pain')?.options.find(o => o.value === growthPainAnswer) || {};
-    const urgency = growthPainData.urgency || 50; 
-
-    const timelineData = questions.find(q => q.id === 'timeline')?.options.find(o => o.value === timelineAnswer) || {};
-    const priority = timelineData.priority || 50; 
-
-    const budgetData = questions.find(q => q.id === 'budget_sense')?.options.find(o => o.value === budgetSenseAnswer) || {};
-    const budgetMidpoint = budgetData.value ? 
-      (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
-       parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 
-      : 3500; 
-    
-    const baseAutomatableHours = weeklyHours * (automationPct / 100);
-    const marketingHoursBonus = marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 
-                                Math.min(marketingTimeSavings * 0.25, 5) : 0;
-    const hoursAutomatable = baseAutomatableHours + marketingHoursBonus;
-    
-    const hourlyRate = 40; 
-    const weeklyCost = hoursAutomatable * hourlyRate;
-    const currentManualMonthlyCost = Math.round(weeklyCost * 4.33); 
-    const annualSavingsIfFree = currentManualMonthlyCost * 12;
-    
-    const scoreComponents = [
-        (automationPct * 0.25),
-        (urgency * 0.20),
-        (priority * 0.20),
-        (Math.min(integrationScore, 100) * 0.15), 
-        (Math.min(weeklyHours / 2.5, 40) * 0.10), 
-        (marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 5 : 0) 
-    ];
-    const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0))); 
-    
-    const estimatedMonthlyAutomationCost = budgetMidpoint;
-    const netMonthlySavingsFromAutomation = currentManualMonthlyCost - estimatedMonthlyAutomationCost;
-    const annualBudgetForAutomation = estimatedMonthlyAutomationCost * 12;
-    const netAnnualSavingsFromAutomation = annualSavingsIfFree - annualBudgetForAutomation;
-    
-    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); 
-    
-    let paybackMonths = null;
-    if (netMonthlySavingsFromAutomation > 0 && estimatedMonthlyAutomationCost > 0) {
-      paybackMonths = Math.round((estimatedMonthlyAutomationCost / netMonthlySavingsFromAutomation) * 10) / 10; 
+  
+  const callGeminiAPI = async (prompt, isJsonOutput = false, expectedSchema = null) => {
+    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+    const payload = { contents: chatHistory };
+    if (isJsonOutput) {
+        payload.generationConfig = {
+            responseMimeType: "application/json",
+            responseSchema: expectedSchema || { type: "OBJECT", properties: {"output": {type: "STRING"}} } 
+        };
     }
-
-    const percentageSaving = currentManualMonthlyCost > 0 ? Math.round(((currentManualMonthlyCost - estimatedMonthlyAutomationCost) / currentManualMonthlyCost) * 100) : 0; 
-
-    return {
-      opportunityScore,
-      hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
-      marketingTimeSavings, 
-      currentManualMonthlyCost: currentManualMonthlyCost,
-      estimatedMonthlyAutomationCost: estimatedMonthlyAutomationCost,
-      percentageSaving: percentageSaving,
-      annualSavings: netAnnualSavingsFromAutomation,
-      roiPercentage: roiPercentage,
-      paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null, 
-      complexity,
-      painPoint: painPoint.label,
-      growthFocus: growthPainData.focus,
-      marketingChallenges: marketingChallengesAnswers, 
-      budgetTier: budgetData.tier,
-    };
-  };
-
-  const getDetailedRecommendations = (results) => {
-    const recommendations = [];
-    const { painPoint, automationPct, marketingChallenges, marketingTimeSavings, integrationScore, urgency, growthFocus, budgetTier } = results;
-
-    if (painPoint && automationPct && automationPct >= 70) {
-      recommendations.push({
-        type: 'quickwin', title: `Quick Wins for ${painPoint}`, priority: 'high', timeline: '2-4 weeks',
-        items: getQuickWinsByPainPoint(painPoint), impact: `Up to ${automationPct}% efficiency gain in this area`, preview: true
-      });
-    }
-    if (marketingChallenges && marketingChallenges.length > 0 && !marketingChallenges.includes('none')) {
-      recommendations.push({
-        type: 'marketing', title: 'Marketing & Social Media Automation', priority: 'high', timeline: '3-6 weeks',
-        items: getMarketingAutomations(marketingChallenges), impact: `Save ~${Math.round(marketingTimeSavings * 0.35)}-${Math.round(marketingTimeSavings * 0.65)} hrs/week`, preview: true
-      });
-    }
-    if (integrationScore && integrationScore >= 50) {
-      recommendations.push({
-        type: 'integration', title: 'System Integration Opportunities', priority: 'medium', timeline: '1-2 months', 
-        items: ['Automate data sync (CRM & Email Marketing)', 'Unified reporting dashboard', 'Cross-system workflow triggers'],
-        impact: 'Reduce data silos, improve flow', preview: false 
-      });
-    }
-    if (urgency && urgency >= 85 && growthFocus) {
-      recommendations.push({
-        type: 'scaling', title: `Advanced Automation for ${growthFocus.charAt(0).toUpperCase() + growthFocus.slice(1)} Scaling`, priority: 'high', timeline: '1-3 months',
-        items: getScalingByGrowthFocus(growthFocus), impact: 'Build robust systems for increased load', preview: false
-      });
-    }
-    if (budgetTier) {
-      recommendations.push({
-        type: 'custom', title: `${budgetTier.charAt(0).toUpperCase() + budgetTier.slice(1)} Tier Solutions`, priority: 'custom', timeline: '2-4 months',
-        items: getCustomSolutionsByTier(budgetTier, painPoint, growthFocus), impact: `Tailored strategy for max ROI`, preview: false
-      });
-    }
-    if (recommendations.length === 0) {
-        recommendations.push({
-            type: 'general', title: 'General Automation Starting Points', priority: 'medium', timeline: '4-8 weeks',
-            items: ['Automate repetitive email responses', 'Implement basic task automation', 'Explore AI for content summarization'],
-            impact: 'Begin your automation journey.', preview: true
+    const apiKey = ""; // API_KEY REMOVED FOR SECURITY
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
+        if (!response.ok) {
+            const errorBody = await response.text(); 
+            console.error("Gemini API error response body:", errorBody); 
+            throw new Error(`API request failed with status ${response.status}. Full error: ${errorBody}`);
+        }
+        const result = await response.json();
+        if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
+            const rawText = result.candidates[0].content.parts[0].text;
+            if (isJsonOutput) {
+                try { return JSON.parse(rawText); }
+                catch (e) { 
+                    console.error("Failed to parse JSON from Gemini:", e, "\nRaw text:", rawText);
+                    throw new Error("AI response was not valid JSON as expected.");
+                }
+            }
+            return rawText; 
+        } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+            console.error("Gemini API prompt blocked:", result.promptFeedback);
+            throw new Error(`AI request was blocked: ${result.promptFeedback.blockReason}. ${result.promptFeedback.blockReasonMessage || ''}`);
+        }
+         else {
+            console.error("Unexpected response structure from Gemini:", result);
+            throw new Error("AI did not return valid content.");
+        }
+    } catch (error) {
+        console.error("Error calling Gemini API:", error.message); 
+        throw error; 
     }
-    return recommendations;
   };
 
-  const getMarketingAutomations = (challenges) => {
-    const map = { 'content_creation': 'AI-assisted content generation', 'lead_generation': 'Automated lead capture & basic scoring', 'email_sequences': 'Foundational email nurture sequences', 'social_engagement': 'Social media scheduling & monitoring', 'competitor_tracking': 'Automated alerts for competitor news', 'performance_reporting': 'Basic automated marketing KPI dashboard' };
-    return challenges.filter(c => c !== 'none').map(c => map[c] || 'Custom marketing process optimization').slice(0, 3);
+  const handlePersonalizeQuestions = async () => {
+    setAssessmentStage('personalizing');
+    setFunnyLoadingMessageIndex(0); 
+    
+    const questionsToPersonalize = baseQuestions.map(q => ({
+        id: q.id,
+        originalTitle: q.title,
+        originalSubtitle: q.subtitle || "",
+        originalOptions: q.options.map(opt => ({ value: opt.value, label: opt.label })),
+        customizableQuestion: q.customizableQuestion || false,
+        customizableOptions: q.customizableOptions || false,
+        type: q.type 
+    }));
+
+    const prompt = `
+      You are an AI assistant personalizing an automation assessment for a business.
+      Business Name: "${businessName || 'This Business'}"
+      Industry: "${selectedIndustry}"
+
+      For each question in the provided 'questionsToPersonalize' array:
+      1.  If 'customizableQuestion' is true for a question:
+          * Rephrase its 'originalTitle' to be highly specific to the '${selectedIndustry}' industry. Incorporate "${businessName || 'This Business'}" naturally.
+              Example for a generic scale question:
+              - Healthcare: "For ${businessName || 'This Business'}, what is your approximate monthly patient volume?"
+              - Retail: "How many monthly orders does ${businessName || 'This Business'} typically process?"
+          * Rephrase its 'originalSubtitle' similarly to provide industry-specific context.
+      2.  If 'customizableOptions' is true for a question:
+          * Review its 'originalOptions'. Rephrase the labels or suggest 1-2 entirely new relevant options to be more specific to the rephrased question and the '${selectedIndustry}' industry.
+          * If rephrasing an original option, KEEP its original 'value'.
+          * For NEW options, create a NEW, concise, lowercase, underscore_separated 'value'.
+          * Ensure options are appropriate for the question's 'type' (e.g., select vs. multiple).
+      3.  If 'customizableQuestion' is false, return the 'originalTitle' and 'originalSubtitle'.
+      4.  If 'customizableOptions' is false, return the 'originalOptions'.
+
+      Provide your response as a single JSON array. Each element in the array must correspond to a question from the input and have the following structure:
+      {
+        "id": "string (original question ID)",
+        "title": "string (new or original title)",
+        "subtitle": "string (new or original subtitle)",
+        "options": [ { "value": "string", "label": "string" }, ... ] (new or original options)
+      }
+      
+      Ensure every question ID from the input is present in your output array.
+
+      Questions to personalize (input format):
+      ${JSON.stringify(questionsToPersonalize, null, 2)}
+    `;
+
+    const schemaForPersonalizedQuestions = { 
+        type: "ARRAY",
+        items: {
+            type: "OBJECT",
+            properties: {
+                "id": { type: "STRING" },
+                "title": { type: "STRING" },
+                "subtitle": { type: "STRING" },
+                "options": {
+                    type: "ARRAY",
+                    items: {
+                        type: "OBJECT",
+                        properties: {
+                            "value": { type: "STRING" },
+                            "label": { type: "STRING" }
+                        },
+                        required: ["value", "label"]
+                    }
+                }
+            },
+            required: ["id", "title", "options"]
+        }
+    };
+    
+    try {
+        const aiModifiedQuestionsData = await callGeminiAPI(prompt, true, schemaForPersonalizedQuestions);
+        
+        if (!Array.isArray(aiModifiedQuestionsData)) {
+            console.error("AI response for question personalization was not an array:", aiModifiedQuestionsData);
+            throw new Error("AI response format error.");
+        }
+
+        const newProcessedQuestions = baseQuestions.map(baseQ => {
+            const aiDataForThisQuestion = aiModifiedQuestionsData.find(aiQ => aiQ.id === baseQ.id);
+            if (aiDataForThisQuestion) {
+                const originalOptionsMap = new Map(baseQ.options.map(opt => [opt.value, opt]));
+                const mergedOptions = aiDataForThisQuestion.options.map(aiOpt => {
+                    const originalBaseOptData = originalOptionsMap.get(aiOpt.value);
+                    if (originalBaseOptData) { 
+                        return { ...originalBaseOptData, label: aiOpt.label }; 
+                    } else { 
+                        return { 
+                            value: aiOpt.value, 
+                            label: aiOpt.label,
+                        };
+                    }
+                });
+
+                return {
+                    ...baseQ, 
+                    title: aiDataForThisQuestion.title || baseQ.title, 
+                    subtitle: aiDataForThisQuestion.subtitle || baseQ.subtitle, 
+                    options: mergedOptions.length > 0 ? mergedOptions : baseQ.options, 
+                };
+            }
+            return baseQ; 
+        });
+        setProcessedQuestions(newProcessedQuestions);
+
+    } catch (error) {
+        console.error("Failed to personalize questions with AI:", error.message); 
+        setProcessedQuestions(JSON.parse(JSON.stringify(baseQuestions))); 
+    } finally {
+        setAssessmentStage('mainAssessment');
+        setCurrentStepInDisplayable(0); 
+    }
   };
-  const getQuickWinsByPainPoint = (painPoint) => {
-    const map = { 'Data entry and file management': ['Automated data extraction (email/PDF)', 'Cloud file organization & tagging', 'Form submission to database/sheet'], 'Customer follow-up and communication': ['Templated email responses', 'Automated appointment reminders', 'Basic website FAQ chatbot'], 'Content creation and social media management': ['AI writing assistant for drafts', 'Social media content scheduling', 'Automated image resizing'], 'Creating reports and dashboards': ['Automated data aggregation', 'Scheduled email delivery of reports', 'Basic KPI dashboard (Sheets)'], 'Lead generation and qualification': ['Automated lead data enrichment', 'Simple lead scoring', 'Auto-assignment of new leads'], 'Scheduling and calendar coordination': ['Use calendar scheduling tools', 'Automated meeting reminders', 'Shared team calendars'] };
-    return map[painPoint || ''] || ['Identify one high-frequency manual task', 'Implement shared task management', 'Automate a simple report'];
+  
+  const handleInitialNext = () => {
+    if (assessmentStage === 'initialName') { 
+      setAssessmentStage('initialIndustry');
+    } else if (assessmentStage === 'initialIndustry' && selectedIndustry) {
+      handlePersonalizeQuestions(); 
+    } else if (assessmentStage === 'initialIndustry' && !selectedIndustry) {
+        setProcessedQuestions(JSON.parse(JSON.stringify(baseQuestions))); 
+        setAssessmentStage('mainAssessment');
+        setCurrentStepInDisplayable(0);
+    }
   };
-  const getScalingByGrowthFocus = (growthFocus) => {
-    const map = { 'workflow': ['Scalable PM system with auto tasks', 'Automate employee onboarding/offboarding', 'AI-assisted SOP documentation'], 'customer': ['AI chatbot for advanced support', 'Automate customer feedback analysis', 'Personalized communication workflows'], 'marketing': ['AI for predictive lead scoring', 'Automate A/B testing', 'Marketing automation platform for journeys'], 'process': ['End-to-end automation of core process', 'Robotic Process Automation (RPA)', 'Process mining for opportunities'], 'integration': ['Central data warehouse/lake', 'ESB or iPaaS solution', 'Automate data quality checks'] };
-    return map[growthFocus || ''] || ['Comprehensive workflow review', 'Strategic AI tool implementation', 'Custom critical system integrations'];
-  };
-  const getCustomSolutionsByTier = (tier, painPoint, growthFocus) => {
-    const safePainPoint = painPoint || 'key area';
-    const safeGrowthFocus = growthFocus || 'growth';
-    if (tier === 'starter') return [`Targeted automation for '${safePainPoint}'`, '1-2 essential automations', 'Monthly optimization report.'];
-    if (tier === 'growth') return [`Advanced AI for '${safePainPoint}' & '${safeGrowthFocus}'`, 'Integrate 2-3 key systems', 'Custom dashboard & bi-weekly calls.'];
-    if (tier === 'scale') return [`Enterprise automation for '${safePainPoint}'`, `Scalable AI for '${safeGrowthFocus}'`, 'Dedicated specialist & refinement.'];
-    if (tier === 'enterprise') return ['Full digital transformation strategy', `Custom AI for '${safePainPoint}'/'${safeGrowthFocus}'`, 'Dedicated team & C-suite reporting.'];
-    return ['Tailored automation strategy.'];
+
+  const prevStep = () => {
+    if (assessmentStage === 'mainAssessment') {
+      if (currentStepInDisplayable > 0) {
+        setCurrentStepInDisplayable(s => s - 1);
+      } else {
+        setAssessmentStage('initialIndustry');
+        setProcessedQuestions(JSON.parse(JSON.stringify(baseQuestions))); 
+      }
+    } else if (assessmentStage === 'initialIndustry') {
+      setAssessmentStage('initialName');
+    }
+    setTimeout(() => {
+      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
+      if (scrollableArea) scrollableArea.scrollTo(0, 0);
+    }, 50);
   };
 
   const nextStep = () => {
-    if (currentStep < questions.length - 1) setCurrentStep(s => s + 1); else setShowResults(true);
-    setTimeout(() => {
-      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
-      if (scrollableArea) scrollableArea.scrollTo(0, 0);
-    }, 50);
-  };
-  const prevStep = () => {
-    if (currentStep > 0) setCurrentStep(s => s - 1);
-    setTimeout(() => {
-      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
-      if (scrollableArea) scrollableArea.scrollTo(0, 0);
-    }, 50);
-  };
-
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.includes('@') || !name.trim()) {
-        console.error('Invalid name or email');
-        setShowThankYou(true); 
-        return;
+    if (assessmentStage === 'mainAssessment') {
+      if (currentStepInDisplayable < displayableQuestionsOrder.length - 1) {
+        setCurrentStepInDisplayable(s => s + 1);
+      } else {
+        setShowResults(true); 
+      }
     }
-    try {
-      const resultsForWebhook = calculateResults();
-      console.log('Submitting to webhook:', { name, email, answers, results: resultsForWebhook });
-      await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', { 
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, answers, results: resultsForWebhook, timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) 
-      });
-      setShowThankYou(true);
-    } catch (error) { 
-        console.error('Webhook error:', error); 
-        setShowThankYou(true); 
-    } 
+    setTimeout(() => {
+      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
+      if (scrollableArea) scrollableArea.scrollTo(0, 0);
+    }, 50);
   };
 
-  // Base style for the modal wrapper (used for green border effect if needed for OTHER popups)
-  const modalWrapperBaseStyle = {
+
+  const generateTopAutomationOpportunities = (currentAnswers, currentQuestions, calculatedResults) => {
+    const opportunities = [];
+    const { hoursAutomatable } = calculatedResults;
+    const painPointAnswer = currentAnswers.biggest_pain_generic;
+    const painPointQuestion = currentQuestions.find(q => q.id === 'biggest_pain_generic');
+    const painPointOption = painPointQuestion?.options.find(o => o.value === painPointAnswer);
+    const painPointLabel = painPointOption?.label || "your primary challenge";
+
+    if (painPointAnswer) {
+        const potentialPainSavings = Math.max(5, Math.round(hoursAutomatable * 0.4));
+        opportunities.push({
+            id: 'pain_point_automation',
+            icon: <Zap className="w-7 h-7 text-yellow-400" />,
+            title: `Automate Tasks Around "${personalizeText(painPointLabel)}"`,
+            description: `Streamlining processes related to ${personalizeText(painPointLabel)} for ${businessName || 'your business'} can free up significant time.`,
+            timeSavings: `${potentialPainSavings} hrs/week`
+        });
+    }
+
+    let repetitiveTaskDescription = "Reduce time on general administrative tasks like data entry, scheduling, and report generation.";
+    if (selectedIndustry === "Healthcare" && painPointAnswer !== 'documentation') { // Avoid duplication if pain is documentation
+        repetitiveTaskDescription = `Optimize patient record management and administrative workflows in your ${businessName || 'Healthcare practice'}.`;
+    } else if (selectedIndustry === "Retail & E-commerce" && painPointAnswer !== 'inventory_mgmt') { // Avoid duplication if pain is inventory
+        repetitiveTaskDescription = `Streamline inventory updates and customer communication for ${businessName || 'your E-commerce store'}.`;
+    }
+    const potentialRepetitiveSavings = Math.max(3, Math.round(hoursAutomatable * 0.3));
+     if (opportunities.length < 3) {
+        opportunities.push({
+            id: 'repetitive_tasks_automation',
+            icon: <Clock className="w-7 h-7 text-blue-400" />,
+            title: 'Streamline Repetitive Manual Work',
+            description: repetitiveTaskDescription,
+            timeSavings: `${potentialRepetitiveSavings} hrs/week`
+        });
+    }
+
+    const potentialAISavings = Math.max(2, Math.round(hoursAutomatable * 0.25)); // Slightly reduced multiplier to differentiate
+    if (opportunities.length < 3) {
+        opportunities.push({
+            id: 'ai_tools_exploration',
+            icon: <Lightbulb className="w-7 h-7 text-green-400" />,
+            title: `Explore AI Tools for ${selectedIndustry} Workflows`,
+            description: `Leverage AI for tasks like content generation, data analysis, or customer support specific to the ${selectedIndustry} sector for ${businessName || 'your company'}.`,
+            timeSavings: `${potentialAISavings} hrs/week`
+        });
+    }
+    
+    return opportunities.slice(0, 3); 
+};
+
+
+  const calculateResults = () => {
+    const questionsToUse = processedQuestions || baseQuestions;
+    
+    let hoursSpentManually = 50; 
+    const manualHoursAnswer = answers.manual_hours; 
+    const manualHoursQuestion = questionsToUse.find(q => q.id === 'manual_hours');
+    if (manualHoursAnswer && manualHoursQuestion) {
+        const selectedOption = manualHoursQuestion.options.find(opt => opt.value === manualHoursAnswer);
+        if (selectedOption && typeof selectedOption.hours === 'number') {
+            hoursSpentManually = selectedOption.hours;
+        } 
+    }
+
+    let avgHourlyWage = 60; 
+    const scaleAnswer = answers.company_scale_generic;
+    const scaleQuestion = questionsToUse.find(q => q.id === 'company_scale_generic');
+    if(scaleAnswer && scaleQuestion) {
+        const scaleOptionLabel = scaleQuestion.options.find(o => o.value === scaleAnswer)?.label.toLowerCase();
+        if(scaleOptionLabel) {
+            if (scaleOptionLabel.includes('small') || scaleOptionLabel.includes('low volume') || scaleOptionLabel.includes('under 500') || scaleOptionLabel.includes('under 100 orders')) avgHourlyWage = 45;
+            else if (scaleOptionLabel.includes('medium') || scaleOptionLabel.includes('moderate volume') || scaleOptionLabel.includes('500-2000') || scaleOptionLabel.includes('100-1000 orders')) avgHourlyWage = 55;
+            else if (scaleOptionLabel.includes('large') || scaleOptionLabel.includes('high volume') || scaleOptionLabel.includes('2000-10000') || scaleOptionLabel.includes('1000-10000 orders')) avgHourlyWage = 65;
+            else if (scaleOptionLabel.includes('very large') || scaleOptionLabel.includes('very high volume') || scaleOptionLabel.includes('10000+') || scaleOptionLabel.includes('10000+ orders')) avgHourlyWage = 75;
+        }
+    }
+
+    const currentWeeklyManualCost = hoursSpentManually * avgHourlyWage;
+    const currentMonthlyManualCost = currentWeeklyManualCost * 4.33; 
+    const currentAnnualManualCost = currentMonthlyManualCost * 12;
+  
+    let automatablePercentageSum = 0;
+    let automatableItemCount = 0;
+  
+    const biggestPainAnswer = answers.biggest_pain_generic; 
+    const biggestPainQuestion = questionsToUse.find(q => q.id === 'biggest_pain_generic');
+    if (biggestPainAnswer && biggestPainQuestion) {
+        const painOption = biggestPainQuestion.options.find(opt => opt.value === biggestPainAnswer);
+        if (painOption && typeof painOption.automationPotential === 'number') {
+             automatablePercentageSum += (painOption.automationPotential * 100) ; 
+        } else {
+            automatablePercentageSum += 50; 
+        }
+        automatableItemCount++;
+    }
+  
+    const averageAutomatablePercentage = automatableItemCount > 0 ? automatablePercentageSum / automatableItemCount : 30; 
+    const hoursAutomatable = Math.round((hoursSpentManually * (averageAutomatablePercentage / 100)) * 10) / 10; 
+  
+    let estimatedMonthlyAutomationCost = 2000; 
+    let tier = 'growth';
+    const timelineAnswer = answers.timeline;
+    if (timelineAnswer === 'asap') { estimatedMonthlyAutomationCost = 3000; tier = 'scale';}
+    else if (timelineAnswer === '1_3months') { estimatedMonthlyAutomationCost = 2000; tier = 'growth';}
+    else if (timelineAnswer === '3_6months') { estimatedMonthlyAutomationCost = 1000; tier = 'starter';}
+    else if (timelineAnswer === 'exploring') { estimatedMonthlyAutomationCost = 800; tier = 'starter';}
+
+
+    const estimatedAnnualAutomationCost = estimatedMonthlyAutomationCost * 12;
+    const annualSavings = currentAnnualManualCost * (averageAutomatablePercentage / 100) - estimatedAnnualAutomationCost;
+    const monthlySavings = annualSavings / 12;
+  
+    let roiPercentage = 0;
+    if (estimatedAnnualAutomationCost > 0) {
+      roiPercentage = Math.round((annualSavings / estimatedAnnualAutomationCost) * 100);
+    } else if (annualSavings > 0) { roiPercentage = 1000; }
+  
+    let paybackMonths = 0;
+    if (monthlySavings > 0) { paybackMonths = Math.ceil(estimatedMonthlyAutomationCost / monthlySavings); }
+    else if (annualSavings <=0 && estimatedMonthlyAutomationCost > 0) { paybackMonths = null; }
+    else if (annualSavings > 0 && estimatedMonthlyAutomationCost === 0) { paybackMonths = 1; }
+
+    const percentageSaving = currentMonthlyManualCost > 0 ? 
+        Math.round(((currentMonthlyManualCost - (currentMonthlyManualCost * (1 - (averageAutomatablePercentage / 100)) + estimatedMonthlyAutomationCost)) / currentMonthlyManualCost) * 100)
+        : 0;
+    
+    const topAutomations = generateTopAutomationOpportunities(answers, questionsToUse, { hoursAutomatable });
+
+    return {
+      hoursAutomatable, currentWeeklyManualCost, currentMonthlyManualCost, currentAnnualManualCost,
+      estimatedMonthlyAutomationCost, estimatedAnnualAutomationCost, annualSavings, monthlySavings,
+      roiPercentage, paybackMonths, tier, avgHourlyWage, hoursSpentManually, averageAutomatablePercentage,
+      percentageSaving: percentageSaving > 0 ? percentageSaving : 0,
+      topAutomations: topAutomations, 
+    };
+  };
+  
+  const getDetailedRecommendations = (results) => { 
+      const questionsToUse = processedQuestions || baseQuestions;
+      const painPointAnswer = answers.biggest_pain_generic;
+      const painPointOption = questionsToUse.find(q=>q.id === 'biggest_pain_generic')?.options.find(o=>o.value === painPointAnswer);
+      const painPointLabel = painPointOption?.label || "your key challenge area";
+
+      let recs = [];
+      recs.push({
+          id: 'quick_wins', title: 'Quick Wins: High-Impact Automations for [Business Name]',
+          timeline: '1-2 Weeks', impact: 'High', priority: 'high', preview: true,
+          items: [
+              `Address "${personalizeText(painPointLabel)}" with targeted automation (est. ${Math.round(results.hoursAutomatable * 0.3)} hrs/wk savings).`,
+              `Implement automated reminders/follow-ups for key processes related to your pain point.`,
+              `Set up basic automated reporting for metrics relevant to "${personalizeText(painPointLabel)}".`
+          ]
+      });
+      
+      const techStackAnswer = answers.tech_stack_generic || [];
+      if (techStackAnswer.includes('basic_office_tools') || techStackAnswer.includes('spreadsheets_docs_generic')) {
+          recs.push({
+              id: 'foundational_tech', title: 'Build a Strong Tech Foundation for [Business Name]',
+              timeline: '2-4 Weeks', impact: 'High', priority: 'high', preview: true,
+              items: [
+                  `Evaluate and implement a central CRM or industry-specific management system relevant to '${selectedIndustry}'.`,
+                  `Automate data migration from spreadsheets to the new system.`,
+                  `Integrate email and calendar with your new core system.`
+              ]
+          });
+      }
+      return recs;
+  };
+
+  const handleEmailSubmit = async (e) => { 
+      e.preventDefault();
+      console.log("Email to be sent to:", email, "with name:", name);
+      setShowEmailCapture(false);
+      setShowThankYou(true); 
+  };
+  
+  const handleGenerateNextSteps = async (recommendationTitle, recommendationItems, recId) => { 
+        setIsGeneratingNextSteps(prev => ({...prev, [recId]: true}));
+    setAiNextStepsError(prev => ({...prev, [recId]: ''}));
+    
+    const prompt = `
+      Recommendation Title: "${recommendationTitle}"
+      Recommendation Items: ${recommendationItems.join(", ")}
+      Business Name: "${businessName || 'This Business'}"
+      Industry: "${selectedIndustry || 'General Business'}"
+
+      Provide 2-3 specific, actionable next steps (each a short phrase or sentence) for ${businessName || 'this business'} to start implementing the above recommendation.
+      Format as a JSON array of strings. For example: ["Research X tool", "Draft Y process", "Assign Z task"]
+    `;
+    try {
+      const nextSteps = await callGeminiAPI(prompt, true, { type: "ARRAY", items: { type: "STRING" } });
+      if (Array.isArray(nextSteps)) {
+        setAiTopRecNextSteps(prev => ({...prev, [recId]: nextSteps}));
+      } else {
+        throw new Error("AI Next Steps were not in the expected array format.");
+      }
+    } catch (error) {
+      console.error(`Failed to generate AI next steps for ${recId}:`, error);
+      setAiNextStepsError(prev => ({...prev, [recId]: error.message || "Could not generate next steps."}));
+      setAiTopRecNextSteps(prev => ({...prev, [recId]: ["Define current process for these items.", "Identify key team members for this initiative.", "Explore relevant software solutions." ]})); 
+    } finally {
+      setIsGeneratingNextSteps(prev => ({...prev, [recId]: false}));
+    }
+   };
+  
+
+  const modalWrapperBaseStyle = { 
     borderRadius: '0.875rem', 
     padding: '1px', 
     background: popupBorderColorWithOpacity, 
     boxShadow: '0 10px 30px rgba(0,0,0,0.35)', 
     width: '100%', 
   };
-
-  // Base style for the modal content area
-  const modalContentBaseStyle = {
+  const modalContentBaseStyle = { 
     borderRadius: 'calc(0.875rem - 1px)', 
     backdropFilter: 'blur(3px)',
     height: '100%', 
     display: 'flex',
     flexDirection: 'column',
   };
-
-  // Styles for Thank You and Email Capture popups (these retain the green border via wrapper)
-  const defaultPopupWrapperStyle = {
+  const defaultPopupWrapperStyle = { 
     ...modalWrapperBaseStyle,
     maxWidth: '560px',
   };
-  const defaultPopupContentStyle = {
+  const defaultPopupContentStyle = { 
     ...modalContentBaseStyle,
     background: generalPopupContentBg, 
     padding: '1.5rem',
   };
-  const thankYouPopupContentStyle = {
+  const thankYouPopupContentStyle = { 
     ...defaultPopupContentStyle,
     padding: '2rem',
   };
-
-  // Styles for the main container of the Calendly popup (this is the #040404 box)
-  const calendlyModalContainerStyle = { // Renamed for clarity
-    background: calendlyPopupOuterBg,      // #040404
-    borderRadius: '0.875rem',             // Main popup radius 
-    padding: '0.5rem',                    // Minimal padding for close button and to visually separate from edge
+  const calendlyModalContainerStyle = {   
+    background: calendlyPopupOuterBg,      
+    borderRadius: '0.875rem',             
+    padding: '0.5rem', 
     boxShadow: '0 10px 30px rgba(0,0,0,0.5)', 
-    width: '95vw',                        // Responsive width, NO MAX-WIDTH by default
-    maxWidth: '960px',                    // Max width for desktop to allow wide Calendly view
-    maxHeight: 'calc(100vh - 2rem)',      // Max height with viewport margin
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',                   // Clip inner content to rounded corners
-    position: 'relative',                 // For absolute positioning of close button
+    width: '95vw',                        
+    maxWidth: '960px', 
+    maxHeight: 'calc(100vh - 4rem)',      
+    display: 'flex',                      
+    flexDirection: 'column',              
+    position: 'relative',                 
+    overflow: 'hidden',                   
+  };
+  
+  const personalizeText = (text) => { 
+    if (!text) return '';
+    return text.replace(/\[Business Name,fallback=([^\]]+)\]/g, businessName || "$1")
+               .replace(/\[Business Name\]/g, businessName || "your business");
   };
 
-
-  if (showThankYou) {
+  // --- RENDER LOGIC ---
+  if (showThankYou) { 
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div style={defaultPopupWrapperStyle}> 
@@ -457,8 +751,7 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
-
-  if (showEmailCapture) {
+  if (showEmailCapture) { 
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div style={defaultPopupWrapperStyle}>
@@ -499,8 +792,7 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
-
-  if (showCalendlyPopup) {
+  if (showCalendlyPopup) { 
     return (
       <div 
         className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4" 
@@ -516,25 +808,24 @@ const AutomationOpportunityFinder = () => {
               aria-label="Close"
               style={{ 
                 position: 'absolute', 
-                top: '1rem', // Adjusted for new padding of container
-                right: '1rem', 
+                top: 'calc(0.5rem + 0.25rem)', 
+                right: 'calc(0.5rem + 0.25rem)', 
                 zIndex: 10 
               }}
             >
               <XIcon className="w-5 h-5" /> 
             </button>
-            {/* This div is the Calendly widget itself and gets the gray border */}
-            <div 
-              className="calendly-inline-widget" // This class is targeted by Calendly's script
+            <div
+              key={calendlyKey} 
+              className="calendly-inline-widget" 
               data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f&month=2025-06&date=2025-06-10"
               style={{ 
-                width: '100%',    // Fill the #040404 container
-                height: 'calc(100% - 1rem)', // Fill available height considering container padding for close button
-                minHeight: '700px', // Calendly widget needs substantial height
-                border: `1px solid ${textColorVeryMuted}`, // Medium gray border
-                borderRadius: '0.625rem', // Rounded corners for the widget area itself
-                overflow: 'hidden', // Ensures the iframe respects the border radius
-                marginTop: '0.5rem', // Space for close button above
+                width: '100%',    
+                height: '700px',   
+                border: `1px solid ${textColorVeryMuted}`, 
+                borderRadius: '0.625rem', 
+                overflow: 'hidden', 
+                marginTop: '2rem', 
               }} 
             >
               {/* Calendly script populates this */}
@@ -543,30 +834,104 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
+  
+  if (assessmentStage === 'personalizing') {
+    const currentFunnyMessage = funnyLoadingMessages[funnyLoadingMessageIndex];
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center text-center px-4" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <Loader2 className="w-12 h-12 animate-spin mb-6" style={{color: accentColor}} /> 
+        <div className="flex items-center justify-center mb-4">
+          {currentFunnyMessage.icon}
+          <p className="text-xl" style={{color: textColorSecondary}}>{currentFunnyMessage.text}</p>
+        </div>
+        {businessName && <p className="text-md mt-1" style={{color: textColorMuted}}>Crafting genius for {businessName} in the {selectedIndustry} sector!</p>}
+      </div>
+    );
+  }
 
-  if (Object.keys(answers).length === 0 && questions.length > 0) {
-    return ( 
-      <div className="w-full h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary}}>
-        Loading Assessment...
+  if (assessmentStage === 'initialName' || assessmentStage === 'initialIndustry') { 
+     return (
+      <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+            <div className="max-w-4xl mx-auto">
+                <h1 className="text-lg sm:text-2xl font-semibold tracking-tight" style={{color: textColorPrimary}}>Welcome! Let's Personalize Your Assessment</h1>
+                <p className="mt-1 text-xs sm:text-sm" style={{color: textColorMuted}}>A couple of quick questions to get started.</p>
+            </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+            <div className="max-w-3xl mx-auto p-4 sm:p-6">
+                {assessmentStage === 'initialName' && (
+                    <div className="mb-10 sm:mb-12">
+                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center" style={{color: textColorPrimary}}>
+                            <Building className="w-6 h-6 mr-3" style={{color: accentColor}}/> What's your business name?
+                        </h2>
+                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>This will help us tailor the assessment language for you (optional).</p>
+                        <input 
+                            type="text" 
+                            value={businessName} 
+                            onChange={(e) => setBusinessName(e.target.value)} 
+                            placeholder="E.g., Acme Corp, Sparkle Cleaners"
+                            className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none" 
+                            style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}
+                        />
+                    </div>
+                )}
+                {assessmentStage === 'initialIndustry' && (
+                    <div className="mb-10 sm:mb-12">
+                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center" style={{color: textColorPrimary}}>
+                           <Briefcase className="w-6 h-6 mr-3" style={{color: accentColor}}/> What industry is {businessName || "your business"} in?
+                        </h2>
+                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>Knowing your industry helps us provide more relevant insights and tailor questions.</p>
+                        <select 
+                            value={selectedIndustry} 
+                            onChange={(e) => setSelectedIndustry(e.target.value)}
+                            className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none appearance-none"
+                            style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, backgroundRepeat: 'no-repeat', backgroundPosition: `right 0.75rem center`, backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23${accentColor.substring(1)}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")` }}
+                        >
+                            <option value="" disabled style={{color: textColorMuted}}>Select an industry...</option>
+                            {industries.map(industry => (
+                                <option key={industry} value={industry} style={{backgroundColor: pageBgColor, color: textColorPrimary}}>{industry}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+            </div>
+        </div>
+        <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+            <div className="max-w-4xl mx-auto flex justify-end">
+                <button 
+                    onClick={handleInitialNext} 
+                    disabled={(assessmentStage === 'initialIndustry' && !selectedIndustry)}
+                    className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ background: (assessmentStage === 'initialIndustry' && !selectedIndustry) ? 'rgba(239,239,234,0.1)' : accentColor, color: (assessmentStage === 'initialIndustry' && !selectedIndustry) ? textColorVeryMuted : popupCtaTextColor, border: `1px solid ${(assessmentStage === 'initialIndustry' && !selectedIndustry) ? 'rgba(239,239,234,0.1)' : accentColor}`}}
+                > 
+                    {assessmentStage === 'initialIndustry' ? 'Personalize & Start Assessment' : 'Next'}
+                    <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
+                </button>
+            </div>
+        </div>
       </div>
     );
   }
 
   if (showResults) {
     const results = calculateResults();
-    const recommendations = getDetailedRecommendations(results);
+    const recommendations = getDetailedRecommendations(results); 
     const previewRecs = recommendations.filter(r => r.preview);
     const hiddenRecs = recommendations.filter(r => !r.preview);
     
     return (
       <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <div className="text-center mb-16 sm:mb-20">
-            <h1 className="text-4xl sm:text-5xl font-semibold mb-6 tracking-tight leading-tight" style={{color: textColorPrimary}}>Your Custom Automation Strategy</h1>
-            <p className="text-md sm:text-lg max-w-2xl mx-auto leading-relaxed" style={{color: textColorSecondary}}>Snapshot of AI automation's potential for your business, based on your answers.</p>
+          <div className="text-center mb-10">
+            <h1 className="text-4xl sm:text-5xl font-semibold mb-3 tracking-tight leading-tight" style={{color: textColorPrimary}}>
+                {businessName ? `Your Custom Automation Strategy for ${businessName}` : 'Your Custom Automation Strategy'}
+            </h1>
+             {selectedIndustry && <p className="text-lg" style={{color: accentColor}}>Industry: {selectedIndustry}</p>}
+            <p className="text-md sm:text-lg max-w-2xl mx-auto leading-relaxed mt-4" style={{color: textColorSecondary}}>Snapshot of AI automation's potential for your business, based on your answers.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
+           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-12">
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
@@ -575,7 +940,6 @@ const AutomationOpportunityFinder = () => {
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>{results.hoursAutomatable}h</p>
               <p className="text-sm" style={{color: textColorMuted}}>Est. weekly hours recoverable.</p>
             </div>
-
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border" style={{borderColor: 'rgba(239,239,234,0.25)'}}> 
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
@@ -583,11 +947,10 @@ const AutomationOpportunityFinder = () => {
               <h3 className="text-base font-medium mb-1" style={{color: textColorPrimary}}>Monthly Cost Reduction</h3>
               <p className="text-5xl font-bold my-3 tracking-tighter" style={{color: accentColor}}>{results.percentageSaving}%</p>
               <div className="text-xs space-y-1" style={{color: textColorMuted}}>
-                <p>Manual: <span className="font-medium" style={{color: textColorSecondary}}>${results.currentManualMonthlyCost.toLocaleString()}</span></p>
+                <p>Manual: <span className="font-medium" style={{color: textColorSecondary}}>${results.currentMonthlyManualCost.toLocaleString()}</span></p>
                 <p>With AI: <span className="font-medium" style={{color: textColorSecondary}}>${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
               </div>
             </div>
-            
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
@@ -601,34 +964,22 @@ const AutomationOpportunityFinder = () => {
               </p>
             </div>
           </div>
-
-          {previewRecs.length > 0 && (
-            <div className="mb-16 sm:mb-20">
-              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left" style={{color: textColorPrimary}}>Top Automation Opportunities (Preview)</h3>
-              <div className="space-y-6">
-                {previewRecs.map((rec, index) => (
-                  <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
-                    <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6">
-                      <div>
-                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center" style={{color: textColorPrimary}}>
-                          <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : textColorVeryMuted}}></div>
-                          {rec.title}
-                        </h4>
-                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 text-sm" style={{color: textColorMuted}}>
-                          <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" />{rec.timeline}</span>
-                          <span className="flex items-center"><Zap className="w-4 h-4 mr-1.5" />{rec.impact}</span>
-                        </div>
-                      </div>
+          
+          {results.topAutomations && results.topAutomations.length > 0 && (
+            <div className="my-12 p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+              <h3 className="text-2xl font-semibold mb-6 text-center flex items-center justify-center" style={{color: textColorPrimary}}>
+                <Sparkles className="w-6 h-6 mr-2 text-yellow-400" /> Top Automation Opportunities for {businessName || "Your Business"}
+              </h3>
+              <div className="space-y-5 max-w-2xl mx-auto">
+                {results.topAutomations.map((automation) => (
+                  <div key={automation.id} className="p-5 rounded-xl border flex items-start" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}>
+                    <div className="flex-shrink-0 mr-4 mt-1">
+                      {automation.icon || <Lightbulb className="w-7 h-7" style={{color: accentColor}}/>}
                     </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {rec.items.slice(0, 3).map((item, i) => (
-                        <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
-                          <div className="flex items-start" style={{color: textColorSecondary}}>
-                            <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
-                            <span>{item}</span>
-                          </div>
-                        </div>
-                      ))}
+                    <div>
+                      <h4 className="text-lg font-medium mb-1" style={{color: textColorPrimary}}>{automation.title}</h4>
+                      <p className="text-sm mb-2" style={{color: textColorSecondary}}>{automation.description}</p>
+                      <p className="text-sm font-semibold" style={{color: accentColor}}>Est. Time Savings: {automation.timeSavings}</p>
                     </div>
                   </div>
                 ))}
@@ -636,14 +987,81 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
 
-          {hiddenRecs.length > 0 && (
-            <div className="mb-16 sm:mb-20 relative"> 
+          {previewRecs.length > 0 && (
+            <div className="mb-12">
+              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 text-center sm:text-left" style={{color: textColorPrimary}}>Further Recommendations (Preview)</h3>
+              <div className="space-y-6">
+                {previewRecs.map((rec, index) => (
+                  <div key={rec.id || index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
+                      <div>
+                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center" style={{color: textColorPrimary}}>
+                          <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : textColorVeryMuted}}></div>
+                          {personalizeText(rec.title)}
+                        </h4>
+                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 text-sm" style={{color: textColorMuted}}>
+                          <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" />{rec.timeline}</span>
+                          <span className="flex items-center"><Zap className="w-4 h-4 mr-1.5" />{rec.impact}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                      {rec.items.slice(0, 3).map((item, i) => (
+                        <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
+                          <div className="flex items-start" style={{color: textColorSecondary}}>
+                            <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
+                            <span>{personalizeText(item)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {index === 0 && ( 
+                      <div className="mt-4 pt-4 border-t border-slate-700/50">
+                        {!aiTopRecNextSteps[rec.id] && !isGeneratingNextSteps[rec.id] && (
+                           <button 
+                              onClick={() => handleGenerateNextSteps(rec.title, rec.items, rec.id)}
+                              disabled={isGeneratingNextSteps[rec.id]}
+                              className="px-4 py-2 text-sm rounded-lg font-medium flex items-center hover:opacity-90 transition-all"
+                              style={{background: accentColorDarker, color: textColorPrimary, border: `1px solid ${accentColor}`}}
+                           >
+                              <Sparkles className="w-4 h-4 mr-2 text-yellow-300" /> Get AI Next Steps
+                           </button>
+                        )}
+                        {isGeneratingNextSteps[rec.id] && (
+                          <div className="flex items-center">
+                            <Loader2 className="w-5 h-5 animate-spin mr-2" style={{color: accentColor}} />
+                            <p style={{color: textColorSecondary}}>Generating next steps...</p>
+                          </div>
+                        )}
+                        {aiNextStepsError[rec.id] && <p className="text-red-400 mt-2 text-sm">{aiNextStepsError[rec.id]}</p>}
+                        {aiTopRecNextSteps[rec.id] && Array.isArray(aiTopRecNextSteps[rec.id]) && (
+                          <div className="mt-3">
+                            <h5 className="text-sm font-semibold mb-2" style={{color: textColorPrimary}}>✨ AI Suggested Next Steps:</h5>
+                            <ul className="space-y-2">
+                              {aiTopRecNextSteps[rec.id].map((step, stepIdx) => (
+                                <li key={stepIdx} className="text-xs flex items-start" style={{color: textColorSecondary}}>
+                                  <ChevronRight className="w-3 h-3 mr-1.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
+                                  <span>{step}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+           {hiddenRecs.length > 0 && ( 
+            <div className="mb-12 relative"> 
               <div className="filter blur-sm pointer-events-none"> 
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left opacity-30" style={{color: textColorPrimary}}>Advanced & Custom Strategies</h3>
+                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 text-center sm:text-left opacity-30" style={{color: textColorPrimary}}>Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
-                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border" style={{borderColor: 'rgba(239,239,234,0.15)'}}>
-                      <h4 className="font-medium text-lg sm:text-xl mb-2" style={{color: 'rgba(239,239,234,0.3)'}}>{rec.title}</h4>
+                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border border-slate-700/30">
+                      <h4 className="font-medium text-lg sm:text-xl mb-2" style={{color: 'rgba(239,239,234,0.3)'}}>{personalizeText(rec.title)}</h4>
                       <div className="h-4 rounded" style={{backgroundColor: 'rgba(239,239,234,0.1)'}} ></div>
                       <div className="h-4 rounded mt-2" style={{backgroundColor: 'rgba(239,239,234,0.08)'}} ></div>
                     </div>
@@ -687,8 +1105,12 @@ const AutomationOpportunityFinder = () => {
                 </button>
                 <button 
                   onClick={() => setShowEmailCapture(true)}
-                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto border hover:bg-white/10" 
-                   style={{color: textColorPrimary, borderColor: textColorMuted + '60'}}
+                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto border hover:opacity-90" 
+                   style={{
+                      background: accentColorBgMediumOpacity, 
+                      color: textColorPrimary, 
+                      borderColor: accentColor 
+                    }}
                 >
                   Download Report Again
                 </button>
@@ -700,117 +1122,159 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
+  
+  const questionsSource = processedQuestions || baseQuestions; 
+  let actualCurrentQuestionData = null;
 
-  const currentQuestion = questions[currentStep];
-  if (!currentQuestion) { 
-    return <div style={{color: textColorPrimary}}>Error: Question not found.</div>;
+  if (assessmentStage === 'mainAssessment' && displayableQuestionsOrder.length > 0 && currentStepInDisplayable < displayableQuestionsOrder.length) {
+    const displayableQuestionOriginalIndex = displayableQuestionsOrder[currentStepInDisplayable];
+    actualCurrentQuestionData = questionsSource[displayableQuestionOriginalIndex];
   }
 
-  const currentQuestionAnswer = answers[currentQuestion.id];
-  const isAnswered = currentQuestion.type === 'multiple'
-    ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
-    : (currentQuestionAnswer !== '' && currentQuestionAnswer !== undefined && currentQuestionAnswer !== null);
 
+  if (assessmentStage === 'mainAssessment' && !actualCurrentQuestionData) { 
+    if (displayableQuestionsOrder.length === 0 && currentStepInDisplayable === 0) {
+        return (
+             <div className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+                <HelpCircle className="w-12 h-12 text-yellow-400 mb-4" />
+                <p className="text-xl" style={{color: textColorSecondary}}>No applicable questions based on current selections.</p>
+                <button onClick={() => setShowResults(true)} className="mt-4 px-6 py-2 rounded-lg" style={{background: accentColor, color: popupCtaTextColor}}>Show Summary</button>
+            </div>
+        );
+    }
+    return (
+        <div className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+            <Loader2 className="w-12 h-12 animate-spin mb-4" style={{color: accentColor}} />
+            <p className="text-xl" style={{color: textColorSecondary}}>Loading questions...</p>
+        </div>
+    );
+  }
 
-  return (
-    <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b bg-[#0a0a0a]/80 backdrop-blur-md" style={{borderColor: 'rgba(239,239,234,0.2)'}}> 
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <div>
-              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight" style={{color: textColorPrimary}}>AI Automation Assessment</h1>
-              <p className="mt-1 text-xs sm:text-sm" style={{color: textColorMuted}}>Discover your custom automation potential.</p>
+  if (assessmentStage === 'mainAssessment' && actualCurrentQuestionData) {
+    const currentQuestionAnswer = answers[actualCurrentQuestionData.id];
+    const isAnswered = actualCurrentQuestionData.type === 'multiple'
+      ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
+      : (currentQuestionAnswer !== '' && currentQuestionAnswer !== undefined && currentQuestionAnswer !== null);
+    
+    const contextualHelpText = actualCurrentQuestionData.contextualHelp && actualCurrentQuestionData.contextualHelp[selectedIndustry]
+      ? actualCurrentQuestionData.contextualHelp[selectedIndustry]
+      : null;
+
+    return (
+      <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h1 className="text-lg sm:text-2xl font-semibold tracking-tight" style={{color: textColorPrimary}}>
+                  AI Automation Assessment {businessName && `for ${businessName}`}
+                </h1>
+                <p className="mt-1 text-xs sm:text-sm" style={{color: textColorMuted}}>Industry: {selectedIndustry || "Not Selected"}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-medium" style={{color: textColorMuted}}>Step {currentStepInDisplayable + 1} of {displayableQuestionsOrder.length || 1}</span>
+                <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100)}%</div>
+              </div>
             </div>
-            <div className="text-right">
-              <span className="text-xs font-medium" style={{color: textColorMuted}}>Step {currentStep + 1} of {questions.length}</span>
-              <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
+            <div className="w-full rounded-full h-1.5 sm:h-2" style={{backgroundColor: 'rgba(239,239,234,0.15)'}}> 
+              <div className="h-full rounded-full transition-all duration-300"
+                   style={{ width: `${((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100}%`, backgroundColor: accentColor }} />
             </div>
-          </div>
-          <div className="w-full rounded-full h-1.5 sm:h-2" style={{backgroundColor: 'rgba(239,239,234,0.15)'}}> 
-            <div className="h-full rounded-full transition-all duration-300"
-                 style={{ width: `${((currentStep + 1) / questions.length) * 100}%`, backgroundColor: accentColor }} />
           </div>
         </div>
-      </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto p-4 sm:p-6"> 
-          <div className="mb-10 sm:mb-12"> 
-            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight" style={{color: textColorPrimary}}>{currentQuestion.title}</h2>
-            {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>{currentQuestion.subtitle}</p>}
-            <div className="space-y-3 sm:space-y-4">
-              {currentQuestion.options.map((option) => {
-                let isSelected;
-                if (currentQuestion.type === 'multiple') {
-                    isSelected = Array.isArray(answers[currentQuestion.id]) && answers[currentQuestion.id].includes(option.value);
-                } else {
-                    isSelected = answers[currentQuestion.id] === option.value;
-                }
-                
-                return (
-                  <label key={option.value} className="block cursor-pointer group"> 
-                    <div 
-                      className={`p-4 sm:p-5 rounded-xl transition-all duration-200 flex items-center border hover:border-opacity-70 ${isSelected ? 'shadow-md' : ''}`}
-                      style={{ 
-                        borderColor: isSelected ? accentColor : 'rgba(239,239,234,0.15)', 
-                        backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(239,239,234,0.04)', 
-                        minHeight: '64px' 
-                      }}
-                    >
-                      <input 
-                        type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'} 
-                        name={currentQuestion.id} 
-                        value={option.value} 
-                        checked={isSelected} 
-                        onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
-                        className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" 
-                        style={{accentColor: accentColor}} 
-                      />
-                      <div className="flex-1"> 
-                        <span className="font-medium text-sm sm:text-base" style={{color: textColorPrimary}}>{option.label}</span>
-                        {option.description && <p className="text-xs sm:text-sm mt-1" style={{color: textColorSecondary}}>{option.description}</p>}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-3xl mx-auto p-4 sm:p-6"> 
+            <div className="mb-10 sm:mb-12"> 
+              <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight" style={{color: textColorPrimary}}>{personalizeText(actualCurrentQuestionData.title)}</h2>
+              {actualCurrentQuestionData.subtitle && <p className="mb-1 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>{personalizeText(actualCurrentQuestionData.subtitle)}</p>}
+              {contextualHelpText && (
+                <div className="mt-2 mb-4 p-3 rounded-lg text-xs flex items-start" style={{backgroundColor: accentColorBgLowOpacity, color: textColorSecondary, border: `1px solid ${accentColorBorderLowOpacity}`}}>
+                  <HelpCircle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" style={{color: accentColor}}/>
+                  <span>{personalizeText(contextualHelpText)}</span>
+                </div>
+              )}
+              <div className="space-y-3 sm:space-y-4 mt-6">
+                {actualCurrentQuestionData.options.map((option) => {
+                  let isSelected;
+                  if (actualCurrentQuestionData.type === 'multiple') {
+                      isSelected = Array.isArray(answers[actualCurrentQuestionData.id]) && answers[actualCurrentQuestionData.id].includes(option.value);
+                  } else {
+                      isSelected = answers[actualCurrentQuestionData.id] === option.value;
+                  }
+                  
+                  return (
+                    <label key={option.value} className="block cursor-pointer group"> 
+                      <div 
+                        className={`p-4 sm:p-5 rounded-xl transition-all duration-200 flex items-center border hover:border-opacity-70 ${isSelected ? 'shadow-md' : ''}`}
+                        style={{ 
+                          borderColor: isSelected ? accentColor : 'rgba(239,239,234,0.15)', 
+                          backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(239,239,234,0.04)', 
+                          minHeight: '64px' 
+                        }}
+                      >
+                        <input 
+                          type={actualCurrentQuestionData.type === 'multiple' ? 'checkbox' : 'radio'} 
+                          name={actualCurrentQuestionData.id} 
+                          value={option.value} 
+                          checked={isSelected} 
+                          onChange={() => handleAnswer(actualCurrentQuestionData.id, option.value, actualCurrentQuestionData.type === 'multiple')}
+                          className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" 
+                          style={{accentColor: accentColor}} 
+                        />
+                        <div className="flex-1"> 
+                          <span className="font-medium text-sm sm:text-base" style={{color: textColorPrimary}}>{personalizeText(option.label)}</span>
+                          {option.description && <p className="text-xs sm:text-sm mt-1" style={{color: textColorSecondary}}>{personalizeText(option.description)}</p>}
+                        </div>
+                        {isSelected && <CheckCircle className="w-5 h-5 ml-3 flex-shrink-0" style={{color: accentColor}}/>}
                       </div>
-                      {isSelected && <CheckCircle className="w-5 h-5 ml-3 flex-shrink-0" style={{color: accentColor}}/>}
-                    </div>
-                  </label>
-                );
-              })}
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t bg-[#0a0a0a]/80 backdrop-blur-md" style={{borderColor: 'rgba(239,239,234,0.2)'}}> 
-        <div className="max-w-4xl mx-auto flex justify-between">
-          <button 
-            onClick={prevStep} 
-            disabled={currentStep === 0}
-            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: 'rgba(239,239,234,0.06)', 
-              borderColor: 'rgba(239,239,234,0.25)',
-              color: currentStep === 0 ? textColorVeryMuted : textColorPrimary
-            }}
-          >
-            Previous
-          </button>
-          <button 
-            onClick={nextStep} 
-            disabled={!isAnswered}
-            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ 
-              background: !isAnswered ? 'rgba(239,239,234,0.1)' : accentColor, 
-              color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, 
-              border: `1px solid ${!isAnswered ? 'rgba(239,239,234,0.1)' : accentColor}`
-            }}
-          > 
-            {currentStep === questions.length - 1 ? 'Get My Analysis' : 'Continue'}
-            <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
-          </button>
+        <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+          <div className="max-w-4xl mx-auto flex justify-between">
+            <button 
+              onClick={prevStep} 
+              disabled={assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0 && assessmentStage !== 'initialIndustry' && assessmentStage !== 'initialName'} 
+              className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'rgba(239,239,234,0.06)', 
+                borderColor: 'rgba(239,239,234,0.25)',
+                color: (assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0 && assessmentStage !== 'initialIndustry' && assessmentStage !== 'initialName' ) ? textColorVeryMuted : textColorPrimary
+              }}
+            >
+              Previous
+            </button>
+            <button 
+              onClick={nextStep} 
+              disabled={!isAnswered}
+              className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                background: !isAnswered ? 'rgba(239,239,234,0.1)' : accentColor, 
+                color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, 
+                border: `1px solid ${!isAnswered ? 'rgba(239,239,234,0.1)' : accentColor}`
+              }}
+            > 
+              {currentStepInDisplayable === displayableQuestionsOrder.length - 1 ? 'Get My Analysis' : 'Continue'}
+              <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    );
+  }
+  
+  return (
+      <div className="w-full h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary}}>
+        Initializing Assessment...
+      </div>
   );
+
 };
 
 export default AutomationOpportunityFinder;
