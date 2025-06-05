@@ -27,6 +27,14 @@ const funnyLoadingMessages = [
   { text: "Analyzing your info with our team of tiny AI helpers...", icon: <Cpu className="w-8 h-8 mr-3 text-teal-400 animate-bounce" /> }
 ];
 
+// --- Initial Loading Messages ---
+const initialLoadingMessages = [
+  { text: "Initializing automation analysis engine...", icon: <Cpu className="w-6 h-6 mr-3 text-blue-400" /> },
+  { text: "Calibrating efficiency algorithms...", icon: <Zap className="w-6 h-6 mr-3 text-yellow-400" /> },
+  { text: "Loading business intelligence modules...", icon: <TrendingUp className="w-6 h-6 mr-3 text-green-400" /> },
+  { text: "Preparing personalized recommendations...", icon: <Lightbulb className="w-6 h-6 mr-3 text-purple-400" /> }
+];
+
 
 // --- Initial Questions Setup ---
 const industries = [
@@ -162,6 +170,7 @@ const AutomationOpportunityFinder = () => {
   const [currentStepInDisplayable, setCurrentStepInDisplayable] = useState(0);
 
   const [funnyLoadingMessageIndex, setFunnyLoadingMessageIndex] = useState(0);
+  const [initialLoadingMessageIndex, setInitialLoadingMessageIndex] = useState(0);
 
 
   const [showResults, setShowResults] = useState(false);
@@ -243,6 +252,17 @@ const AutomationOpportunityFinder = () => {
     return () => clearInterval(intervalId);
   }, [assessmentStage]);
 
+  // Effect for cycling initial loading messages
+  useEffect(() => {
+    let intervalId;
+    if (assessmentStage === 'initialName') {
+      intervalId = setInterval(() => {
+        setInitialLoadingMessageIndex(prevIndex => (prevIndex + 1) % initialLoadingMessages.length);
+      }, 3000);
+    }
+    return () => clearInterval(intervalId);
+  }, [assessmentStage]);
+
 
   const handleAnswer = (questionId, value, isMultiple = false) => {
     setAnswers(prevAnswers => {
@@ -277,7 +297,7 @@ const AutomationOpportunityFinder = () => {
             responseSchema: expectedSchema || { type: "OBJECT", properties: {"output": {type: "STRING"}} } 
         };
     }
-    const apiKey = ""; // API_KEY REMOVED FOR SECURITY
+    const apiKey = "AIzaSyBO22-mK7am5AwLEMrV7UIuBRK66dPlChg"; // API_KEY REMOVED FOR SECURITY
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     try {
         const response = await fetch(apiUrl, {
@@ -709,13 +729,14 @@ const AutomationOpportunityFinder = () => {
     padding: '2rem',
   };
   const calendlyModalContainerStyle = {   
-    background: calendlyPopupOuterBg,      
+    background: '#040404',      
     borderRadius: '0.875rem',             
     padding: '0.5rem', 
     boxShadow: '0 10px 30px rgba(0,0,0,0.5)', 
-    width: '95vw',                        
-    maxWidth: '960px', 
-    maxHeight: 'calc(100vh - 4rem)',      
+    width: '90vw',                        
+    maxWidth: '1200px', 
+    height: '80vh',
+    maxHeight: '800px',      
     display: 'flex',                      
     flexDirection: 'column',              
     position: 'relative',                 
@@ -753,9 +774,9 @@ const AutomationOpportunityFinder = () => {
   }
   if (showEmailCapture) { 
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#040404', color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div style={defaultPopupWrapperStyle}>
-          <div style={defaultPopupContentStyle} className="w-full"> 
+          <div style={{...defaultPopupContentStyle, background: '#040404', border: `1px solid ${accentColor}33`}} className="w-full"> 
             <div className="text-center mb-8">
               <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                 <Download className="w-10 h-10" style={{color: accentColor}} />
@@ -763,7 +784,7 @@ const AutomationOpportunityFinder = () => {
               <h2 className="text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Get Your Complete Automation Strategy</h2>
               <p className="text-sm" style={{color: textColorSecondary}}>Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <div className="p-6 rounded-2xl mb-8 bg-black/20 border" style={{borderColor: 'rgba(239,239,234,0.1)'}}> 
+            <div className="p-6 rounded-2xl mb-8 border" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}> 
               <h3 className="font-medium text-base mb-4" style={{color: textColorPrimary}}>🎯 Full Report Includes:</h3>
               <div className="grid md:grid-cols-2 gap-3 text-sm" style={{color: textColorSecondary}}>
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
@@ -773,17 +794,17 @@ const AutomationOpportunityFinder = () => {
             </div>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                     className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none" 
-                     style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
+                     className="w-full p-4 rounded-xl border focus:ring-2 outline-none" 
+                     style={{color:textColorPrimary, backgroundColor: 'rgba(0,0,0,0.3)', borderColor: accentColorBorderLowOpacity, '--tw-ring-color': accentColor}}/>
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                     className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none" 
-                     style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
+                     className="w-full p-4 rounded-xl border focus:ring-2 outline-none" 
+                     style={{color:textColorPrimary, backgroundColor: 'rgba(0,0,0,0.3)', borderColor: accentColorBorderLowOpacity, '--tw-ring-color': accentColor}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
-                      style={{background: accentColorDarker, color: textColorPrimary }}> 
+                      style={{background: accentColor, color: '#0A0A0A' }}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
               </button>
             </form>
-            <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm border hover:bg-gray-700/30" style={{color: textColorMuted, borderColor: textColorVeryMuted + '80'}}>
+            <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm border hover:bg-gray-700/30" style={{color: textColorMuted, borderColor: accentColorBorderLowOpacity}}>
               Back to Summary
             </button>
             <p className="text-center text-xs mt-4" style={{color: textColorVeryMuted}}>Report emailed in 5 mins. We respect your privacy.</p>
@@ -821,11 +842,11 @@ const AutomationOpportunityFinder = () => {
               data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f&month=2025-06&date=2025-06-10"
               style={{ 
                 width: '100%',    
-                height: '700px',   
-                border: `1px solid ${textColorVeryMuted}`, 
+                height: '100%',
+                minHeight: '600px',
+                border: 'none', 
                 borderRadius: '0.625rem', 
                 overflow: 'hidden', 
-                marginTop: '2rem', 
               }} 
             >
               {/* Calendly script populates this */}
@@ -839,7 +860,11 @@ const AutomationOpportunityFinder = () => {
     const currentFunnyMessage = funnyLoadingMessages[funnyLoadingMessageIndex];
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center text-center px-4" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <Loader2 className="w-12 h-12 animate-spin mb-6" style={{color: accentColor}} /> 
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor}}></div>
+          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.2s'}}></div>
+          <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.4s'}}></div>
+        </div>
         <div className="flex items-center justify-center mb-4">
           {currentFunnyMessage.icon}
           <p className="text-xl" style={{color: textColorSecondary}}>{currentFunnyMessage.text}</p>
@@ -862,10 +887,19 @@ const AutomationOpportunityFinder = () => {
             <div className="max-w-3xl mx-auto p-4 sm:p-6">
                 {assessmentStage === 'initialName' && (
                     <div className="mb-10 sm:mb-12">
-                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center" style={{color: textColorPrimary}}>
-                            <Building className="w-6 h-6 mr-3" style={{color: accentColor}}/> What's your business name?
+                        <div className="flex items-center justify-center mb-6">
+                          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor}}></div>
+                          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.2s'}}></div>
+                          <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.4s'}}></div>
+                        </div>
+                        <div className="flex items-center justify-center mb-4">
+                          {initialLoadingMessages[initialLoadingMessageIndex].icon}
+                          <p className="text-sm" style={{color: textColorMuted}}>{initialLoadingMessages[initialLoadingMessageIndex].text}</p>
+                        </div>
+                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center justify-center" style={{color: textColorPrimary}}>
+                            What's your business name?
                         </h2>
-                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>This will help us tailor the assessment language for you (optional).</p>
+                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed text-center" style={{color: textColorSecondary}}>This will help us tailor the assessment language for you (optional).</p>
                         <input 
                             type="text" 
                             value={businessName} 
@@ -878,10 +912,10 @@ const AutomationOpportunityFinder = () => {
                 )}
                 {assessmentStage === 'initialIndustry' && (
                     <div className="mb-10 sm:mb-12">
-                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center" style={{color: textColorPrimary}}>
-                           <Briefcase className="w-6 h-6 mr-3" style={{color: accentColor}}/> What industry is {businessName || "your business"} in?
+                        <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center justify-center" style={{color: textColorPrimary}}>
+                           What industry is {businessName || "your business"} in?
                         </h2>
-                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>Knowing your industry helps us provide more relevant insights and tailor questions.</p>
+                        <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed text-center" style={{color: textColorSecondary}}>Knowing your industry helps us provide more relevant insights and tailor questions.</p>
                         <select 
                             value={selectedIndustry} 
                             onChange={(e) => setSelectedIndustry(e.target.value)}
@@ -986,6 +1020,100 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
           )}
+
+          {/* Automation Roadmap Preview Section */}
+          <div className="my-12 relative">
+            <div className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+              <h3 className="text-2xl font-semibold mb-6 text-center" style={{color: textColorPrimary}}>
+                🛣️ Your Automation Roadmap
+              </h3>
+              
+              {/* Phase 1 - Visible Content */}
+              <div className="mb-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: accentColor, color: '#0A0A0A'}}>
+                    <span className="text-sm font-bold">1</span>
+                  </div>
+                  <h4 className="text-xl font-semibold" style={{color: textColorPrimary}}>Phase 1: Foundation & Quick Wins (Weeks 1-4)</h4>
+                </div>
+                <div className="ml-11 space-y-3">
+                  <div className="flex items-start">
+                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                    <div>
+                      <p className="font-medium" style={{color: textColorPrimary}}>Audit Current Processes</p>
+                      <p className="text-sm" style={{color: textColorSecondary}}>Document and map existing workflows to identify automation opportunities</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                    <div>
+                      <p className="font-medium" style={{color: textColorPrimary}}>Implement Basic Automations</p>
+                      <p className="text-sm" style={{color: textColorSecondary}}>Start with email automation, calendar scheduling, and simple data entry tasks</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                    <div>
+                      <p className="font-medium" style={{color: textColorPrimary}}>Team Training & Setup</p>
+                      <p className="text-sm" style={{color: textColorSecondary}}>Onboard team members and establish automation best practices</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Blurred Preview of Additional Phases */}
+              <div className="relative">
+                <div className="filter blur-sm">
+                  <div className="mb-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
+                        <span className="text-sm font-bold">2</span>
+                      </div>
+                      <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 2: Advanced Integration (Weeks 5-8)</h4>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
+                        <span className="text-sm font-bold">3</span>
+                      </div>
+                      <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 3: AI & Advanced Systems (Weeks 9-12)</h4>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Unlock Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div style={{...modalWrapperBaseStyle, maxWidth: '400px'}}> 
+                    <div className="text-center p-6" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> 
+                      <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+                        <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                      </div>
+                      <h3 className="text-lg font-medium mb-2" style={{color: textColorPrimary}}>Complete Roadmap Available</h3>
+                      <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the full 12-week implementation plan with detailed timelines and milestones.</p>
+                      <button 
+                        onClick={() => setShowEmailCapture(true)}
+                        className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" 
+                        style={{background: accentColor, color: '#0A0A0A'}}
+                      > 
+                        <Download className="w-4 h-4 mr-2" />Unlock Full Roadmap
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {previewRecs.length > 0 && (
             <div className="mb-12">
@@ -1112,7 +1240,7 @@ const AutomationOpportunityFinder = () => {
                       borderColor: accentColor 
                     }}
                 >
-                  Download Report Again
+                  Get Full Report
                 </button>
               </div>
               <p className="text-xs mt-4" style={{color: textColorVeryMuted}}>Personalized consultation • Custom roadmap • No pressure</p>
