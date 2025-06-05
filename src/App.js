@@ -10,16 +10,21 @@ const AutomationOpportunityFinder = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState('');
 
-  const accentColor = '#92d8c8'; // Main UI accent (icons, progress, selections)
-  const accentColorDarker = '#6BAA9B'; // For pop-up CTAs like "Get Full Report"
+  // Color Palette
+  const pageBgColor = '#0a0a0a';
+  const accentColor = '#92d8c8'; // Softer teal for secondary accents, icons, progress, selections
+  const accentColorDarker = '#6BAA9B'; // For CTAs within popups (e.g., "Get Full Report")
   
-  const popupBorderColor = '#2CE0A6'; // New vibrant green for popup borders & main page CTA
-  const popupCtaTextColor = '#0A0A0A'; // Dark text for popupBorderColor buttons
+  const popupBorderColor = '#2CE0A6'; // Vibrant green for popup borders
+  const brighterMainCtaColor = '#38F0B5'; // Brighter green for main "Schedule Call" CTA
+  const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green backgrounds
 
   const accentColorBgLowOpacity = accentColor + '1A'; 
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
+  // Consistent dark background for popup content areas (semi-transparent)
+  const popupContentBg = 'rgba(20, 25, 35, 0.85)'; // Dark blue-gray, 85% opacity
 
   const questions = [
     {
@@ -303,7 +308,7 @@ const AutomationOpportunityFinder = () => {
 
   if (showThankYou) {
     return (
-      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
+      <div className="max-w-2xl mx-auto p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="w-full text-center">
           <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
             <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
@@ -311,7 +316,7 @@ const AutomationOpportunityFinder = () => {
           <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
           <p className="text-sm mb-6 text-gray-400">Your personalized insights for {email} will arrive shortly.</p>
           <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
-            className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: '#0a0a0a'}}> 
+            className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
             Back to My Report
           </button>
         </div>
@@ -321,21 +326,22 @@ const AutomationOpportunityFinder = () => {
 
   if (showEmailCapture) {
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#0a0a0a', color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div 
           style={{
             borderRadius: '0.875rem', 
-            padding: '1px', // Thinner border
-            background: popupBorderColor, // Solid color border
+            padding: '1px', 
+            background: popupBorderColor, 
             boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             width: '100%', 
           }}
         >
           <div 
             style={{
-              background: 'rgba(17, 24, 39, 0.80)', // More transparent background for content
+              background: popupContentBg, 
               borderRadius: '0.8125rem', 
               padding: '1.5rem', 
+              backdropFilter: 'blur(2px)',
             }}
             className="w-full"
           >
@@ -346,7 +352,7 @@ const AutomationOpportunityFinder = () => {
               <h2 className="text-2xl font-semibold mb-3">Get Your Complete Automation Strategy</h2>
               <p className="text-sm text-gray-400">Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <div className="p-6 rounded-2xl mb-8 bg-gray-800/40 border border-gray-700/60">
+            <div className="p-6 rounded-2xl mb-8 bg-black/20 border border-white/10">
               <h3 className="font-medium text-base mb-4">🎯 Full Report Includes:</h3>
               <div className="grid md:grid-cols-2 gap-3 text-sm">
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
@@ -356,9 +362,9 @@ const AutomationOpportunityFinder = () => {
             </div>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                     className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                     className="w-full p-4 rounded-xl bg-gray-800/50 border border-gray-700/60 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
                       style={{background: accentColorDarker, color: '#FFFFFF'}}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
@@ -389,7 +395,7 @@ const AutomationOpportunityFinder = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/30 border border-gray-700/50">
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border border-slate-700/50">
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -398,7 +404,7 @@ const AutomationOpportunityFinder = () => {
               <p className="text-sm text-gray-400">Est. weekly hours recoverable.</p>
             </div>
 
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/50 border border-gray-700/70">
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border border-slate-600/50"> {/* Slightly more prominent card */}
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -410,7 +416,7 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
             
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-gray-800/30 border border-gray-700/50">
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border border-slate-700/50">
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -429,7 +435,7 @@ const AutomationOpportunityFinder = () => {
               <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Top Automation Opportunities (Preview)</h3>
               <div className="space-y-6">
                 {previewRecs.map((rec, index) => (
-                  <div key={index} className="p-6 sm:p-8 rounded-2xl bg-gray-800/30 border border-gray-700/50">
+                  <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
                     <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6">
                       <div>
                         <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center">
@@ -460,11 +466,11 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur pointer-events-none"> 
+              <div className="filter blur-sm pointer-events-none"> {/* Using Tailwind 'blur-sm' for 4px blur */}
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
-                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-gray-800/30 border border-gray-700/50">
+                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
                       <h4 className="font-medium text-lg sm:text-xl mb-2 text-gray-500">{rec.title}</h4>
                       <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-2"></div>
                       <div className="h-4 bg-gray-700/50 rounded w-1/2"></div>
@@ -473,12 +479,12 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.4) 25%, rgba(10,10,10,0.9) 50%, rgba(10,10,10,1) 70%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
+                   style={{background: 'linear-gradient(to top, rgba(10,10,10,0.0) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> {/* Adjusted Gradient for more visibility at bottom */}
                 <div 
                   style={{
                     borderRadius: '0.875rem', 
-                    padding: '1px', // Thinner border
-                    background: popupBorderColor, // Solid color border
+                    padding: '1px', 
+                    background: popupBorderColor, 
                     boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
                   }}
                   className="max-w-md mx-auto" 
@@ -486,7 +492,7 @@ const AutomationOpportunityFinder = () => {
                   <div 
                     className="text-center p-6 sm:p-8" 
                     style={{
-                      background: 'rgba(17, 24, 39, 0.80)', // More transparent background for content
+                      background: popupContentBg, 
                       borderRadius: '0.8125rem', 
                       backdropFilter: 'blur(2px)', 
                     }}
@@ -515,7 +521,7 @@ const AutomationOpportunityFinder = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button onClick={() => alert('Schedule Call function to be implemented.')}
                 className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
-                style={{background: popupBorderColor, color: popupCtaTextColor }}> {/* Brighter Green CTA */}
+                style={{background: brighterMainCtaColor, color: popupCtaTextColor }}> {/* Brighter Green CTA */}
                 Schedule Free Strategy Call
               </button>
               <button onClick={() => setShowEmailCapture(true)}
@@ -535,7 +541,7 @@ const AutomationOpportunityFinder = () => {
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0a0a0a] text-white" style={{fontFamily: 'Inter, system-ui, sans-serif'}}>
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-gray-700/50 bg-[#0a0a0a]/80 backdrop-blur-md">
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> {/* Consistent slate border */}
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
@@ -547,7 +553,7 @@ const AutomationOpportunityFinder = () => {
               <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
-          <div className="w-full rounded-full h-1.5 sm:h-2 bg-gray-700/50">
+          <div className="w-full rounded-full h-1.5 sm:h-2 bg-slate-700/50"> {/* Consistent slate progress bg */}
             <div className="h-full rounded-full transition-all duration-300"
                  style={{ width: `${((currentStep + 1) / questions.length) * 100}%`, backgroundColor: accentColor }} />
           </div>
@@ -583,16 +589,16 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-gray-700/50 bg-[#0a0a0a]/80 backdrop-blur-md">
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> {/* Consistent slate border */}
         <div className="max-w-4xl mx-auto flex justify-between">
           <button onClick={prevStep} disabled={currentStep === 0}
-                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border border-gray-600/70 hover:bg-gray-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border border-slate-600/70 hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{backgroundColor: 'rgba(255,255,255,0.06)', color: currentStep === 0 ? '#737373' : 'white'}}>
             Previous
           </button>
           <button onClick={nextStep} disabled={!isAnswered}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? '#737373' : '#0a0a0a', border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> 
+                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? '#737373' : popupCtaTextColor, border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> 
             {currentStep === questions.length - 1 ? 'Get My Analysis' : 'Continue'}
             <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
           </button>
