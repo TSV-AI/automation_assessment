@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react'; 
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon } from 'lucide-react'; // Added XIcon for close
 
 // Moved questions array outside the component to ensure it's a stable reference
 const questions = [
@@ -118,6 +118,7 @@ const AutomationOpportunityFinder = () => {
   const [email, setEmail] = useState(''); 
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState(''); 
+  const [showCalendlyPopup, setShowCalendlyPopup] = useState(false); // State for Calendly popup
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
@@ -150,7 +151,36 @@ const AutomationOpportunityFinder = () => {
       }
     });
     setAnswers(initialAnswers);
-  }, []); // Empty dependency array because 'questions' is now stable (defined outside component)
+  }, []); // Empty dependency array because 'questions' is stable
+
+  // Effect to load Calendly script and handle Escape key for its popup
+  useEffect(() => {
+    if (showCalendlyPopup) {
+      // Load Calendly script
+      const scriptId = 'calendly-widget-script';
+      if (!document.getElementById(scriptId)) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'text/javascript';
+        script.src = 'https://assets.calendly.com/assets/external/widget.js';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+
+      // Handle Escape key
+      const handleEscape = (event) => {
+        if (event.key === 'Escape') {
+          setShowCalendlyPopup(false);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+        // Note: Script is not removed, as Calendly might need it if popup reopens.
+        // Calendly script itself is usually designed to be loaded once.
+      };
+    }
+  }, [showCalendlyPopup]);
 
 
   const handleAnswer = (questionId, value, isMultiple = false) => {
@@ -375,7 +405,6 @@ const AutomationOpportunityFinder = () => {
   };
   const thankYouModalContentStyle = { ...modalContentStyle, padding: '2rem' };
 
-
   if (showThankYou) {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
@@ -441,6 +470,47 @@ const AutomationOpportunityFinder = () => {
     );
   }
 
+  // Conditionally render Calendly Popup
+  if (showCalendlyPopup) {
+    return (
+      <div 
+        className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4 sm:p-6" 
+        onClick={() => setShowCalendlyPopup(false)} // Close on overlay click
+      >
+        <div 
+          style={{
+            ...modalWrapperStyle, 
+            maxWidth: '500px', 
+            width: '100%',
+            maxHeight: 'calc(100vh - 4rem)', 
+            overflowY: 'auto', // Allow scroll for the bordered box
+          }} 
+          onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+        >
+          <div style={{...modalContentStyle, padding: '1rem' }}> 
+            <div className="flex justify-end mb-1"> {/* Container for close button */}
+              <button 
+                onClick={() => setShowCalendlyPopup(false)} 
+                className="p-1 rounded-full hover:bg-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors" // Tailwind for styling
+                aria-label="Close"
+              >
+                <XIcon className="w-6 h-6" /> {/* Lucide X icon */}
+              </button>
+            </div>
+            {/* Calendly Widget Div */}
+            <div 
+              className="calendly-inline-widget"
+              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=0a0a0a&text_color=efefea&primary_color=92d8c8" 
+              style={{ minWidth:'320px', height:'700px', backgroundColor: '#0a0a0a' }} 
+            >
+              {/* Calendly script will populate this */}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (Object.keys(answers).length === 0 && questions.length > 0) {
     return ( 
       <div className="w-full h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary}}>
@@ -448,7 +518,6 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
-
 
   if (showResults) {
     const results = calculateResults();
@@ -577,7 +646,7 @@ const AutomationOpportunityFinder = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button 
-                  onClick={() => { console.log('Schedule Call button clicked. Implement calendly or similar.');}}
+                  onClick={() => setShowCalendlyPopup(true)} // Updated to show Calendly popup
                   className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
                   style={{background: brighterMainCtaColor, color: popupCtaTextColor }}
                 > 
