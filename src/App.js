@@ -129,7 +129,7 @@ const AutomationOpportunityFinder = () => {
   const accentColor = '#92d8c8'; 
   const accentColorDarker = '#6BAA9B'; 
   
-  const popupBorderColorWithOpacity = '#0e9f7bBF'; 
+  const popupBorderColorWithOpacity = '#0e9f7bBF'; // Green border color for popups
   const brighterMainCtaColor = '#4DCFB9'; 
   const popupCtaTextColor = '#0A0A0A'; 
 
@@ -137,7 +137,11 @@ const AutomationOpportunityFinder = () => {
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const popupContentBg = 'rgba(20, 25, 35, 0.70)'; 
+  // General popup content background (used for email capture, thank you)
+  const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)'; 
+  // Specific background for the Calendly popup's content area
+  const calendlyPopupContentBg = '#040404'; 
+
 
   useEffect(() => {
     const initialAnswers = {};
@@ -383,37 +387,62 @@ const AutomationOpportunityFinder = () => {
     } 
   };
 
-  const modalWrapperStyle = {
-    borderRadius: '0.875rem', 
-    padding: '1px', 
-    background: popupBorderColorWithOpacity, 
+  // Base style for the modal wrapper (green border)
+  const modalWrapperBaseStyle = {
+    borderRadius: '0.875rem', // 14px
+    padding: '1px', // This creates the border effect
+    background: popupBorderColorWithOpacity, // The green border color
     boxShadow: '0 10px 30px rgba(0,0,0,0.35)', 
-    width: '100%', 
+    width: '100%', // Takes width from its container in the overlay
   };
-  const modalContentStyle = {
-    background: popupContentBg, 
-    borderRadius: '0.8125rem', 
-    padding: '1.5rem', 
-    backdropFilter: 'blur(3px)',
-  };
-  const thankYouModalContentStyle = { ...modalContentStyle, padding: '2rem' };
 
-  // Specific style for Calendly popup content area for 2rem padding
-  const calendlyModalContentStyle = {
-    ...modalContentStyle, // Inherit base styles
-    padding: '2rem', // Override with 2rem padding
+  // Base style for the modal content area (inside the green border)
+  const modalContentBaseStyle = {
+    borderRadius: 'calc(0.875rem - 1px)', // Inner rounding
+    backdropFilter: 'blur(3px)',
+    height: '100%', // Occupy full height of wrapper
     display: 'flex',
     flexDirection: 'column',
-    // Ensure the content area can grow but also respects the widget's height needs
-    // It's important the Calendly widget itself handles its scrolling if needed.
+  };
+
+  // Styles for Thank You and Email Capture popups
+  const defaultPopupWrapperStyle = {
+    ...modalWrapperBaseStyle,
+    maxWidth: '560px',
+  };
+  const defaultPopupContentStyle = {
+    ...modalContentBaseStyle,
+    background: generalPopupContentBg, // Darker, semi-transparent bg
+    padding: '1.5rem',
+  };
+  const thankYouPopupContentStyle = {
+    ...defaultPopupContentStyle,
+    padding: '2rem',
+  };
+
+  // Styles specific to the Calendly popup
+  const calendlyPopupWrapperStyle = {
+    ...modalWrapperBaseStyle,
+    maxWidth: '800px', // Wider for a less portrait feel, can adjust as needed
+     // Height will be determined by content, up to maxHeight
+    maxHeight: 'calc(100vh - 4rem)', // Max height with some viewport margin
+    display: 'flex', // Added to help with inner content stretching
+    flexDirection: 'column',
+  };
+  const calendlyPopupContentStyle = {
+    ...modalContentBaseStyle,
+    background: calendlyPopupContentBg, // Specific #040404 background
+    padding: '2rem', // 2rem padding around the Calendly widget
+    overflowY: 'auto', // Allow content to scroll if Calendly widget + padding is too tall
+    flexGrow: 1, // Allow this to take up space in the flex container
   };
 
 
   if (showThankYou) {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div style={{...modalWrapperStyle, maxWidth: '560px'}}> 
-          <div style={thankYouModalContentStyle} className="w-full text-center"> 
+        <div style={defaultPopupWrapperStyle}> 
+          <div style={thankYouPopupContentStyle} className="w-full text-center"> 
             <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
               <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
             </div>
@@ -435,8 +464,8 @@ const AutomationOpportunityFinder = () => {
   if (showEmailCapture) {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div style={modalWrapperStyle}>
-          <div style={modalContentStyle} className="w-full"> 
+        <div style={defaultPopupWrapperStyle}>
+          <div style={defaultPopupContentStyle} className="w-full"> 
             <div className="text-center mb-8">
               <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                 <Download className="w-10 h-10" style={{color: accentColor}} />
@@ -477,44 +506,33 @@ const AutomationOpportunityFinder = () => {
   if (showCalendlyPopup) {
     return (
       <div 
-        className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4 sm:p-6" 
+        className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4" // Reduced padding on overlay
         onClick={() => setShowCalendlyPopup(false)} 
       >
         <div 
-          style={{
-            ...modalWrapperStyle, // Green border, base rounding and shadow
-            maxWidth: 'calc(320px + 4rem + 2px)', // 320px (min widget) + 2rem padding each side + 2px for borders
-            width: '90vw', // Responsive width, up to maxWidth
-            // height is not explicitly set on wrapper, it will adapt to content + padding
-            // maxHeight for the wrapper to ensure it doesn't exceed viewport too much
-            maxHeight: 'calc(100vh - 2rem)', // Ensure some margin from viewport edges
-            overflow: 'hidden', // Wrapper handles rounded corners, content handles scroll
-          }} 
+          style={calendlyPopupWrapperStyle}
           onClick={e => e.stopPropagation()} 
         >
-          <div style={{
-            ...calendlyModalContentStyle, // Has background, 2rem padding, inner rounding
-            overflowY: 'auto', // Allow this inner content to scroll if Calendly is too tall
-            maxHeight: 'calc(100vh - 2rem - 2px - 4rem)', // Account for outer wrapper padding, borders, and its own padding
-            }}> 
-            <div className="flex justify-end mb-2"> {/* Reduced margin for close button */}
+          <div style={calendlyPopupContentStyle}> 
+            <div className="flex justify-end mb-2" style={{ flexShrink: 0 }}> {/* Ensure close button doesn't get pushed by flex-grow */}
               <button 
                 onClick={() => setShowCalendlyPopup(false)} 
                 className="p-1 rounded-full hover:bg-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors"
                 aria-label="Close"
               >
-                <XIcon className="w-5 h-5" /> {/* Slightly smaller close icon */}
+                <XIcon className="w-5 h-5" /> 
               </button>
             </div>
             <div 
               className="calendly-inline-widget"
-              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f" 
-              // The month param can be added if desired: &month=2025-06
+              // Ensure this URL is exactly as provided by the user
+              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f&month=2025-06&date=2025-06-10"
               style={{ 
                 minWidth:'320px', 
-                width: '100%', // Widget takes full width of padded container
-                height:'700px', // Calendly recommended height
-                // overflow: 'hidden' // Let the parent div handle scrolling
+                width: '100%', 
+                height:'700px', 
+                flexGrow: 1, // Allows the widget to take available vertical space if parent is taller
+                overflow: 'hidden', // The widget itself shouldn't scroll if its content fits 700px
               }} 
             >
               {/* Calendly script will populate this */}
@@ -632,8 +650,8 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4"> 
-                <div style={{...modalWrapperStyle, maxWidth: '480px'}}>
-                  <div className="text-center p-6 sm:p-8" style={modalContentStyle}>
+                <div style={{...modalWrapperBaseStyle, maxWidth: '480px'}}> {/* Using base wrapper style */}
+                  <div className="text-center p-6 sm:p-8" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> {/* Base content + specific bg/padding */}
                     <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                       <Eye className="w-8 h-8" style={{color: accentColor}}/>
                     </div>
@@ -652,8 +670,8 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
         
-          <div style={{...modalWrapperStyle, maxWidth: 'none', padding:'1px'}} className="mx-auto" >
-            <div className="p-6 sm:p-10 rounded-[0.8125rem] text-center" style={{background: popupContentBg, backdropFilter: 'blur(3px)' }}>
+          <div style={{...modalWrapperBaseStyle, maxWidth: 'none', padding:'1px'}} className="mx-auto" > {/* Using base wrapper style */}
+            <div className="p-6 sm:p-10 rounded-[0.8125rem] text-center" style={{background: generalPopupContentBg, backdropFilter: 'blur(3px)' }}> {/* Specific BG here */}
               <h3 className="text-xl sm:text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Ready to Transform Your Business?</h3>
               <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed" style={{color: textColorSecondary}}>
                 Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
