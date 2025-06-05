@@ -480,28 +480,34 @@ const AutomationOpportunityFinder = () => {
         <div 
           style={{
             ...modalWrapperStyle, 
-            maxWidth: '500px', 
+            maxWidth: '520px', // Adjusted for a bit more width, can be tweaked
             width: '100%',
             maxHeight: 'calc(100vh - 4rem)', 
-            overflowY: 'auto', // Allow scroll for the bordered box
+            display: 'flex', // Use flex to help center content if it's smaller
+            flexDirection: 'column',
           }} 
-          onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+          onClick={e => e.stopPropagation()} 
         >
-          <div style={{...modalContentStyle, padding: '1rem' }}> 
-            <div className="flex justify-end mb-1"> {/* Container for close button */}
+          <div style={{...modalContentStyle, padding: '1rem', display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}> 
+            <div className="flex justify-end mb-1"> 
               <button 
                 onClick={() => setShowCalendlyPopup(false)} 
-                className="p-1 rounded-full hover:bg-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors" // Tailwind for styling
+                className="p-1 rounded-full hover:bg-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors"
                 aria-label="Close"
               >
-                <XIcon className="w-6 h-6" /> {/* Lucide X icon */}
+                <XIcon className="w-6 h-6" /> 
               </button>
             </div>
             {/* Calendly Widget Div */}
             <div 
               className="calendly-inline-widget"
-              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=0a0a0a&text_color=efefea&primary_color=92d8c8" 
-              style={{ minWidth:'320px', height:'700px', backgroundColor: '#0a0a0a' }} 
+              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=2f2f2f&text_color=efefea&primary_color=27b48f&month=2025-06" 
+              style={{ 
+                minWidth:'320px', 
+                height:'700px', 
+                flexGrow: 1, // Allows calendly to take available space within the padded modalContent
+                overflow: 'hidden' // Prevents scrollbars on the widget itself if it tries to exceed 700px
+              }} 
             >
               {/* Calendly script will populate this */}
             </div>
@@ -646,7 +652,7 @@ const AutomationOpportunityFinder = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button 
-                  onClick={() => setShowCalendlyPopup(true)} // Updated to show Calendly popup
+                  onClick={() => setShowCalendlyPopup(true)} 
                   className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
                   style={{background: brighterMainCtaColor, color: popupCtaTextColor }}
                 > 
