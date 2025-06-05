@@ -12,6 +12,13 @@ const AutomationOpportunityFinder = () => {
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
+  const textColorWhite = '#FFFFFF';
+  const textColorLightGray = '#E5E7EB'; // gray-200
+  const textColorMediumGray = '#D1D5DB'; // gray-300
+  const textColorDarkGray = '#9CA3AF';   // gray-400
+  const textColorVeryDarkGray = '#6B7280'; // gray-500
+
+
   const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
   const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups 
   
@@ -23,7 +30,7 @@ const AutomationOpportunityFinder = () => {
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const popupContentBg = 'rgba(20, 25, 35, 0.70)'; // Dark blue-gray, 70% opacity for popup content
+  const popupContentBg = 'rgba(20, 25, 35, 0.55)'; // Dark blue-gray, 55% opacity for popup content
 
   const questions = [
     {
@@ -305,33 +312,33 @@ const AutomationOpportunityFinder = () => {
     } catch (error) { console.error('Webhook error:', error); setShowThankYou(true); } 
   };
 
+  // ----- MODAL STYLES -----
+  const modalWrapperStyle = {
+    borderRadius: '0.875rem', // 14px
+    padding: '1px', 
+    background: popupBorderColorWithOpacity, 
+    boxShadow: '0 10px 30px rgba(0,0,0,0.35)', 
+    width: '100%', 
+  };
+  const modalContentStyle = {
+    background: popupContentBg, 
+    borderRadius: '0.8125rem', // 13px (14px - 1px border)
+    padding: '1.5rem', // p-6
+    backdropFilter: 'blur(3px)',
+  };
+  const thankYouModalContentStyle = { ...modalContentStyle, padding: '2rem' };
+
+
   if (showThankYou) {
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div 
-          style={{
-            borderRadius: '0.875rem', 
-            padding: '1px', 
-            background: popupBorderColorWithOpacity, 
-            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
-            width: '100%', 
-            maxWidth: '560px', 
-          }}
-        >
-          <div 
-            style={{
-              background: popupContentBg, 
-              borderRadius: '0.8125rem', 
-              padding: '2rem', 
-              backdropFilter: 'blur(3px)', // Increased blur for thank you popup content
-            }}
-            className="w-full text-center"
-          >
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorWhite, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div style={{...modalWrapperStyle, maxWidth: '560px'}}>
+          <div style={thankYouModalContentStyle} className="w-full text-center">
             <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
               <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
             </div>
-            <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
-            <p className="text-sm mb-8 text-gray-300">Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p> {/* Slightly lighter text */}
+            <h2 className="text-2xl font-semibold mb-4" style={{color: textColorWhite}}>Thank You, {name}!</h2>
+            <p className="text-sm mb-8" style={{color: textColorMediumGray}}>Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p>
             <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
               className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
               Back to My Report
@@ -344,35 +351,19 @@ const AutomationOpportunityFinder = () => {
 
   if (showEmailCapture) {
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div 
-          style={{
-            borderRadius: '0.875rem', 
-            padding: '1px', 
-            background: popupBorderColorWithOpacity, 
-            boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
-            width: '100%', 
-          }}
-        >
-          <div 
-            style={{
-              background: popupContentBg, 
-              borderRadius: '0.8125rem', 
-              padding: '1.5rem', 
-              backdropFilter: 'blur(3px)', // Increased blur
-            }}
-            className="w-full"
-          >
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorWhite, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div style={modalWrapperStyle}>
+          <div style={modalContentStyle} className="w-full">
             <div className="text-center mb-8">
               <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                 <Download className="w-10 h-10" style={{color: accentColor}} />
               </div>
-              <h2 className="text-2xl font-semibold mb-3">Get Your Complete Automation Strategy</h2>
-              <p className="text-sm text-gray-300">Enter details for a full report: roadmaps, ROI, tool recommendations.</p> {/* Slightly lighter text */}
+              <h2 className="text-2xl font-semibold mb-3" style={{color: textColorWhite}}>Get Your Complete Automation Strategy</h2>
+              <p className="text-sm" style={{color: textColorMediumGray}}>Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <div className="p-6 rounded-2xl mb-8 bg-black/20 border border-white/10">
-              <h3 className="font-medium text-base mb-4 text-white">🎯 Full Report Includes:</h3> {/* White text for title */}
-              <div className="grid md:grid-cols-2 gap-3 text-sm text-gray-200"> {/* Lighter text for list items */}
+            <div className="p-6 rounded-2xl mb-8 bg-black/20 border border-white/10"> {/* Inner card for checklist */}
+              <h3 className="font-medium text-base mb-4" style={{color: textColorWhite}}>🎯 Full Report Includes:</h3>
+              <div className="grid md:grid-cols-2 gap-3 text-sm" style={{color: textColorLightGray}}>
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
                    <div key={item} className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{color: accentColor}} />{item}</div>
                 ))}
@@ -380,18 +371,18 @@ const AutomationOpportunityFinder = () => {
             </div>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none text-white placeholder-gray-400" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none placeholder-gray-400" style={{color:textColorWhite, borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none text-white placeholder-gray-400" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none placeholder-gray-400" style={{color:textColorWhite, borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
-                      style={{background: accentColorDarker, color: '#FFFFFF'}}> 
+                      style={{background: accentColorDarker, color: textColorWhite}}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
               </button>
             </form>
-            <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm text-gray-400 border border-gray-700/50 hover:bg-gray-700/30">
+            <button onClick={() => setShowEmailCapture(false)} className="w-full mt-3 py-3 rounded-xl font-medium text-sm border hover:bg-gray-700/30" style={{color: textColorDarkGray, borderColor: textColorVeryDarkGray + '80'}}>
               Back to Summary
             </button>
-            <p className="text-center text-xs mt-4 text-gray-500">Report emailed in 5 mins. We respect your privacy.</p>
+            <p className="text-center text-xs mt-4" style={{color: textColorVeryDarkGray}}>Report emailed in 5 mins. We respect your privacy.</p>
           </div>
         </div>
       </div>
@@ -408,8 +399,8 @@ const AutomationOpportunityFinder = () => {
       <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a] text-white" style={{fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="text-center mb-16 sm:mb-20">
-            <h1 className="text-4xl sm:text-5xl font-semibold mb-6 tracking-tight leading-tight">Your Custom Automation Strategy</h1>
-            <p className="text-md sm:text-lg max-w-2xl mx-auto text-gray-300 leading-relaxed">Snapshot of AI automation's potential for your business, based on your answers.</p>
+            <h1 className="text-4xl sm:text-5xl font-semibold mb-6 tracking-tight leading-tight" style={{color: textColorWhite}}>Your Custom Automation Strategy</h1>
+            <p className="text-md sm:text-lg max-w-2xl mx-auto leading-relaxed" style={{color: textColorMediumGray}}>Snapshot of AI automation's potential for your business, based on your answers.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
@@ -417,20 +408,20 @@ const AutomationOpportunityFinder = () => {
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1 text-white">Time Savings Potential</h3>
+              <h3 className="text-base font-medium mb-1" style={{color: textColorWhite}}>Time Savings Potential</h3>
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>{results.hoursAutomatable}h</p>
-              <p className="text-sm text-gray-400">Est. weekly hours recoverable.</p>
+              <p className="text-sm" style={{color: textColorDarkGray}}>Est. weekly hours recoverable.</p>
             </div>
 
             <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border border-slate-600/50"> 
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1 text-white">Monthly Cost Reduction</h3>
+              <h3 className="text-base font-medium mb-1" style={{color: textColorWhite}}>Monthly Cost Reduction</h3>
               <p className="text-5xl font-bold my-3 tracking-tighter" style={{color: accentColor}}>{results.percentageSaving}%</p>
-              <div className="text-xs text-gray-400 space-y-1">
-                <p>Manual: <span className="font-medium text-gray-200">${results.currentManualMonthlyCost.toLocaleString()}</span></p>
-                <p>With AI: <span className="font-medium text-gray-200">${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
+              <div className="text-xs space-y-1" style={{color: textColorDarkGray}}>
+                <p>Manual: <span className="font-medium" style={{color: textColorLightGray}}>${results.currentManualMonthlyCost.toLocaleString()}</span></p>
+                <p>With AI: <span className="font-medium" style={{color: textColorLightGray}}>${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
               </div>
             </div>
             
@@ -438,11 +429,11 @@ const AutomationOpportunityFinder = () => {
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1 text-white">ROI Potential</h3>
+              <h3 className="text-base font-medium mb-1" style={{color: textColorWhite}}>ROI Potential</h3>
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>
                 {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : (results.roiPercentage === 0 && results.annualSavings > 0) ? 'High' : 'Calc...'}
               </p>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm" style={{color: textColorDarkGray}}>
                 {results.paybackMonths ? `${results.paybackMonths} month payback` : results.roiPercentage >=0 ? 'Positive Outlook' : 'Details in full report'}
               </p>
             </div>
@@ -450,17 +441,17 @@ const AutomationOpportunityFinder = () => {
 
           {previewRecs.length > 0 && (
             <div className="mb-16 sm:mb-20">
-              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left text-white">Top Automation Opportunities (Preview)</h3>
+              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left" style={{color: textColorWhite}}>Top Automation Opportunities (Preview)</h3>
               <div className="space-y-6">
                 {previewRecs.map((rec, index) => (
                   <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
                     <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6">
                       <div>
-                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center text-white">
-                          <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : '#6b7280'}}></div>
+                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center" style={{color: textColorWhite}}>
+                          <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : textColorVeryDarkGray}}></div>
                           {rec.title}
                         </h4>
-                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 text-sm text-gray-400">
+                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 text-sm" style={{color: textColorDarkGray}}>
                           <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" />{rec.timeline}</span>
                           <span className="flex items-center"><Zap className="w-4 h-4 mr-1.5" />{rec.impact}</span>
                         </div>
@@ -469,7 +460,7 @@ const AutomationOpportunityFinder = () => {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {rec.items.slice(0, 3).map((item, i) => (
                         <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
-                          <div className="flex items-start text-gray-100"> {/* Lighter text for items */}
+                          <div className="flex items-start" style={{color: textColorLightGray}}>
                             <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
                             <span>{item}</span>
                           </div>
@@ -484,45 +475,39 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
+              {/* Blurred content underneath - no extra gradient overlay */}
               <div className="filter blur-sm pointer-events-none"> 
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left text-white">Advanced & Custom Strategies</h3>
+                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left" style={{color: textColorWhite, opacity:0.3}}>Advanced & Custom Strategies</h3> {/* Make heading less prominent if behind modal */}
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
-                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
-                      <h4 className="font-medium text-lg sm:text-xl mb-2 text-gray-500">{rec.title}</h4>
-                      <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-2"></div>
-                      <div className="h-4 bg-gray-700/50 rounded w-1/2"></div>
+                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border border-slate-700/30"> {/* Lighter BG/Border for blurred cards */}
+                      <h4 className="font-medium text-lg sm:text-xl mb-2" style={{color: textColorDarkGray, opacity:0.5}}>{rec.title}</h4>
+                      <div className="h-4 rounded" style={{backgroundColor: textColorVeryDarkGray + '80', opacity:0.5, width: '75%', marginBottom: '0.5rem'}}></div>
+                      <div className="h-4 rounded" style={{backgroundColor: textColorVeryDarkGray + '80', opacity:0.5, width: '50%'}}></div>
                     </div>
                   ))}
                 </div>
               </div>
-              {/* Overlay for the "Unlock" modal, removed explicit background gradient from here to rely on blurred cards + modal's own semi-transparent bg */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4" style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> 
+              {/* "Unlock Your Full Potential" Box */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4"> 
                 <div 
                   style={{
-                    borderRadius: '0.875rem', 
-                    padding: '1px', 
-                    background: popupBorderColorWithOpacity, 
-                    boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
+                    ...modalWrapperStyle, // Using shared style
+                    maxWidth: '480px', // Max width for this specific modal
                   }}
-                  className="max-w-md mx-auto" 
                 >
                   <div 
                     className="text-center p-6 sm:p-8" 
-                    style={{
-                      background: popupContentBg, 
-                      borderRadius: '0.8125rem', 
-                      backdropFilter: 'blur(3px)', 
-                    }}
+                    style={modalContentStyle} // Using shared style
                   >
                     <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                       <Eye className="w-8 h-8" style={{color: accentColor}}/>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-medium mb-2 text-white">Unlock Your Full Potential</h3>
-                    <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
+                    <h3 className="text-lg sm:text-xl font-medium mb-2" style={{color: textColorWhite}}>Unlock Your Full Potential</h3>
+                    <p className="mb-6 text-sm" style={{color: textColorMediumGray}}>Get the complete report: detailed strategies, tools, ROI.</p>
                     <button onClick={() => setShowEmailCapture(true)}
                       className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
-                      style={{background: accentColorDarker, color: '#FFFFFF'}}> 
+                      style={{background: accentColorDarker, color: textColorWhite}}> 
                       <Download className="w-4 h-4 mr-2" />Get My Full Report
                     </button>
                   </div>
@@ -531,21 +516,17 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
         
+          {/* Final CTA Block - Styled like other popups */}
           <div 
-            style={{
-              borderRadius: '0.875rem', 
-              padding: '1px', 
-              background: popupBorderColorWithOpacity, 
-              boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
-            }}
+            style={{...modalWrapperStyle, maxWidth: 'none', padding:'1px'}} // Allow full width within container
             className="mx-auto" 
           >
             <div 
               className="p-6 sm:p-10 rounded-[0.8125rem] text-center" 
               style={{background: popupContentBg, backdropFilter: 'blur(3px)' }}
             >
-              <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-white">Ready to Transform Your Business?</h3>
-              <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto text-gray-300 leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-3" style={{color: textColorWhite}}>Ready to Transform Your Business?</h3>
+              <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed" style={{color: textColorMediumGray}}>
                 Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -555,11 +536,12 @@ const AutomationOpportunityFinder = () => {
                   Schedule Free Strategy Call
                 </button>
                 <button onClick={() => setShowEmailCapture(true)}
-                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto text-white border border-gray-400/40 hover:bg-white/10">
+                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto border hover:bg-white/10"
+                   style={{color: textColorWhite, borderColor: textColorDarkGray + '60'}}>
                   Download Report Again
                 </button>
               </div>
-              <p className="text-xs mt-4 text-gray-500">Personalized consultation • Custom roadmap • No pressure</p>
+              <p className="text-xs mt-4" style={{color: textColorVeryDarkGray}}>Personalized consultation • Custom roadmap • No pressure</p>
             </div>
           </div>
         </div>
@@ -576,11 +558,11 @@ const AutomationOpportunityFinder = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">AI Automation Assessment</h1>
-              <p className="mt-1 text-xs sm:text-sm text-gray-400">Discover your custom automation potential.</p>
+              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight" style={{color: textColorWhite}}>AI Automation Assessment</h1>
+              <p className="mt-1 text-xs sm:text-sm" style={{color: textColorDarkGray}}>Discover your custom automation potential.</p>
             </div>
             <div className="text-right">
-              <span className="text-xs font-medium text-gray-400">Step {currentStep + 1} of {questions.length}</span>
+              <span className="text-xs font-medium" style={{color: textColorDarkGray}}>Step {currentStep + 1} of {questions.length}</span>
               <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
@@ -594,8 +576,8 @@ const AutomationOpportunityFinder = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto p-4 sm:p-6">
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight text-white">{currentQuestion.title}</h2>
-            {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base text-gray-300 leading-relaxed">{currentQuestion.subtitle}</p>} {/* Lighter gray */}
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight" style={{color: textColorWhite}}>{currentQuestion.title}</h2>
+            {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorMediumGray}}>{currentQuestion.subtitle}</p>}
             <div className="space-y-3 sm:space-y-4">
               {currentQuestion.options.map((option) => {
                 const isSelected = currentQuestion.type === 'multiple' ? (answers[currentQuestion.id]?.includes(option.value)) : (answers[currentQuestion.id] === option.value);
@@ -607,8 +589,8 @@ const AutomationOpportunityFinder = () => {
                              onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
                              className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" style={{accentColor: accentColor}}/>
                       <div className="flex-1">
-                        <span className="font-medium text-sm sm:text-base text-white">{option.label}</span>
-                        {option.description && <p className="text-xs sm:text-sm mt-1 text-gray-300">{option.description}</p>} {/* Lighter gray */}
+                        <span className="font-medium text-sm sm:text-base" style={{color: textColorWhite}}>{option.label}</span>
+                        {option.description && <p className="text-xs sm:text-sm mt-1" style={{color: textColorMediumGray}}>{option.description}</p>}
                       </div>
                       {isSelected && <CheckCircle className="w-5 h-5 ml-3 flex-shrink-0" style={{color: accentColor}}/>}
                     </div>
@@ -624,12 +606,12 @@ const AutomationOpportunityFinder = () => {
         <div className="max-w-4xl mx-auto flex justify-between">
           <button onClick={prevStep} disabled={currentStep === 0}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border border-slate-600/70 hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{backgroundColor: 'rgba(255,255,255,0.06)', color: currentStep === 0 ? '#737373' : 'white'}}>
+                  style={{backgroundColor: 'rgba(255,255,255,0.06)', color: currentStep === 0 ? textColorVeryDarkGray : textColorWhite}}>
             Previous
           </button>
           <button onClick={nextStep} disabled={!isAnswered}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? '#737373' : popupCtaTextColor, border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> 
+                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? textColorVeryDarkGray : popupCtaTextColor, border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> 
             {currentStep === questions.length - 1 ? 'Get My Analysis' : 'Continue'}
             <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
           </button>
