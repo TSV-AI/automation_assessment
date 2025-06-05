@@ -16,6 +16,7 @@ const AutomationOpportunityFinder = () => {
   const textColorSecondary = '#c8c8c4';   // Subtitles, descriptions
   const textColorMuted = '#a1a19b';       // Less important text
   const textColorVeryMuted = '#6B7280';    // Very subtle text
+  const textColorWhite = '#FFFFFF';
 
   const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
   const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups 
