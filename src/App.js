@@ -689,9 +689,8 @@ const AutomationOpportunityFinder = () => {
               Back to My Report
             </button>
           </div>
-          </div>
         </div>
-      </>
+      </div>
     );
   }
   if (showEmailCapture) { 
@@ -888,9 +887,8 @@ const AutomationOpportunityFinder = () => {
     const results = calculateResults();
     
     return (
-      <>
-        <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="w-full min-h-screen overflow-y-auto bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="text-center mb-10">
             <h1 className="text-4xl sm:text-5xl font-semibold mb-3 tracking-tight leading-tight" style={{color: textColorPrimary}}>
                 {businessName ? `Your Custom Automation Strategy for ${businessName}` : 'Your Custom Automation Strategy'}
