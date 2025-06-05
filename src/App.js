@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle } from 'lucide-react';
 
 const AutomationOpportunityFinder = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  // Initialize answers state with default values for all questions
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); // Initialized as empty string
   const [showThankYou, setShowThankYou] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(''); // Initialized as empty string
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
-  const textColorPrimary = '#efefea';       // Main text color
+  const textColorPrimary = '#efefea';       // Main text color (our "white")
   const textColorSecondary = '#c8c8c4';   // Subtitles, descriptions
   const textColorMuted = '#a1a19b';       // Less important text
   const textColorVeryMuted = '#6B7280';    // Very subtle text
-  const textColorWhite = '#FFFFFF';
 
   const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
   const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups 
   
-  const popupBorderColorWithOpacity = '#2caa9cBF'; // Green with 75% opacity for popup borders
+  const popupBorderColorWithOpacity = '#0e9f7bBF'; // New border color with 75% opacity
   const brighterMainCtaColor = '#4DCFB9'; // Brighter green for main page "Schedule Call" CTA
   const popupCtaTextColor = '#0A0A0A'; // Dark text for buttons with bright green/teal backgrounds
 
@@ -139,49 +139,80 @@ const AutomationOpportunityFinder = () => {
     }
   ];
 
+  // Initialize answers state once on component mount
+  useEffect(() => {
+    const initialAnswers = {};
+    questions.forEach(q => {
+      if (q.type === 'multiple') {
+        initialAnswers[q.id] = []; // Default for multiple choice is an empty array
+      } else {
+        initialAnswers[q.id] = ''; // Default for single choice (select/radio) is an empty string
+      }
+    });
+    setAnswers(initialAnswers);
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+
   const handleAnswer = (questionId, value, isMultiple = false) => {
-    if (isMultiple) {
-      const currentAnswers = answers[questionId] || [];
-      const newAnswers = currentAnswers.includes(value)
-        ? currentAnswers.filter(a => a !== value)
-        : [...currentAnswers, value];
-      setAnswers({ ...answers, [questionId]: newAnswers });
-    } else {
-      setAnswers({ ...answers, [questionId]: value });
-    }
+    setAnswers(prevAnswers => {
+      if (isMultiple) {
+        const currentAnswersForQuestion = prevAnswers[questionId] || [];
+        const newAnswersForQuestion = currentAnswersForQuestion.includes(value)
+          ? currentAnswersForQuestion.filter(a => a !== value)
+          : [...currentAnswersForQuestion, value];
+        return { ...prevAnswers, [questionId]: newAnswersForQuestion };
+      } else {
+        return { ...prevAnswers, [questionId]: value };
+      }
+    });
   };
 
   const calculateResults = () => {
-    const companyData = questions[0].options.find(o => o.value === answers.company_size) || {};
+    // Ensure answers are defined before trying to find them in options
+    const companySizeAnswer = answers.company_size || '';
+    const manualHoursAnswer = answers.manual_hours || '';
+    const biggestPainAnswer = answers.biggest_pain || '';
+    const marketingChallengesAnswers = answers.marketing_challenges || [];
+    const currentToolsAnswers = answers.current_tools || [];
+    const growthPainAnswer = answers.growth_pain || '';
+    const timelineAnswer = answers.timeline || '';
+    const budgetSenseAnswer = answers.budget_sense || '';
+
+
+    const companyData = questions.find(q => q.id === 'company_size')?.options.find(o => o.value === companySizeAnswer) || {};
     const complexity = companyData.complexity || 1;
-    const weeklyHours = questions[1].options.find(o => o.value === answers.manual_hours)?.hours || 0;
-    const painPoint = questions[2].options.find(o => o.value === answers.biggest_pain) || {};
-    const automationPct = painPoint.automation || 50;
-    const marketingChallenges = answers.marketing_challenges || [];
-    const marketingTimeSavings = marketingChallenges.reduce((total, challenge) => {
-      const challengeData = questions[3].options.find(o => o.value === challenge);
+    const weeklyHours = questions.find(q => q.id === 'manual_hours')?.options.find(o => o.value === manualHoursAnswer)?.hours || 0;
+    const painPoint = questions.find(q => q.id === 'biggest_pain')?.options.find(o => o.value === biggestPainAnswer) || {};
+    const automationPct = painPoint.automation || 50; // Default if not found
+    
+    const marketingTimeSavings = marketingChallengesAnswers.reduce((total, challengeValue) => {
+      const challengeData = questions.find(q => q.id === 'marketing_challenges')?.options.find(o => o.value === challengeValue);
       return total + (challengeData?.time_savings || 0);
     }, 0);
-    const currentTools = answers.current_tools || [];
-    const integrationScore = currentTools.reduce((total, tool) => {
-      const score = questions[4].options.find(o => o.value === tool)?.integration || 0;
+
+    const integrationScore = currentToolsAnswers.reduce((total, toolValue) => {
+      const score = questions.find(q => q.id === 'current_tools')?.options.find(o => o.value === toolValue)?.integration || 0;
       return total + score;
     }, 0);
-    const growthPain = questions[5].options.find(o => o.value === answers.growth_pain) || {};
-    const urgency = growthPain.urgency || 50;
-    const timelineData = questions[6].options.find(o => o.value === answers.timeline) || {};
-    const priority = timelineData.priority || 50;
-    const budgetData = questions[7].options.find(o => o.value === answers.budget_sense) || {};
+
+    const growthPainData = questions.find(q => q.id === 'growth_pain')?.options.find(o => o.value === growthPainAnswer) || {};
+    const urgency = growthPainData.urgency || 50; // Default if not found
+
+    const timelineData = questions.find(q => q.id === 'timeline')?.options.find(o => o.value === timelineAnswer) || {};
+    const priority = timelineData.priority || 50; // Default
+
+    const budgetData = questions.find(q => q.id === 'budget_sense')?.options.find(o => o.value === budgetSenseAnswer) || {};
     const budgetMidpoint = budgetData.value ? 
       (parseInt(budgetData.value.split('-')[0].replace(/\D/g, '')) + 
-       parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 : 3500;
+       parseInt(budgetData.value.split('-')[1]?.replace(/\D/g, '') || budgetData.value.replace(/\D/g, ''))) / 2 
+      : 3500; // Default budget midpoint
     
     const baseAutomatableHours = weeklyHours * (automationPct / 100);
-    const marketingHoursBonus = marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 
+    const marketingHoursBonus = marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 
                                 Math.min(marketingTimeSavings * 0.25, 5) : 0;
     const hoursAutomatable = baseAutomatableHours + marketingHoursBonus;
     
-    const hourlyRate = 40;
+    const hourlyRate = 40; // Consider making this configurable or dynamic
     const weeklyCost = hoursAutomatable * hourlyRate;
     const currentManualMonthlyCost = Math.round(weeklyCost * 4.33); 
     const annualSavingsIfFree = currentManualMonthlyCost * 12;
@@ -190,75 +221,77 @@ const AutomationOpportunityFinder = () => {
         (automationPct * 0.25),
         (urgency * 0.20),
         (priority * 0.20),
-        (Math.min(integrationScore, 100) * 0.15),
-        (Math.min(weeklyHours / 2.5, 40) * 0.10),
-        (marketingChallenges.length > 0 && !marketingChallenges.includes('none') ? 5 : 0)
+        (Math.min(integrationScore, 100) * 0.15), // Cap integration score influence
+        (Math.min(weeklyHours / 2.5, 40) * 0.10), // Cap weekly hours influence
+        (marketingChallengesAnswers.length > 0 && !marketingChallengesAnswers.includes('none') ? 5 : 0) // Bonus for marketing challenges
     ];
-    const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0)));
+    const opportunityScore = Math.min(100, Math.round(scoreComponents.reduce((a, b) => a + b, 0))); // Cap score at 100
     
     const estimatedMonthlyAutomationCost = budgetMidpoint;
     const netMonthlySavingsFromAutomation = currentManualMonthlyCost - estimatedMonthlyAutomationCost;
     const annualBudgetForAutomation = estimatedMonthlyAutomationCost * 12;
     const netAnnualSavingsFromAutomation = annualSavingsIfFree - annualBudgetForAutomation;
     
-    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); 
+    const roiPercentage = annualBudgetForAutomation > 0 ? Math.round((netAnnualSavingsFromAutomation / annualBudgetForAutomation) * 100) : (annualSavingsIfFree > 0 ? 1000 : 0); // Avoid division by zero, handle free case
     
     let paybackMonths = null;
     if (netMonthlySavingsFromAutomation > 0 && estimatedMonthlyAutomationCost > 0) {
-      paybackMonths = Math.round((estimatedMonthlyAutomationCost / netMonthlySavingsFromAutomation) * 10) / 10;
+      paybackMonths = Math.round((estimatedMonthlyAutomationCost / netMonthlySavingsFromAutomation) * 10) / 10; // Calculate payback in months
     }
 
-    const percentageSaving = currentManualMonthlyCost > 0 ? Math.round(((currentManualMonthlyCost - estimatedMonthlyAutomationCost) / currentManualMonthlyCost) * 100) : 0;
+    const percentageSaving = currentManualMonthlyCost > 0 ? Math.round(((currentManualMonthlyCost - estimatedMonthlyAutomationCost) / currentManualMonthlyCost) * 100) : 0; // Avoid division by zero
 
     return {
       opportunityScore,
       hoursAutomatable: Math.round(hoursAutomatable * 10) / 10,
-      marketingTimeSavings,
+      marketingTimeSavings, // Raw marketing time savings
       currentManualMonthlyCost: currentManualMonthlyCost,
       estimatedMonthlyAutomationCost: estimatedMonthlyAutomationCost,
       percentageSaving: percentageSaving,
       annualSavings: netAnnualSavingsFromAutomation,
       roiPercentage: roiPercentage,
-      paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null,
+      paybackMonths: paybackMonths && paybackMonths > 0 && paybackMonths < 60 ? paybackMonths : null, // Realistic payback period
       complexity,
       painPoint: painPoint.label,
-      growthFocus: growthPain.focus,
-      marketingChallenges,
+      growthFocus: growthPainData.focus,
+      marketingChallenges: marketingChallengesAnswers, // Pass through selected marketing challenges
       budgetTier: budgetData.tier,
     };
   };
 
   const getDetailedRecommendations = (results) => {
     const recommendations = [];
-    if (results.painPoint && results.automationPct >= 70) {
+    const { painPoint, automationPct, marketingChallenges, marketingTimeSavings, integrationScore, urgency, growthFocus, budgetTier } = results;
+
+    if (painPoint && automationPct && automationPct >= 70) {
       recommendations.push({
-        type: 'quickwin', title: `Quick Wins for ${results.painPoint}`, priority: 'high', timeline: '2-4 weeks',
-        items: getQuickWinsByPainPoint(results.painPoint), impact: `Up to ${results.automationPct}% efficiency gain in this area`, preview: true
+        type: 'quickwin', title: `Quick Wins for ${painPoint}`, priority: 'high', timeline: '2-4 weeks',
+        items: getQuickWinsByPainPoint(painPoint), impact: `Up to ${automationPct}% efficiency gain in this area`, preview: true
       });
     }
-    if (results.marketingChallenges && results.marketingChallenges.length > 0 && !results.marketingChallenges.includes('none')) {
+    if (marketingChallenges && marketingChallenges.length > 0 && !marketingChallenges.includes('none')) {
       recommendations.push({
         type: 'marketing', title: 'Marketing & Social Media Automation', priority: 'high', timeline: '3-6 weeks',
-        items: getMarketingAutomations(results.marketingChallenges), impact: `Save ~${Math.round(results.marketingTimeSavings * 0.35)}-${Math.round(results.marketingTimeSavings * 0.65)} hrs/week`, preview: true
+        items: getMarketingAutomations(marketingChallenges), impact: `Save ~${Math.round(marketingTimeSavings * 0.35)}-${Math.round(marketingTimeSavings * 0.65)} hrs/week`, preview: true
       });
     }
-    if (results.integrationScore >= 50) {
+    if (integrationScore && integrationScore >= 50) {
       recommendations.push({
         type: 'integration', title: 'System Integration Opportunities', priority: 'medium', timeline: '1-2 months', 
         items: ['Automate data sync (CRM & Email Marketing)', 'Unified reporting dashboard', 'Cross-system workflow triggers'],
         impact: 'Reduce data silos, improve flow', preview: false 
       });
     }
-    if (results.urgency >= 85 && results.growthFocus) {
+    if (urgency && urgency >= 85 && growthFocus) {
       recommendations.push({
-        type: 'scaling', title: `Advanced Automation for ${results.growthFocus.charAt(0).toUpperCase() + results.growthFocus.slice(1)} Scaling`, priority: 'high', timeline: '1-3 months',
-        items: getScalingByGrowthFocus(results.growthFocus), impact: 'Build robust systems for increased load', preview: false
+        type: 'scaling', title: `Advanced Automation for ${growthFocus.charAt(0).toUpperCase() + growthFocus.slice(1)} Scaling`, priority: 'high', timeline: '1-3 months',
+        items: getScalingByGrowthFocus(growthFocus), impact: 'Build robust systems for increased load', preview: false
       });
     }
-    if (results.budgetTier) {
+    if (budgetTier) {
       recommendations.push({
-        type: 'custom', title: `${results.budgetTier.charAt(0).toUpperCase() + results.budgetTier.slice(1)} Tier Solutions`, priority: 'custom', timeline: '2-4 months',
-        items: getCustomSolutionsByTier(results.budgetTier, results.painPoint, results.growthFocus), impact: `Tailored strategy for max ROI`, preview: false
+        type: 'custom', title: `${budgetTier.charAt(0).toUpperCase() + budgetTier.slice(1)} Tier Solutions`, priority: 'custom', timeline: '2-4 months',
+        items: getCustomSolutionsByTier(budgetTier, painPoint, growthFocus), impact: `Tailored strategy for max ROI`, preview: false
       });
     }
     if (recommendations.length === 0) {
@@ -277,43 +310,64 @@ const AutomationOpportunityFinder = () => {
   };
   const getQuickWinsByPainPoint = (painPoint) => {
     const map = { 'Data entry and file management': ['Automated data extraction (email/PDF)', 'Cloud file organization & tagging', 'Form submission to database/sheet'], 'Customer follow-up and communication': ['Templated email responses', 'Automated appointment reminders', 'Basic website FAQ chatbot'], 'Content creation and social media management': ['AI writing assistant for drafts', 'Social media content scheduling', 'Automated image resizing'], 'Creating reports and dashboards': ['Automated data aggregation', 'Scheduled email delivery of reports', 'Basic KPI dashboard (Sheets)'], 'Lead generation and qualification': ['Automated lead data enrichment', 'Simple lead scoring', 'Auto-assignment of new leads'], 'Scheduling and calendar coordination': ['Use calendar scheduling tools', 'Automated meeting reminders', 'Shared team calendars'] };
-    return map[painPoint] || ['Identify one high-frequency manual task', 'Implement shared task management', 'Automate a simple report'];
+    return map[painPoint || ''] || ['Identify one high-frequency manual task', 'Implement shared task management', 'Automate a simple report'];
   };
   const getScalingByGrowthFocus = (growthFocus) => {
     const map = { 'workflow': ['Scalable PM system with auto tasks', 'Automate employee onboarding/offboarding', 'AI-assisted SOP documentation'], 'customer': ['AI chatbot for advanced support', 'Automate customer feedback analysis', 'Personalized communication workflows'], 'marketing': ['AI for predictive lead scoring', 'Automate A/B testing', 'Marketing automation platform for journeys'], 'process': ['End-to-end automation of core process', 'Robotic Process Automation (RPA)', 'Process mining for opportunities'], 'integration': ['Central data warehouse/lake', 'ESB or iPaaS solution', 'Automate data quality checks'] };
-    return map[growthFocus] || ['Comprehensive workflow review', 'Strategic AI tool implementation', 'Custom critical system integrations'];
+    return map[growthFocus || ''] || ['Comprehensive workflow review', 'Strategic AI tool implementation', 'Custom critical system integrations'];
   };
   const getCustomSolutionsByTier = (tier, painPoint, growthFocus) => {
-    if (tier === 'starter') return [`Targeted automation for '${painPoint}'`, '1-2 essential automations', 'Monthly optimization report.'];
-    if (tier === 'growth') return [`Advanced AI for '${painPoint}' & '${growthFocus}'`, 'Integrate 2-3 key systems', 'Custom dashboard & bi-weekly calls.'];
-    if (tier === 'scale') return [`Enterprise automation for '${painPoint}'`, `Scalable AI for '${growthFocus}'`, 'Dedicated specialist & refinement.'];
-    if (tier === 'enterprise') return ['Full digital transformation strategy', `Custom AI for '${painPoint}'/'${growthFocus}'`, 'Dedicated team & C-suite reporting.'];
+    const safePainPoint = painPoint || 'key area';
+    const safeGrowthFocus = growthFocus || 'growth';
+    if (tier === 'starter') return [`Targeted automation for '${safePainPoint}'`, '1-2 essential automations', 'Monthly optimization report.'];
+    if (tier === 'growth') return [`Advanced AI for '${safePainPoint}' & '${safeGrowthFocus}'`, 'Integrate 2-3 key systems', 'Custom dashboard & bi-weekly calls.'];
+    if (tier === 'scale') return [`Enterprise automation for '${safePainPoint}'`, `Scalable AI for '${safeGrowthFocus}'`, 'Dedicated specialist & refinement.'];
+    if (tier === 'enterprise') return ['Full digital transformation strategy', `Custom AI for '${safePainPoint}'/'${safeGrowthFocus}'`, 'Dedicated team & C-suite reporting.'];
     return ['Tailored automation strategy.'];
   };
 
   const nextStep = () => {
     if (currentStep < questions.length - 1) setCurrentStep(s => s + 1); else setShowResults(true);
-    setTimeout(() => document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0,0), 50);
+    setTimeout(() => {
+      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
+      if (scrollableArea) scrollableArea.scrollTo(0, 0);
+    }, 50);
   };
   const prevStep = () => {
     if (currentStep > 0) setCurrentStep(s => s - 1);
-    setTimeout(() => document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0,0), 50);
+    setTimeout(() => {
+      const scrollableArea = document.querySelector('.flex-1.overflow-y-auto');
+      if (scrollableArea) scrollableArea.scrollTo(0, 0);
+    }, 50);
   };
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+    if (!email.includes('@') || !name.trim()) {
+        console.error('Invalid name or email');
+        // Replace alert with a user-friendly modal in a real app
+        // For this context, we'll log and proceed to thank you page if webhook fails.
+        // This alert will not be visible in the iframe.
+        // alert('Please enter a valid name and email address.'); 
+        setShowThankYou(true); // Show thank you even if validation fails locally, for consistency if webhook fails.
+        return;
+    }
     try {
+      const resultsForWebhook = calculateResults();
+      console.log('Submitting to webhook:', { name, email, answers, results: resultsForWebhook });
       await fetch('https://www.omivue.com/webhook-test/b7538f67-a5ba-454b-9db6-833f99b87c38', { 
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, answers, results: calculateResults(), timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) 
+        body: JSON.stringify({ name, email, answers, results: resultsForWebhook, timestamp: new Date().toISOString(), source: 'automation-assessment-v3' }) 
       });
       setShowThankYou(true);
-    } catch (error) { console.error('Webhook error:', error); setShowThankYou(true); } 
+    } catch (error) { 
+        console.error('Webhook error:', error); 
+        setShowThankYou(true); 
+    } 
   };
 
-  // ----- MODAL STYLES -----
   const modalWrapperStyle = {
-    borderRadius: '0.875rem', // 14px
+    borderRadius: '0.875rem', 
     padding: '1px', 
     background: popupBorderColorWithOpacity, 
     boxShadow: '0 10px 30px rgba(0,0,0,0.35)', 
@@ -321,8 +375,8 @@ const AutomationOpportunityFinder = () => {
   };
   const modalContentStyle = {
     background: popupContentBg, 
-    borderRadius: '0.8125rem', // 13px (14px - 1px border)
-    padding: '1.5rem', // p-6
+    borderRadius: '0.8125rem', 
+    padding: '1.5rem', 
     backdropFilter: 'blur(3px)',
   };
   const thankYouModalContentStyle = { ...modalContentStyle, padding: '2rem' };
@@ -331,15 +385,18 @@ const AutomationOpportunityFinder = () => {
   if (showThankYou) {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-        <div style={{...modalWrapperStyle, maxWidth: '560px'}}>
-          <div style={thankYouModalContentStyle} className="w-full text-center">
+        <div style={{...modalWrapperStyle, maxWidth: '560px'}}> 
+          <div style={thankYouModalContentStyle} className="w-full text-center"> 
             <div className="p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
               <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
             </div>
-            <h2 className="text-2xl font-semibold mb-4" style={{color: textColorPrimary}}>Thank You, {name}!</h2>
-            <p className="text-sm mb-8" style={{color: textColorSecondary}}>Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p>
-            <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
-              className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
+            <h2 className="text-2xl font-semibold mb-4" style={{color: textColorPrimary}}>Thank You, {name || 'Valued User'}!</h2>
+            <p className="text-sm mb-8" style={{color: textColorSecondary}}>Your personalized insights {email ? `for ${email}` : ''} will arrive shortly. Keep an eye on your inbox!</p>
+            <button 
+              onClick={() => { setShowThankYou(false); setShowEmailCapture(false); setShowResults(true); }} // Go back to results
+              className="px-6 py-3 rounded-xl font-medium" 
+              style={{background: accentColor, color: popupCtaTextColor}}
+            > 
               Back to My Report
             </button>
           </div>
@@ -352,7 +409,7 @@ const AutomationOpportunityFinder = () => {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div style={modalWrapperStyle}>
-          <div style={modalContentStyle} className="w-full">
+          <div style={modalContentStyle} className="w-full"> 
             <div className="text-center mb-8">
               <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                 <Download className="w-10 h-10" style={{color: accentColor}} />
@@ -360,7 +417,7 @@ const AutomationOpportunityFinder = () => {
               <h2 className="text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Get Your Complete Automation Strategy</h2>
               <p className="text-sm" style={{color: textColorSecondary}}>Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <div className="p-6 rounded-2xl mb-8 bg-black/20 border border-white/10"> 
+            <div className="p-6 rounded-2xl mb-8 bg-black/20 border" style={{borderColor: 'rgba(239,239,234,0.1)'}}> 
               <h3 className="font-medium text-base mb-4" style={{color: textColorPrimary}}>🎯 Full Report Includes:</h3>
               <div className="grid md:grid-cols-2 gap-3 text-sm" style={{color: textColorSecondary}}>
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
@@ -370,11 +427,13 @@ const AutomationOpportunityFinder = () => {
             </div>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{color:textColorPrimary, borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none" 
+                     style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{color:textColorPrimary, borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border focus:ring-2 outline-none" 
+                     style={{color:textColorPrimary, borderColor: 'rgba(239,239,234,0.1)', ringColor: accentColor, '::placeholder': {color: textColorMuted}}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
-                      style={{background: accentColorDarker, color: textColorWhite}}> 
+                      style={{background: accentColorDarker, color: textColorPrimary }}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
               </button>
             </form>
@@ -387,6 +446,16 @@ const AutomationOpportunityFinder = () => {
       </div>
     );
   }
+
+  // Wait until answers are initialized before rendering questions or results
+  if (Object.keys(answers).length === 0 && questions.length > 0) {
+    return ( // Basic loading state
+      <div className="w-full h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary}}>
+        Loading Assessment...
+      </div>
+    );
+  }
+
 
   if (showResults) {
     const results = calculateResults();
@@ -403,7 +472,7 @@ const AutomationOpportunityFinder = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border border-slate-700/50">
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -412,7 +481,7 @@ const AutomationOpportunityFinder = () => {
               <p className="text-sm" style={{color: textColorMuted}}>Est. weekly hours recoverable.</p>
             </div>
 
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border border-slate-600/50"> 
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border" style={{borderColor: 'rgba(239,239,234,0.25)'}}> 
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -424,13 +493,13 @@ const AutomationOpportunityFinder = () => {
               </div>
             </div>
             
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border border-slate-700/50">
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
               </div>
               <h3 className="text-base font-medium mb-1" style={{color: textColorPrimary}}>ROI Potential</h3>
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>
-                {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : (results.roiPercentage === 0 && results.annualSavings > 0) ? 'High' : 'Calc...'}
+                {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : (results.roiPercentage === 0 && results.annualSavings > 0) ? 'High' : 'N/A'}
               </p>
               <p className="text-sm" style={{color: textColorMuted}}>
                 {results.paybackMonths ? `${results.paybackMonths} month payback` : results.roiPercentage >=0 ? 'Positive Outlook' : 'Details in full report'}
@@ -443,7 +512,7 @@ const AutomationOpportunityFinder = () => {
               <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left" style={{color: textColorPrimary}}>Top Automation Opportunities (Preview)</h3>
               <div className="space-y-6">
                 {previewRecs.map((rec, index) => (
-                  <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
+                  <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
                     <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6">
                       <div>
                         <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center" style={{color: textColorPrimary}}>
@@ -473,35 +542,32 @@ const AutomationOpportunityFinder = () => {
           )}
 
           {hiddenRecs.length > 0 && (
-            <div className="mb-16 sm:mb-20 relative">
+            <div className="mb-16 sm:mb-20 relative"> 
               <div className="filter blur-sm pointer-events-none"> 
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left opacity-30" style={{color: textColorPrimary}}>Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
-                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border border-slate-700/30">
-                      <h4 className="font-medium text-lg sm:text-xl mb-2 text-gray-500/50">{rec.title}</h4>
-                      <div className="h-4 rounded bg-gray-700/30 w-3/4 mb-2"></div>
-                      <div className="h-4 rounded bg-gray-700/30 w-1/2"></div>
+                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border" style={{borderColor: 'rgba(239,239,234,0.15)'}}>
+                      <h4 className="font-medium text-lg sm:text-xl mb-2" style={{color: 'rgba(239,239,234,0.3)'}}>{rec.title}</h4>
+                      <div className="h-4 rounded" style={{backgroundColor: 'rgba(239,239,234,0.1)'}} ></div>
+                      <div className="h-4 rounded mt-2" style={{backgroundColor: 'rgba(239,239,234,0.08)'}} ></div>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center p-4"> 
-                <div 
-                  style={{...modalWrapperStyle, maxWidth: '480px'}}
-                >
-                  <div 
-                    className="text-center p-6 sm:p-8" 
-                    style={modalContentStyle} 
-                  >
+                <div style={{...modalWrapperStyle, maxWidth: '480px'}}>
+                  <div className="text-center p-6 sm:p-8" style={modalContentStyle}>
                     <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                       <Eye className="w-8 h-8" style={{color: accentColor}}/>
                     </div>
                     <h3 className="text-lg sm:text-xl font-medium mb-2" style={{color: textColorPrimary}}>Unlock Your Full Potential</h3>
                     <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the complete report: detailed strategies, tools, ROI.</p>
-                    <button onClick={() => setShowEmailCapture(true)}
+                    <button 
+                      onClick={() => setShowEmailCapture(true)}
                       className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
-                      style={{background: accentColorDarker, color: textColorWhite}}> 
+                      style={{background: accentColorDarker, color: textColorPrimary}}
+                    > 
                       <Download className="w-4 h-4 mr-2" />Get My Full Report
                     </button>
                   </div>
@@ -510,27 +576,25 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
         
-          <div 
-            style={{...modalWrapperStyle, maxWidth: 'none', padding:'1px'}}
-            className="mx-auto" 
-          >
-            <div 
-              className="p-6 sm:p-10 rounded-[0.8125rem] text-center" 
-              style={{background: popupContentBg, backdropFilter: 'blur(3px)' }}
-            >
+          <div style={{...modalWrapperStyle, maxWidth: 'none', padding:'1px'}} className="mx-auto" >
+            <div className="p-6 sm:p-10 rounded-[0.8125rem] text-center" style={{background: popupContentBg, backdropFilter: 'blur(3px)' }}>
               <h3 className="text-xl sm:text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Ready to Transform Your Business?</h3>
               <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed" style={{color: textColorSecondary}}>
                 Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <button onClick={() => alert('Schedule Call function to be implemented.')}
+                <button 
+                  onClick={() => { console.log('Schedule Call button clicked. Implement calendly or similar.');}}
                   className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto hover:opacity-90 shadow-md" 
-                  style={{background: brighterMainCtaColor, color: popupCtaTextColor }}> 
+                  style={{background: brighterMainCtaColor, color: popupCtaTextColor }}
+                > 
                   Schedule Free Strategy Call
                 </button>
-                <button onClick={() => setShowEmailCapture(true)}
-                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto border hover:bg-white/10"
-                   style={{color: textColorPrimary, borderColor: textColorMuted + '60'}}>
+                <button 
+                  onClick={() => setShowEmailCapture(true)}
+                  className="px-6 py-3 rounded-xl font-medium w-full sm:w-auto border hover:bg-white/10" 
+                   style={{color: textColorPrimary, borderColor: textColorMuted + '60'}}
+                >
                   Download Report Again
                 </button>
               </div>
@@ -543,11 +607,20 @@ const AutomationOpportunityFinder = () => {
   }
 
   const currentQuestion = questions[currentStep];
-  const isAnswered = currentQuestion.type === 'multiple' ? (answers[currentQuestion.id]?.length > 0) : answers[currentQuestion.id];
+  if (!currentQuestion) { // Should not happen if currentStep is managed correctly
+    return <div style={{color: textColorPrimary}}>Error: Question not found.</div>;
+  }
+
+  // Ensure answers for the current question are initialized
+  const currentQuestionAnswer = answers[currentQuestion.id];
+  const isAnswered = currentQuestion.type === 'multiple'
+    ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
+    : (currentQuestionAnswer !== '' && currentQuestionAnswer !== undefined && currentQuestionAnswer !== null);
+
 
   return (
     <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky top-0 z-10 border-b bg-[#0a0a0a]/80 backdrop-blur-md" style={{borderColor: 'rgba(239,239,234,0.2)'}}> 
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
@@ -559,7 +632,7 @@ const AutomationOpportunityFinder = () => {
               <div className="text-lg sm:text-xl font-semibold" style={{color: accentColor}}>{Math.round(((currentStep + 1) / questions.length) * 100)}%</div>
             </div>
           </div>
-          <div className="w-full rounded-full h-1.5 sm:h-2 bg-slate-700/50"> 
+          <div className="w-full rounded-full h-1.5 sm:h-2" style={{backgroundColor: 'rgba(239,239,234,0.15)'}}> 
             <div className="h-full rounded-full transition-all duration-300"
                  style={{ width: `${((currentStep + 1) / questions.length) * 100}%`, backgroundColor: accentColor }} />
           </div>
@@ -567,21 +640,40 @@ const AutomationOpportunityFinder = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto p-4 sm:p-6">
-          <div className="mb-10 sm:mb-12">
+        <div className="max-w-3xl mx-auto p-4 sm:p-6"> 
+          <div className="mb-10 sm:mb-12"> 
             <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight" style={{color: textColorPrimary}}>{currentQuestion.title}</h2>
             {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base leading-relaxed" style={{color: textColorSecondary}}>{currentQuestion.subtitle}</p>}
             <div className="space-y-3 sm:space-y-4">
               {currentQuestion.options.map((option) => {
-                const isSelected = currentQuestion.type === 'multiple' ? (answers[currentQuestion.id]?.includes(option.value)) : (answers[currentQuestion.id] === option.value);
+                let isSelected;
+                if (currentQuestion.type === 'multiple') {
+                    // Ensure answers[currentQuestion.id] is an array before calling .includes()
+                    isSelected = Array.isArray(answers[currentQuestion.id]) && answers[currentQuestion.id].includes(option.value);
+                } else {
+                    isSelected = answers[currentQuestion.id] === option.value;
+                }
+                
                 return (
-                  <label key={option.value} className="block cursor-pointer group">
-                    <div className={`p-4 sm:p-5 rounded-xl transition-all duration-200 flex items-center border hover:border-opacity-70 ${isSelected ? 'shadow-md' : ''}`}
-                         style={{ borderColor: isSelected ? accentColor : 'rgba(255,255,255,0.15)', backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(255,255,255,0.04)', minHeight: '64px' }}>
-                      <input type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'} name={currentQuestion.id} value={option.value} checked={isSelected}
-                             onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
-                             className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" style={{accentColor: accentColor}}/>
-                      <div className="flex-1">
+                  <label key={option.value} className="block cursor-pointer group"> 
+                    <div 
+                      className={`p-4 sm:p-5 rounded-xl transition-all duration-200 flex items-center border hover:border-opacity-70 ${isSelected ? 'shadow-md' : ''}`}
+                      style={{ 
+                        borderColor: isSelected ? accentColor : 'rgba(239,239,234,0.15)', 
+                        backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(239,239,234,0.04)', 
+                        minHeight: '64px' 
+                      }}
+                    >
+                      <input 
+                        type={currentQuestion.type === 'multiple' ? 'checkbox' : 'radio'} 
+                        name={currentQuestion.id} 
+                        value={option.value} 
+                        checked={isSelected} // Relies on answers[currentQuestion.id] being initialized
+                        onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
+                        className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" 
+                        style={{accentColor: accentColor}} 
+                      />
+                      <div className="flex-1"> 
                         <span className="font-medium text-sm sm:text-base" style={{color: textColorPrimary}}>{option.label}</span>
                         {option.description && <p className="text-xs sm:text-sm mt-1" style={{color: textColorSecondary}}>{option.description}</p>}
                       </div>
@@ -595,16 +687,30 @@ const AutomationOpportunityFinder = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/80 backdrop-blur-md"> 
+      <div className="flex-shrink-0 p-4 sm:p-6 sticky bottom-0 z-10 border-t bg-[#0a0a0a]/80 backdrop-blur-md" style={{borderColor: 'rgba(239,239,234,0.2)'}}> 
         <div className="max-w-4xl mx-auto flex justify-between">
-          <button onClick={prevStep} disabled={currentStep === 0}
-                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border border-slate-600/70 hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{backgroundColor: 'rgba(255,255,255,0.06)', color: currentStep === 0 ? textColorVeryMuted : textColorPrimary}}>
+          <button 
+            onClick={prevStep} 
+            disabled={currentStep === 0}
+            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors border hover:bg-slate-700/40 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: 'rgba(239,239,234,0.06)', 
+              borderColor: 'rgba(239,239,234,0.25)',
+              color: currentStep === 0 ? textColorVeryMuted : textColorPrimary
+            }}
+          >
             Previous
           </button>
-          <button onClick={nextStep} disabled={!isAnswered}
-                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: !isAnswered ? 'rgba(255,255,255,0.1)' : accentColor, color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, border: `1px solid ${!isAnswered ? 'rgba(255,255,255,0.1)' : accentColor}`}}> 
+          <button 
+            onClick={nextStep} 
+            disabled={!isAnswered}
+            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium flex items-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ 
+              background: !isAnswered ? 'rgba(239,239,234,0.1)' : accentColor, 
+              color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, 
+              border: `1px solid ${!isAnswered ? 'rgba(239,239,234,0.1)' : accentColor}`
+            }}
+          > 
             {currentStep === questions.length - 1 ? 'Get My Analysis' : 'Continue'}
             <ChevronRight className="w-5 h-5 ml-1.5 sm:ml-2" />
           </button>
