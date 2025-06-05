@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon } from 'lucide-react'; // Added XIcon for close
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon } from 'lucide-react';
 
-// Moved questions array outside the component to ensure it's a stable reference
 const questions = [
   {
     id: 'company_size',
@@ -118,7 +117,7 @@ const AutomationOpportunityFinder = () => {
   const [email, setEmail] = useState(''); 
   const [showThankYou, setShowThankYou] = useState(false);
   const [name, setName] = useState(''); 
-  const [showCalendlyPopup, setShowCalendlyPopup] = useState(false); // State for Calendly popup
+  const [showCalendlyPopup, setShowCalendlyPopup] = useState(false); 
 
   // Color Palette
   const pageBgColor = '#0a0a0a';
@@ -140,7 +139,6 @@ const AutomationOpportunityFinder = () => {
 
   const popupContentBg = 'rgba(20, 25, 35, 0.70)'; 
 
-  // Initialize answers state once on component mount
   useEffect(() => {
     const initialAnswers = {};
     questions.forEach(q => {
@@ -151,12 +149,10 @@ const AutomationOpportunityFinder = () => {
       }
     });
     setAnswers(initialAnswers);
-  }, []); // Empty dependency array because 'questions' is stable
+  }, []); 
 
-  // Effect to load Calendly script and handle Escape key for its popup
   useEffect(() => {
     if (showCalendlyPopup) {
-      // Load Calendly script
       const scriptId = 'calendly-widget-script';
       if (!document.getElementById(scriptId)) {
         const script = document.createElement('script');
@@ -167,7 +163,6 @@ const AutomationOpportunityFinder = () => {
         document.body.appendChild(script);
       }
 
-      // Handle Escape key
       const handleEscape = (event) => {
         if (event.key === 'Escape') {
           setShowCalendlyPopup(false);
@@ -176,8 +171,6 @@ const AutomationOpportunityFinder = () => {
       document.addEventListener('keydown', handleEscape);
       return () => {
         document.removeEventListener('keydown', handleEscape);
-        // Note: Script is not removed, as Calendly might need it if popup reopens.
-        // Calendly script itself is usually designed to be loaded once.
       };
     }
   }, [showCalendlyPopup]);
@@ -405,6 +398,17 @@ const AutomationOpportunityFinder = () => {
   };
   const thankYouModalContentStyle = { ...modalContentStyle, padding: '2rem' };
 
+  // Specific style for Calendly popup content area for 2rem padding
+  const calendlyModalContentStyle = {
+    ...modalContentStyle, // Inherit base styles
+    padding: '2rem', // Override with 2rem padding
+    display: 'flex',
+    flexDirection: 'column',
+    // Ensure the content area can grow but also respects the widget's height needs
+    // It's important the Calendly widget itself handles its scrolling if needed.
+  };
+
+
   if (showThankYou) {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
@@ -470,43 +474,47 @@ const AutomationOpportunityFinder = () => {
     );
   }
 
-  // Conditionally render Calendly Popup
   if (showCalendlyPopup) {
     return (
       <div 
         className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4 sm:p-6" 
-        onClick={() => setShowCalendlyPopup(false)} // Close on overlay click
+        onClick={() => setShowCalendlyPopup(false)} 
       >
         <div 
           style={{
-            ...modalWrapperStyle, 
-            maxWidth: '520px', // Adjusted for a bit more width, can be tweaked
-            width: '100%',
-            maxHeight: 'calc(100vh - 4rem)', 
-            display: 'flex', // Use flex to help center content if it's smaller
-            flexDirection: 'column',
+            ...modalWrapperStyle, // Green border, base rounding and shadow
+            maxWidth: 'calc(320px + 4rem + 2px)', // 320px (min widget) + 2rem padding each side + 2px for borders
+            width: '90vw', // Responsive width, up to maxWidth
+            // height is not explicitly set on wrapper, it will adapt to content + padding
+            // maxHeight for the wrapper to ensure it doesn't exceed viewport too much
+            maxHeight: 'calc(100vh - 2rem)', // Ensure some margin from viewport edges
+            overflow: 'hidden', // Wrapper handles rounded corners, content handles scroll
           }} 
           onClick={e => e.stopPropagation()} 
         >
-          <div style={{...modalContentStyle, padding: '1rem', display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}> 
-            <div className="flex justify-end mb-1"> 
+          <div style={{
+            ...calendlyModalContentStyle, // Has background, 2rem padding, inner rounding
+            overflowY: 'auto', // Allow this inner content to scroll if Calendly is too tall
+            maxHeight: 'calc(100vh - 2rem - 2px - 4rem)', // Account for outer wrapper padding, borders, and its own padding
+            }}> 
+            <div className="flex justify-end mb-2"> {/* Reduced margin for close button */}
               <button 
                 onClick={() => setShowCalendlyPopup(false)} 
                 className="p-1 rounded-full hover:bg-slate-700/60 text-slate-400 hover:text-slate-200 transition-colors"
                 aria-label="Close"
               >
-                <XIcon className="w-6 h-6" /> 
+                <XIcon className="w-5 h-5" /> {/* Slightly smaller close icon */}
               </button>
             </div>
-            {/* Calendly Widget Div */}
             <div 
               className="calendly-inline-widget"
-              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=2f2f2f&text_color=efefea&primary_color=27b48f&month=2025-06" 
+              data-url="https://calendly.com/threesixtyvue-info/free-consultation?hide_gdpr_banner=1&background_color=040404&text_color=efefea&primary_color=27b48f" 
+              // The month param can be added if desired: &month=2025-06
               style={{ 
                 minWidth:'320px', 
-                height:'700px', 
-                flexGrow: 1, // Allows calendly to take available space within the padded modalContent
-                overflow: 'hidden' // Prevents scrollbars on the widget itself if it tries to exceed 700px
+                width: '100%', // Widget takes full width of padded container
+                height:'700px', // Calendly recommended height
+                // overflow: 'hidden' // Let the parent div handle scrolling
               }} 
             >
               {/* Calendly script will populate this */}
