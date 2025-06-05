@@ -9,13 +9,10 @@
     "lucide-react": "^0.263.1",
     "web-vitals": "^2.1.4"
   },
-  "devDependencies": {
-    "@craco/craco": "^7.1.0"
-  },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
