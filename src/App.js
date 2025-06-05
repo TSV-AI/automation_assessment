@@ -498,49 +498,34 @@ const AutomationOpportunityFinder = () => {
     const painPointAnswer = currentAnswers.biggest_pain_generic;
     const painPointQuestion = currentQuestions.find(q => q.id === 'biggest_pain_generic');
     const painPointOption = painPointQuestion?.options.find(o => o.value === painPointAnswer);
-    const painPointLabel = painPointOption?.label || "your primary challenge";
 
-    if (painPointAnswer) {
-        const potentialPainSavings = Math.max(5, Math.round(hoursAutomatable * 0.4));
-        opportunities.push({
-            id: 'pain_point_automation',
-            icon: <Zap className="w-7 h-7 text-yellow-400" />,
-            title: `Automate Tasks Around "${personalizeText(painPointLabel)}"`,
-            description: `Streamlining processes related to ${personalizeText(painPointLabel)} for ${businessName || 'your business'} can free up significant time.`,
-            timeSavings: `${potentialPainSavings} hrs/week`
-        });
-    }
+    // Streamlined automation opportunities
+    const automationTypes = [
+      {
+        id: 'content_automation',
+        icon: <Sparkles className="w-6 h-6 text-purple-400" />,
+        title: 'Content Creation & Repurposing',
+        description: `Automate content generation, social media posting, and content repurposing workflows for ${businessName || 'your business'}.`,
+        timeSavings: `${Math.max(3, Math.round(hoursAutomatable * 0.35))} hrs/week`
+      },
+      {
+        id: 'data_automation',
+        icon: <TrendingUp className="w-6 h-6 text-blue-400" />,
+        title: 'Data Entry & Management',
+        description: `Eliminate manual data entry and resolve data silos with automated workflows and integrations.`,
+        timeSavings: `${Math.max(4, Math.round(hoursAutomatable * 0.4))} hrs/week`
+      },
+      {
+        id: 'communication_automation',
+        icon: <Mail className="w-6 h-6 text-green-400" />,
+        title: 'Customer Communication',
+        description: `Streamline customer follow-ups, appointment reminders, and personalized messaging at scale.`,
+        timeSavings: `${Math.max(2, Math.round(hoursAutomatable * 0.25))} hrs/week`
+      }
+    ];
 
-    let repetitiveTaskDescription = "Reduce time on general administrative tasks like data entry, scheduling, and report generation.";
-    if (selectedIndustry === "Healthcare" && painPointAnswer !== 'documentation') { // Avoid duplication if pain is documentation
-        repetitiveTaskDescription = `Optimize patient record management and administrative workflows in your ${businessName || 'Healthcare practice'}.`;
-    } else if (selectedIndustry === "Retail & E-commerce" && painPointAnswer !== 'inventory_mgmt') { // Avoid duplication if pain is inventory
-        repetitiveTaskDescription = `Streamline inventory updates and customer communication for ${businessName || 'your E-commerce store'}.`;
-    }
-    const potentialRepetitiveSavings = Math.max(3, Math.round(hoursAutomatable * 0.3));
-     if (opportunities.length < 3) {
-        opportunities.push({
-            id: 'repetitive_tasks_automation',
-            icon: <Clock className="w-7 h-7 text-blue-400" />,
-            title: 'Streamline Repetitive Manual Work',
-            description: repetitiveTaskDescription,
-            timeSavings: `${potentialRepetitiveSavings} hrs/week`
-        });
-    }
-
-    const potentialAISavings = Math.max(2, Math.round(hoursAutomatable * 0.25)); // Slightly reduced multiplier to differentiate
-    if (opportunities.length < 3) {
-        opportunities.push({
-            id: 'ai_tools_exploration',
-            icon: <Lightbulb className="w-7 h-7 text-green-400" />,
-            title: `Explore AI Tools for ${selectedIndustry} Workflows`,
-            description: `Leverage AI for tasks like content generation, data analysis, or customer support specific to the ${selectedIndustry} sector for ${businessName || 'your company'}.`,
-            timeSavings: `${potentialAISavings} hrs/week`
-        });
-    }
-    
-    return opportunities.slice(0, 3); 
-};
+    return automationTypes.slice(0, 3);
+  };
 
 
   const calculateResults = () => {
@@ -732,7 +717,7 @@ const AutomationOpportunityFinder = () => {
   const calendlyModalContainerStyle = {   
     background: '#040404',      
     borderRadius: '0.875rem',             
-    padding: '0.5rem', 
+    padding: '0rem', 
     boxShadow: '0 10px 30px rgba(0,0,0,0.5)', 
     width: '90vw',                        
     maxWidth: '1200px', 
@@ -742,6 +727,7 @@ const AutomationOpportunityFinder = () => {
     flexDirection: 'column',              
     position: 'relative',                 
     overflow: 'hidden',                   
+    border: 'none',
   };
   
   const personalizeText = (text) => { 
@@ -867,8 +853,10 @@ const AutomationOpportunityFinder = () => {
                 height: '100%',
                 minHeight: '600px',
                 border: 'none', 
-                borderRadius: '0.625rem', 
-                overflow: 'hidden', 
+                borderRadius: '0.875rem', 
+                overflow: 'hidden',
+                outline: 'none',
+                boxShadow: 'none'
               }} 
             >
               {/* Calendly script populates this */}
@@ -979,7 +967,7 @@ const AutomationOpportunityFinder = () => {
           </div>
 
            <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-12">
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center border" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)', borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -987,7 +975,7 @@ const AutomationOpportunityFinder = () => {
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>{results.hoursAutomatable}h</p>
               <p className="text-sm" style={{color: textColorMuted}}>Est. weekly hours recoverable.</p>
             </div>
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-700/50 border" style={{borderColor: 'rgba(239,239,234,0.25)'}}> 
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center border" style={{backgroundColor: 'rgba(51, 65, 85, 0.5)', borderColor: 'rgba(239,239,234,0.25)'}}> 
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -998,7 +986,7 @@ const AutomationOpportunityFinder = () => {
                 <p>With AI: <span className="font-medium" style={{color: textColorSecondary}}>${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
               </div>
             </div>
-            <div className="p-6 rounded-2xl flex flex-col justify-center text-center bg-slate-800/50 border" style={{borderColor: 'rgba(239,239,234,0.2)'}}>
+            <div className="p-6 rounded-2xl flex flex-col justify-center text-center border" style={{backgroundColor: 'rgba(30, 41, 59, 0.5)', borderColor: 'rgba(239,239,234,0.2)'}}>
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
               </div>
@@ -1013,15 +1001,15 @@ const AutomationOpportunityFinder = () => {
           </div>
           
           {results.topAutomations && results.topAutomations.length > 0 && (
-            <div className="my-12 p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+            <div className="my-12 p-6 rounded-2xl border border-slate-700/50" style={{backgroundColor: 'rgba(30, 41, 59, 0.4)'}}>
               <h3 className="text-2xl font-semibold mb-6 text-center flex items-center justify-center" style={{color: textColorPrimary}}>
                 <Sparkles className="w-6 h-6 mr-2 text-yellow-400" /> Top Automation Opportunities for {businessName || "Your Business"}
               </h3>
-              <div className="space-y-5 max-w-2xl mx-auto">
+              <div className="space-y-4 max-w-2xl mx-auto">
                 {results.topAutomations.map((automation) => (
                   <div key={automation.id} className="p-5 rounded-xl border flex items-start" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}>
                     <div className="flex-shrink-0 mr-4 mt-1">
-                      {automation.icon || <Lightbulb className="w-7 h-7" style={{color: accentColor}}/>}
+                      {automation.icon}
                     </div>
                     <div>
                       <h4 className="text-lg font-medium mb-1" style={{color: textColorPrimary}}>{automation.title}</h4>
@@ -1036,20 +1024,20 @@ const AutomationOpportunityFinder = () => {
 
           {/* Automation Roadmap Preview Section */}
           <div className="my-12 relative">
-            <div className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50">
+            <div className="p-6 rounded-2xl border border-slate-700/50" style={{backgroundColor: 'rgba(30, 41, 59, 0.4)'}}>
               <h3 className="text-2xl font-semibold mb-6 text-center" style={{color: textColorPrimary}}>
                 🛣️ Your Automation Roadmap
               </h3>
               
-              {/* Phase 1 - Visible Content */}
-              <div className="mb-6">
+              {/* Phase 1 - Visible Content with Gradient Fade */}
+              <div className="mb-6 relative">
                 <div className="flex items-center mb-4">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: accentColor, color: '#0A0A0A'}}>
                     <span className="text-sm font-bold">1</span>
                   </div>
                   <h4 className="text-xl font-semibold" style={{color: textColorPrimary}}>Phase 1: Foundation & Quick Wins (Weeks 1-4)</h4>
                 </div>
-                <div className="ml-11 space-y-3">
+                <div className="ml-11 space-y-3 relative">
                   <div className="flex items-start">
                     <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
                     <div>
@@ -1071,6 +1059,14 @@ const AutomationOpportunityFinder = () => {
                       <p className="text-sm" style={{color: textColorSecondary}}>Onboard team members and establish automation best practices</p>
                     </div>
                   </div>
+                  
+                  {/* Gradient fade overlay */}
+                  <div 
+                    className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
+                    style={{
+                      background: 'linear-gradient(to bottom, transparent 0%, rgba(30, 41, 59, 0.4) 70%, rgba(30, 41, 59, 0.9) 100%)'
+                    }}
+                  ></div>
                 </div>
               </div>
 
@@ -1126,110 +1122,50 @@ const AutomationOpportunityFinder = () => {
                 </div>
               </div>
             </div>
+          </div>space-y-3">
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
+                        <span className="text-sm font-bold">3</span>
+                      </div>
+                      <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 3: AI & Advanced Systems (Weeks 9-12)</h4>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Unlock Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div style={{...modalWrapperBaseStyle, maxWidth: '400px'}}> 
+                    <div className="text-center p-6" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> 
+                      <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+                        <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                      </div>
+                      <h3 className="text-lg font-medium mb-2" style={{color: textColorPrimary}}>Complete Roadmap Available</h3>
+                      <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the full 12-week implementation plan with detailed timelines and milestones.</p>
+                      <button 
+                        onClick={() => setShowEmailCapture(true)}
+                        className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" 
+                        style={{background: accentColor, color: '#0A0A0A'}}
+                      > 
+                        <Download className="w-4 h-4 mr-2" />Unlock Full Roadmap
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {previewRecs.length > 0 && (
-            <div className="mb-12">
-              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 text-center sm:text-left" style={{color: textColorPrimary}}>Further Recommendations (Preview)</h3>
-              <div className="space-y-6">
-                {previewRecs.map((rec, index) => (
-                  <div key={rec.id || index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
-                    <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
-                      <div>
-                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center" style={{color: textColorPrimary}}>
-                          <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : textColorVeryMuted}}></div>
-                          {personalizeText(rec.title)}
-                        </h4>
-                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 text-sm" style={{color: textColorMuted}}>
-                          <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" />{rec.timeline}</span>
-                          <span className="flex items-center"><Zap className="w-4 h-4 mr-1.5" />{rec.impact}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                      {rec.items.slice(0, 3).map((item, i) => (
-                        <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
-                          <div className="flex items-start" style={{color: textColorSecondary}}>
-                            <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
-                            <span>{personalizeText(item)}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {index === 0 && ( 
-                      <div className="mt-4 pt-4 border-t border-slate-700/50">
-                        {!aiTopRecNextSteps[rec.id] && !isGeneratingNextSteps[rec.id] && (
-                           <button 
-                              onClick={() => handleGenerateNextSteps(rec.title, rec.items, rec.id)}
-                              disabled={isGeneratingNextSteps[rec.id]}
-                              className="px-4 py-2 text-sm rounded-lg font-medium flex items-center hover:opacity-90 transition-all"
-                              style={{background: accentColorDarker, color: textColorPrimary, border: `1px solid ${accentColor}`}}
-                           >
-                              <Sparkles className="w-4 h-4 mr-2 text-yellow-300" /> Get AI Next Steps
-                           </button>
-                        )}
-                        {isGeneratingNextSteps[rec.id] && (
-                          <div className="flex items-center">
-                            <Loader2 className="w-5 h-5 animate-spin mr-2" style={{color: accentColor}} />
-                            <p style={{color: textColorSecondary}}>Generating next steps...</p>
-                          </div>
-                        )}
-                        {aiNextStepsError[rec.id] && <p className="text-red-400 mt-2 text-sm">{aiNextStepsError[rec.id]}</p>}
-                        {aiTopRecNextSteps[rec.id] && Array.isArray(aiTopRecNextSteps[rec.id]) && (
-                          <div className="mt-3">
-                            <h5 className="text-sm font-semibold mb-2" style={{color: textColorPrimary}}>✨ AI Suggested Next Steps:</h5>
-                            <ul className="space-y-2">
-                              {aiTopRecNextSteps[rec.id].map((step, stepIdx) => (
-                                <li key={stepIdx} className="text-xs flex items-start" style={{color: textColorSecondary}}>
-                                  <ChevronRight className="w-3 h-3 mr-1.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
-                                  <span>{step}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-           {hiddenRecs.length > 0 && ( 
-            <div className="mb-12 relative"> 
-              <div className="filter blur-sm pointer-events-none"> 
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 text-center sm:text-left opacity-30" style={{color: textColorPrimary}}>Advanced & Custom Strategies</h3>
-                <div className="space-y-6">
-                  {hiddenRecs.slice(0, 2).map((rec, index) => ( 
-                    <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/30 border border-slate-700/30">
-                      <h4 className="font-medium text-lg sm:text-xl mb-2" style={{color: 'rgba(239,239,234,0.3)'}}>{personalizeText(rec.title)}</h4>
-                      <div className="h-4 rounded" style={{backgroundColor: 'rgba(239,239,234,0.1)'}} ></div>
-                      <div className="h-4 rounded mt-2" style={{backgroundColor: 'rgba(239,239,234,0.08)'}} ></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4"> 
-                <div style={{...modalWrapperBaseStyle, maxWidth: '480px'}}> 
-                  <div className="text-center p-6 sm:p-8" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> 
-                    <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
-                      <Eye className="w-8 h-8" style={{color: accentColor}}/>
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-medium mb-2" style={{color: textColorPrimary}}>Unlock Your Full Potential</h3>
-                    <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the complete report: detailed strategies, tools, ROI.</p>
-                    <button 
-                      onClick={() => setShowEmailCapture(true)}
-                      className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
-                      style={{background: accentColorDarker, color: textColorPrimary}}
-                    > 
-                      <Download className="w-4 h-4 mr-2" />Get My Full Report
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        
           <div style={{...modalWrapperBaseStyle, maxWidth: 'none', padding:'1px'}} className="mx-auto" > 
             <div className="p-6 sm:p-10 rounded-[0.8125rem] text-center" style={{background: generalPopupContentBg, backdropFilter: 'blur(3px)' }}> 
               <h3 className="text-xl sm:text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Ready to Transform Your Business?</h3>
