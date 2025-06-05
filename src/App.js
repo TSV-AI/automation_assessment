@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'; 
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb } from 'lucide-react';
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, Brain, AlertTriangle, Droplets } from 'lucide-react';
 
 // --- Color Palette (retained for UI consistency) ---
 const pageBgColor = '#0a0a0a';
@@ -17,12 +17,14 @@ const accentColorBgMediumOpacity = accentColor + '26';
 const accentColorBorderLowOpacity = accentColor + '33'; 
 const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)';
 
-// --- Initial Loading Messages ---
-const initialLoadingMessages = [
-  { text: "Initializing automation analysis engine...", icon: <Cpu className="w-6 h-6 mr-3 text-blue-400" /> },
-  { text: "Calibrating efficiency algorithms...", icon: <Zap className="w-6 h-6 mr-3 text-yellow-400" /> },
-  { text: "Loading business intelligence modules...", icon: <TrendingUp className="w-6 h-6 mr-3 text-green-400" /> },
-  { text: "Preparing personalized recommendations...", icon: <Lightbulb className="w-6 h-6 mr-3 text-purple-400" /> }
+// --- Loading Messages ---
+const loadingMessages = [
+  { text: "Sacrificing a USB cable to the tech gods for faster processing...", icon: <Zap className="w-8 h-8 mr-3 text-red-400" /> },
+  { text: "Loading... please wait while we pretend this is complicated.", icon: <Clock className="w-8 h-8 mr-3 text-blue-400" /> },
+  { text: "Please hold while our AI argues with itself about your answers...", icon: <Brain className="w-8 h-8 mr-3 text-pink-400 animate-pulse" /> },
+  { text: "Our AI is having an existential crisis... give it a moment to pull itself together.", icon: <AlertTriangle className="w-8 h-8 mr-3 text-yellow-400 animate-bounce" /> },
+  { text: "Feeding our overworked algorithms some energy drinks and false hope...", icon: <Zap className="w-8 h-8 mr-3 text-purple-400 animate-pulse" /> },
+  { text: "Our servers are powered by tears of frustrated developers... almost ready!", icon: <Droplets className="w-8 h-8 mr-3 text-blue-400" /> }
 ];
 
 
@@ -159,7 +161,8 @@ const AutomationOpportunityFinder = () => {
   const [displayableQuestionsOrder, setDisplayableQuestionsOrder] = useState([]); 
   const [currentStepInDisplayable, setCurrentStepInDisplayable] = useState(0);
 
-  const [initialLoadingMessageIndex, setInitialLoadingMessageIndex] = useState(0);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+  const [emailConsent, setEmailConsent] = useState(true);
 
 
   const [showResults, setShowResults] = useState(false);
@@ -230,13 +233,13 @@ const AutomationOpportunityFinder = () => {
     }
   }, [showCalendlyPopup]);
 
-  // Effect for cycling initial loading messages
+  // Effect for cycling loading messages
   useEffect(() => {
     let intervalId;
     if (assessmentStage === 'personalizing') {
       intervalId = setInterval(() => {
-        setInitialLoadingMessageIndex(prevIndex => (prevIndex + 1) % initialLoadingMessages.length);
-      }, 3000);
+        setLoadingMessageIndex(prevIndex => (prevIndex + 1) % loadingMessages.length);
+      }, 4000);
     }
     return () => clearInterval(intervalId);
   }, [assessmentStage]);
@@ -325,7 +328,7 @@ const AutomationOpportunityFinder = () => {
 
   const handlePersonalizeQuestions = async () => {
     setAssessmentStage('personalizing');
-    setInitialLoadingMessageIndex(0); 
+    setLoadingMessageIndex(0); 
     
     // DEBUG: Check if API key is loaded
     const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
@@ -660,7 +663,11 @@ const AutomationOpportunityFinder = () => {
 
   const handleEmailSubmit = async (e) => { 
       e.preventDefault();
-      console.log("Email to be sent to:", email, "with name:", name);
+      if (!emailConsent) {
+        alert("Please accept our email subscription to receive your report.");
+        return;
+      }
+      console.log("Email to be sent to:", email, "with name:", name, "Consent:", emailConsent);
       setShowEmailCapture(false);
       setShowThankYou(true); 
   };
@@ -770,7 +777,7 @@ const AutomationOpportunityFinder = () => {
     return (
       <div className="max-w-2xl mx-auto p-4 sm:p-6 min-h-screen flex items-center justify-center" style={{backgroundColor: '#040404', color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div style={defaultPopupWrapperStyle}>
-          <div style={{...defaultPopupContentStyle, background: '#040404', border: `1px solid ${accentColor}33`}} className="w-full"> 
+          <div style={{...defaultPopupContentStyle, background: '#040404'}} className="w-full"> 
             <div className="text-center mb-8">
               <div className="p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                 <Download className="w-10 h-10" style={{color: accentColor}} />
@@ -778,7 +785,7 @@ const AutomationOpportunityFinder = () => {
               <h2 className="text-2xl font-semibold mb-3" style={{color: textColorPrimary}}>Get Your Complete Automation Strategy</h2>
               <p className="text-sm" style={{color: textColorSecondary}}>Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
             </div>
-            <div className="p-6 rounded-2xl mb-8 border" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}> 
+            <div className="p-6 rounded-2xl mb-8" style={{backgroundColor: accentColorBgLowOpacity}}> 
               <h3 className="font-medium text-base mb-4" style={{color: textColorPrimary}}>🎯 Full Report Includes:</h3>
               <div className="grid md:grid-cols-2 gap-3 text-sm" style={{color: textColorSecondary}}>
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
@@ -793,8 +800,29 @@ const AutomationOpportunityFinder = () => {
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
                      className="w-full p-4 rounded-xl border focus:ring-2 outline-none" 
                      style={{color:textColorPrimary, backgroundColor: 'rgba(0,0,0,0.3)', borderColor: accentColorBorderLowOpacity, '--tw-ring-color': accentColor}}/>
-              <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
-                      style={{background: accentColor, color: '#0A0A0A' }}> 
+              
+              <div className="flex items-start space-x-3 py-2">
+                <input 
+                  id="emailConsent" 
+                  type="checkbox" 
+                  checked={emailConsent} 
+                  onChange={(e) => setEmailConsent(e.target.checked)}
+                  required
+                  className="mt-1 scale-110" 
+                  style={{accentColor: accentColor}} 
+                />
+                <label htmlFor="emailConsent" className="text-xs leading-relaxed" style={{color: textColorVeryMuted}}>
+                  I agree to receive automation insights and industry updates via email. You can unsubscribe at any time. 
+                  <span className="block mt-1">By checking this box, you consent to our email communications as outlined in our privacy policy.</span>
+                </label>
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={!emailConsent}
+                className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md disabled:opacity-50 disabled:cursor-not-allowed" 
+                style={{background: emailConsent ? accentColor : 'rgba(146, 216, 200, 0.3)', color: emailConsent ? '#0A0A0A' : textColorMuted }}
+              > 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
               </button>
             </form>
@@ -851,7 +879,7 @@ const AutomationOpportunityFinder = () => {
   }
   
   if (assessmentStage === 'personalizing') {
-    const currentLoadingMessage = initialLoadingMessages[initialLoadingMessageIndex];
+    const currentLoadingMessage = loadingMessages[loadingMessageIndex];
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center text-center px-4" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="flex items-center justify-center mb-6">
