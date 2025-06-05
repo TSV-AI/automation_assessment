@@ -960,93 +960,95 @@ const AutomationOpportunityFinder = () => {
                 🛣️ Your Automation Roadmap
               </h3>
               
-              {/* Phase 1 - Visible Content with Gradient Fade */}
-              <div className="mb-6 relative">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: accentColor, color: '#0A0A0A'}}>
-                    <span className="text-sm font-bold">1</span>
-                  </div>
-                  <h4 className="text-xl font-semibold" style={{color: textColorPrimary}}>Phase 1: Foundation & Quick Wins (Weeks 1-4)</h4>
-                </div>
-                <div className="ml-11 space-y-3 relative">
-                  <div className="flex items-start">
-                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
-                    <div>
-                      <p className="font-medium" style={{color: textColorPrimary}}>Audit Current Processes</p>
-                      <p className="text-sm" style={{color: textColorSecondary}}>Document and map existing workflows to identify automation opportunities</p>
+              <div>
+                {/* Phase 1 - Visible Content with Gradient Fade */}
+                <div className="mb-6 relative">
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: accentColor, color: '#0A0A0A'}}>
+                      <span className="text-sm font-bold">1</span>
                     </div>
+                    <h4 className="text-xl font-semibold" style={{color: textColorPrimary}}>Phase 1: Foundation & Quick Wins (Weeks 1-4)</h4>
                   </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
-                    <div>
-                      <p className="font-medium" style={{color: textColorPrimary}}>Implement Basic Automations</p>
-                      <p className="text-sm" style={{color: textColorSecondary}}>Start with email automation, calendar scheduling, and simple data entry tasks</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
-                    <div>
-                      <p className="font-medium" style={{color: textColorPrimary}}>Team Training & Setup</p>
-                      <p className="text-sm" style={{color: textColorSecondary}}>Onboard team members and establish automation best practices</p>
-                    </div>
-                  </div>
-                  
-                  {/* Gradient fade overlay */}
-                  <div 
-                    className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
-                    style={{
-                      background: 'linear-gradient(to bottom, transparent 0%, rgba(30, 41, 59, 0.4) 70%, rgba(30, 41, 59, 0.9) 100%)'
-                    }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Blurred Preview of Additional Phases */}
-              <div className="relative">
-                <div className="filter blur-sm">
-                  <div className="mb-6">
-                    <div className="flex items-center mb-4">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
-                        <span className="text-sm font-bold">2</span>
+                  <div className="ml-11 space-y-3 relative">
+                    <div className="flex items-start">
+                      <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                      <div>
+                        <p className="font-medium" style={{color: textColorPrimary}}>Audit Current Processes</p>
+                        <p className="text-sm" style={{color: textColorSecondary}}>Document and map existing workflows to identify automation opportunities</p>
                       </div>
-                      <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 2: Advanced Integration (Weeks 5-8)</h4>
                     </div>
-                    <div className="ml-11 space-y-3">
-                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
-                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
-                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <div className="flex items-center mb-4">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
-                        <span className="text-sm font-bold">3</span>
+                    <div className="flex items-start">
+                      <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                      <div>
+                        <p className="font-medium" style={{color: textColorPrimary}}>Implement Basic Automations</p>
+                        <p className="text-sm" style={{color: textColorSecondary}}>Start with email automation, calendar scheduling, and simple data entry tasks</p>
                       </div>
-                      <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 3: AI & Advanced Systems (Weeks 9-12)</h4>
                     </div>
-                    <div className="ml-11 space-y-3">
-                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
-                      <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                    <div className="flex items-start">
+                      <CheckCircle className="w-4 h-4 mr-3 mt-1 flex-shrink-0" style={{color: accentColor}} />
+                      <div>
+                        <p className="font-medium" style={{color: textColorPrimary}}>Team Training & Setup</p>
+                        <p className="text-sm" style={{color: textColorSecondary}}>Onboard team members and establish automation best practices</p>
+                      </div>
                     </div>
+                    
+                    {/* Gradient fade overlay */}
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
+                      style={{
+                        background: 'linear-gradient(to bottom, transparent 0%, rgba(30, 41, 59, 0.4) 70%, rgba(30, 41, 59, 0.9) 100%)'
+                      }}
+                    ></div>
                   </div>
                 </div>
 
-                {/* Unlock Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div style={{...modalWrapperBaseStyle, maxWidth: '400px'}}> 
-                    <div className="text-center p-6" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> 
-                      <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
-                        <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                {/* Blurred Preview of Additional Phases */}
+                <div className="relative">
+                  <div className="filter blur-sm">
+                    <div className="mb-6">
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
+                          <span className="text-sm font-bold">2</span>
+                        </div>
+                        <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 2: Advanced Integration (Weeks 5-8)</h4>
                       </div>
-                      <h3 className="text-lg font-medium mb-2" style={{color: textColorPrimary}}>Complete Roadmap Available</h3>
-                      <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the full 12-week implementation plan with detailed timelines and milestones.</p>
-                      <button 
-                        onClick={() => setShowEmailCapture(true)}
-                        className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" 
-                        style={{background: accentColor, color: '#0A0A0A'}}
-                      > 
-                        <Download className="w-4 h-4 mr-2" />Unlock Full Roadmap
-                      </button>
+                      <div className="ml-11 space-y-3">
+                        <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                        <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                        <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      </div>
+                    </div>
+                    <div className="mb-6">
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
+                          <span className="text-sm font-bold">3</span>
+                        </div>
+                        <h4 className="text-xl font-semibold opacity-60" style={{color: textColorPrimary}}>Phase 3: AI & Advanced Systems (Weeks 9-12)</h4>
+                      </div>
+                      <div className="ml-11 space-y-3">
+                        <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                        <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Unlock Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div style={{...modalWrapperBaseStyle, maxWidth: '400px'}}> 
+                      <div className="text-center p-6" style={{...modalContentBaseStyle, background: generalPopupContentBg, padding: '1.5rem'}}> 
+                        <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
+                          <Eye className="w-8 h-8" style={{color: accentColor}}/>
+                        </div>
+                        <h3 className="text-lg font-medium mb-2" style={{color: textColorPrimary}}>Complete Roadmap Available</h3>
+                        <p className="mb-6 text-sm" style={{color: textColorSecondary}}>Get the full 12-week implementation plan with detailed timelines and milestones.</p>
+                        <button 
+                          onClick={() => setShowEmailCapture(true)}
+                          className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90" 
+                          style={{background: accentColor, color: '#0A0A0A'}}
+                        > 
+                          <Download className="w-4 h-4 mr-2" />Unlock Full Roadmap
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
