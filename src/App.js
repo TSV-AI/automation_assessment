@@ -13,7 +13,7 @@ const AutomationOpportunityFinder = () => {
   // Color Palette
   const pageBgColor = '#0a0a0a';
   const accentColor = '#92d8c8'; // Softer teal for secondary accents (icons, progress, selections)
-  const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups (e.g., "Get Full Report" on Email Capture)
+  const accentColorDarker = '#6BAA9B'; // For CTAs *inside* popups 
   
   const popupBorderColorWithOpacity = '#2caa9cBF'; // Green with 75% opacity for popup borders
   const brighterMainCtaColor = '#4DCFB9'; // Brighter green for main page "Schedule Call" CTA
@@ -23,7 +23,7 @@ const AutomationOpportunityFinder = () => {
   const accentColorBgMediumOpacity = accentColor + '26'; 
   const accentColorBorderLowOpacity = accentColor + '33'; 
 
-  const popupContentBg = 'rgba(20, 25, 35, 0.80)'; // Dark blue-gray, 80% opacity for popup content
+  const popupContentBg = 'rgba(20, 25, 35, 0.70)'; // Dark blue-gray, 70% opacity for popup content
 
   const questions = [
     {
@@ -315,15 +315,15 @@ const AutomationOpportunityFinder = () => {
             background: popupBorderColorWithOpacity, 
             boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             width: '100%', 
-            maxWidth: '560px', // Added max-width for Thank You card
+            maxWidth: '560px', 
           }}
         >
           <div 
             style={{
               background: popupContentBg, 
               borderRadius: '0.8125rem', 
-              padding: '2rem', // Increased padding for Thank You card content
-              backdropFilter: 'blur(2px)',
+              padding: '2rem', 
+              backdropFilter: 'blur(3px)', // Increased blur for thank you popup content
             }}
             className="w-full text-center"
           >
@@ -331,7 +331,7 @@ const AutomationOpportunityFinder = () => {
               <CheckCircle className="w-12 h-12" style={{color: accentColor}} />
             </div>
             <h2 className="text-2xl font-semibold mb-4">Thank You, {name}!</h2>
-            <p className="text-sm mb-8 text-gray-400">Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p>
+            <p className="text-sm mb-8 text-gray-300">Your personalized insights for {email} will arrive shortly. Keep an eye on your inbox!</p> {/* Slightly lighter text */}
             <button onClick={() => { setShowThankYou(false); setShowEmailCapture(false); }}
               className="px-6 py-3 rounded-xl font-medium" style={{background: accentColor, color: popupCtaTextColor}}> 
               Back to My Report
@@ -359,7 +359,7 @@ const AutomationOpportunityFinder = () => {
               background: popupContentBg, 
               borderRadius: '0.8125rem', 
               padding: '1.5rem', 
-              backdropFilter: 'blur(2px)',
+              backdropFilter: 'blur(3px)', // Increased blur
             }}
             className="w-full"
           >
@@ -368,11 +368,11 @@ const AutomationOpportunityFinder = () => {
                 <Download className="w-10 h-10" style={{color: accentColor}} />
               </div>
               <h2 className="text-2xl font-semibold mb-3">Get Your Complete Automation Strategy</h2>
-              <p className="text-sm text-gray-400">Enter details for a full report: roadmaps, ROI, tool recommendations.</p>
+              <p className="text-sm text-gray-300">Enter details for a full report: roadmaps, ROI, tool recommendations.</p> {/* Slightly lighter text */}
             </div>
             <div className="p-6 rounded-2xl mb-8 bg-black/20 border border-white/10">
-              <h3 className="font-medium text-base mb-4">🎯 Full Report Includes:</h3>
-              <div className="grid md:grid-cols-2 gap-3 text-sm">
+              <h3 className="font-medium text-base mb-4 text-white">🎯 Full Report Includes:</h3> {/* White text for title */}
+              <div className="grid md:grid-cols-2 gap-3 text-sm text-gray-200"> {/* Lighter text for list items */}
                 {['Roadmap', 'ROI Projections', 'Tool Recommendations', 'Implementation Timeline', 'Risk Checklist', 'Success Metrics'].map(item => (
                    <div key={item} className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" style={{color: accentColor}} />{item}</div>
                 ))}
@@ -380,9 +380,9 @@ const AutomationOpportunityFinder = () => {
             </div>
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               <input id="nameInput" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Full Name"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none text-white placeholder-gray-400" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <input id="emailInput" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="Business Email"
-                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
+                     className="w-full p-4 rounded-xl bg-black/30 border border-white/20 focus:ring-2 outline-none text-white placeholder-gray-400" style={{borderColor: 'rgba(255,255,255,0.1)', ringColor: accentColor}}/>
               <button type="submit" className="w-full py-4 px-8 rounded-xl font-medium flex items-center justify-center hover:opacity-90 shadow-md" 
                       style={{background: accentColorDarker, color: '#FFFFFF'}}> 
                 <Mail className="w-5 h-5 mr-2" />Send My Report
@@ -409,7 +409,7 @@ const AutomationOpportunityFinder = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="text-center mb-16 sm:mb-20">
             <h1 className="text-4xl sm:text-5xl font-semibold mb-6 tracking-tight leading-tight">Your Custom Automation Strategy</h1>
-            <p className="text-md sm:text-lg max-w-2xl mx-auto text-gray-400 leading-relaxed">Snapshot of AI automation's potential for your business, based on your answers.</p>
+            <p className="text-md sm:text-lg max-w-2xl mx-auto text-gray-300 leading-relaxed">Snapshot of AI automation's potential for your business, based on your answers.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 sm:gap-6 mb-16 sm:mb-24">
@@ -417,7 +417,7 @@ const AutomationOpportunityFinder = () => {
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <Clock className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1">Time Savings Potential</h3>
+              <h3 className="text-base font-medium mb-1 text-white">Time Savings Potential</h3>
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>{results.hoursAutomatable}h</p>
               <p className="text-sm text-gray-400">Est. weekly hours recoverable.</p>
             </div>
@@ -426,11 +426,11 @@ const AutomationOpportunityFinder = () => {
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <ArrowDownCircle className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1">Monthly Cost Reduction</h3>
+              <h3 className="text-base font-medium mb-1 text-white">Monthly Cost Reduction</h3>
               <p className="text-5xl font-bold my-3 tracking-tighter" style={{color: accentColor}}>{results.percentageSaving}%</p>
               <div className="text-xs text-gray-400 space-y-1">
-                <p>Manual: <span className="font-medium text-gray-300">${results.currentManualMonthlyCost.toLocaleString()}</span></p>
-                <p>With AI: <span className="font-medium text-gray-300">${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
+                <p>Manual: <span className="font-medium text-gray-200">${results.currentManualMonthlyCost.toLocaleString()}</span></p>
+                <p>With AI: <span className="font-medium text-gray-200">${results.estimatedMonthlyAutomationCost.toLocaleString()}</span></p>
               </div>
             </div>
             
@@ -438,7 +438,7 @@ const AutomationOpportunityFinder = () => {
               <div className="w-12 h-12 mx-auto rounded-xl mb-4 flex items-center justify-center" style={{backgroundColor: accentColorBgMediumOpacity}}>
                 <TrendingUp className="w-6 h-6" style={{color: accentColor}} />
               </div>
-              <h3 className="text-base font-medium mb-1">ROI Potential</h3>
+              <h3 className="text-base font-medium mb-1 text-white">ROI Potential</h3>
               <p className="text-4xl font-semibold my-2 tracking-tight" style={{color: accentColor}}>
                 {results.roiPercentage > 0 ? `+${results.roiPercentage}%` : (results.roiPercentage === 0 && results.annualSavings > 0) ? 'High' : 'Calc...'}
               </p>
@@ -450,13 +450,13 @@ const AutomationOpportunityFinder = () => {
 
           {previewRecs.length > 0 && (
             <div className="mb-16 sm:mb-20">
-              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Top Automation Opportunities (Preview)</h3>
+              <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left text-white">Top Automation Opportunities (Preview)</h3>
               <div className="space-y-6">
                 {previewRecs.map((rec, index) => (
                   <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
                     <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6">
                       <div>
-                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center">
+                        <h4 className="font-medium text-lg sm:text-xl mb-2 flex items-center text-white">
                           <div className={`w-2.5 h-2.5 rounded-full mr-3`} style={{backgroundColor: rec.priority === 'high' ? accentColor : '#6b7280'}}></div>
                           {rec.title}
                         </h4>
@@ -469,7 +469,7 @@ const AutomationOpportunityFinder = () => {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {rec.items.slice(0, 3).map((item, i) => (
                         <div key={i} className="p-4 rounded-xl text-sm" style={{backgroundColor: accentColorBgLowOpacity, border: `1px solid ${accentColorBorderLowOpacity}`}}>
-                          <div className="flex items-start">
+                          <div className="flex items-start text-gray-100"> {/* Lighter text for items */}
                             <CheckCircle className="w-4 h-4 mr-2.5 mt-0.5 flex-shrink-0" style={{color: accentColor}} />
                             <span>{item}</span>
                           </div>
@@ -484,8 +484,8 @@ const AutomationOpportunityFinder = () => {
 
           {hiddenRecs.length > 0 && (
             <div className="mb-16 sm:mb-20 relative">
-              <div className="filter blur-sm pointer-events-none"> {/* Maintained blur-sm for underlying cards */}
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left">Advanced & Custom Strategies</h3>
+              <div className="filter blur-sm pointer-events-none"> 
+                <h3 className="text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12 text-center sm:text-left text-white">Advanced & Custom Strategies</h3>
                 <div className="space-y-6">
                   {hiddenRecs.slice(0, 2).map((rec, index) => ( 
                     <div key={index} className="p-6 sm:p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50">
@@ -496,8 +496,8 @@ const AutomationOpportunityFinder = () => {
                   ))}
                 </div>
               </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4" 
-                   style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> {/* Reversed Gradient */}
+              {/* Overlay for the "Unlock" modal, removed explicit background gradient from here to rely on blurred cards + modal's own semi-transparent bg */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4" style={{background: 'linear-gradient(to bottom, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.2) 20%, rgba(10,10,10,0.7) 40%, rgba(10,10,10,0.98) 65%, rgba(10,10,10,1) 85%)'}}> 
                 <div 
                   style={{
                     borderRadius: '0.875rem', 
@@ -512,13 +512,13 @@ const AutomationOpportunityFinder = () => {
                     style={{
                       background: popupContentBg, 
                       borderRadius: '0.8125rem', 
-                      backdropFilter: 'blur(2px)', 
+                      backdropFilter: 'blur(3px)', 
                     }}
                   >
                     <div className="p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{background: accentColorBgMediumOpacity}}>
                       <Eye className="w-8 h-8" style={{color: accentColor}}/>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-medium mb-2">Unlock Your Full Potential</h3>
+                    <h3 className="text-lg sm:text-xl font-medium mb-2 text-white">Unlock Your Full Potential</h3>
                     <p className="mb-6 text-sm text-gray-300">Get the complete report: detailed strategies, tools, ROI.</p>
                     <button onClick={() => setShowEmailCapture(true)}
                       className="px-6 py-3 rounded-xl font-medium flex items-center mx-auto hover:opacity-90 shadow-lg" 
@@ -531,7 +531,6 @@ const AutomationOpportunityFinder = () => {
             </div>
           )}
         
-          {/* Final CTA Block - Styled to match "Unlock" modal */}
           <div 
             style={{
               borderRadius: '0.875rem', 
@@ -539,13 +538,13 @@ const AutomationOpportunityFinder = () => {
               background: popupBorderColorWithOpacity, 
               boxShadow: '0 6px 25px rgba(0,0,0,0.3)', 
             }}
-            className="mx-auto" // Centering the block if max-w is applied to inner
+            className="mx-auto" 
           >
             <div 
-              className="p-6 sm:p-10 rounded-[0.8125rem] text-center" // Inner radius adjusted for 1px border
-              style={{background: popupContentBg, backdropFilter: 'blur(2px)' }}
+              className="p-6 sm:p-10 rounded-[0.8125rem] text-center" 
+              style={{background: popupContentBg, backdropFilter: 'blur(3px)' }}
             >
-              <h3 className="text-xl sm:text-2xl font-semibold mb-3">Ready to Transform Your Business?</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-white">Ready to Transform Your Business?</h3>
               <p className="text-sm sm:text-base mb-8 max-w-xl mx-auto text-gray-300 leading-relaxed">
                 Turn analysis into action. Schedule a free strategy call for a tailored implementation plan.
               </p>
@@ -595,8 +594,8 @@ const AutomationOpportunityFinder = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto p-4 sm:p-6">
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight">{currentQuestion.title}</h2>
-            {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base text-gray-400 leading-relaxed">{currentQuestion.subtitle}</p>}
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight text-white">{currentQuestion.title}</h2>
+            {currentQuestion.subtitle && <p className="mb-6 sm:mb-8 text-sm sm:text-base text-gray-300 leading-relaxed">{currentQuestion.subtitle}</p>} {/* Lighter gray */}
             <div className="space-y-3 sm:space-y-4">
               {currentQuestion.options.map((option) => {
                 const isSelected = currentQuestion.type === 'multiple' ? (answers[currentQuestion.id]?.includes(option.value)) : (answers[currentQuestion.id] === option.value);
@@ -608,8 +607,8 @@ const AutomationOpportunityFinder = () => {
                              onChange={() => handleAnswer(currentQuestion.id, option.value, currentQuestion.type === 'multiple')}
                              className="mr-3 sm:mr-4 mt-0.5 scale-105 sm:scale-110 flex-shrink-0" style={{accentColor: accentColor}}/>
                       <div className="flex-1">
-                        <span className="font-medium text-sm sm:text-base">{option.label}</span>
-                        {option.description && <p className="text-xs sm:text-sm mt-1 text-gray-400">{option.description}</p>}
+                        <span className="font-medium text-sm sm:text-base text-white">{option.label}</span>
+                        {option.description && <p className="text-xs sm:text-sm mt-1 text-gray-300">{option.description}</p>} {/* Lighter gray */}
                       </div>
                       {isSelected && <CheckCircle className="w-5 h-5 ml-3 flex-shrink-0" style={{color: accentColor}}/>}
                     </div>
