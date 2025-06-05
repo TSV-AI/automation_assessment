@@ -1017,7 +1017,6 @@ const AutomationOpportunityFinder = () => {
                       <div className="h-4 rounded opacity-30" style={{backgroundColor: textColorMuted}}></div>
                     </div>
                   </div>
-                  
                   <div className="mb-6">
                     <div className="flex items-center mb-4">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{backgroundColor: 'rgba(146, 216, 200, 0.3)', color: textColorMuted}}>
