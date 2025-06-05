@@ -17,15 +17,6 @@ const accentColorBgMediumOpacity = accentColor + '26';
 const accentColorBorderLowOpacity = accentColor + '33'; 
 const generalPopupContentBg = 'rgba(20, 25, 35, 0.70)';
 
-// --- Funny Loading Messages ---
-const funnyLoadingMessages = [
-  { text: "Summoning the AI gnomes to tailor your questions...", icon: <Sparkles className="w-8 h-8 mr-3 text-yellow-400" /> },
-  { text: "Our digital hamsters are running as fast as they can!", icon: <Shuffle className="w-8 h-8 mr-3 text-purple-400 animate-pulse" /> },
-  { text: "Brewing a fresh batch of personalized insights...", icon: <Lightbulb className="w-8 h-8 mr-3 text-green-400" /> },
-  { text: "Don't worry, we haven't forgotten about you... just teaching the AI some manners.", icon: <Clock className="w-8 h-8 mr-3 text-blue-400" /> },
-  { text: "Analyzing your info with our team of tiny AI helpers...", icon: <Cpu className="w-8 h-8 mr-3 text-teal-400 animate-bounce" /> }
-];
-
 // --- Initial Loading Messages ---
 const initialLoadingMessages = [
   { text: "Initializing automation analysis engine...", icon: <Cpu className="w-6 h-6 mr-3 text-blue-400" /> },
@@ -168,7 +159,6 @@ const AutomationOpportunityFinder = () => {
   const [displayableQuestionsOrder, setDisplayableQuestionsOrder] = useState([]); 
   const [currentStepInDisplayable, setCurrentStepInDisplayable] = useState(0);
 
-  const [funnyLoadingMessageIndex, setFunnyLoadingMessageIndex] = useState(0);
   const [initialLoadingMessageIndex, setInitialLoadingMessageIndex] = useState(0);
 
 
@@ -239,17 +229,6 @@ const AutomationOpportunityFinder = () => {
       return () => document.removeEventListener('keydown', handleEscape);
     }
   }, [showCalendlyPopup]);
-
-  // Effect for cycling funny loading messages
-  useEffect(() => {
-    let intervalId;
-    if (assessmentStage === 'personalizing') {
-      intervalId = setInterval(() => {
-        setFunnyLoadingMessageIndex(prevIndex => (prevIndex + 1) % funnyLoadingMessages.length);
-      }, 6000); // Changed interval to 6 seconds
-    }
-    return () => clearInterval(intervalId);
-  }, [assessmentStage]);
 
   // Effect for cycling initial loading messages
   useEffect(() => {
@@ -346,7 +325,7 @@ const AutomationOpportunityFinder = () => {
 
   const handlePersonalizeQuestions = async () => {
     setAssessmentStage('personalizing');
-    setFunnyLoadingMessageIndex(0); 
+    setInitialLoadingMessageIndex(0); 
     
     // DEBUG: Check if API key is loaded
     const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
