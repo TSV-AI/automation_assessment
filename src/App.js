@@ -254,7 +254,7 @@ const AutomationOpportunityFinder = () => {
   // Effect for cycling initial loading messages
   useEffect(() => {
     let intervalId;
-    if (assessmentStage === 'initialName') {
+    if (assessmentStage === 'personalizing') {
       intervalId = setInterval(() => {
         setInitialLoadingMessageIndex(prevIndex => (prevIndex + 1) % initialLoadingMessages.length);
       }, 3000);
@@ -288,6 +288,13 @@ const AutomationOpportunityFinder = () => {
   };
   
   const callGeminiAPI = async (prompt, isJsonOutput = false, expectedSchema = null) => {
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error("API key not found. Please set REACT_APP_GEMINI_API_KEY environment variable.");
+      throw new Error("API key not configured");
+    }
+
     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
     const payload = { contents: chatHistory };
     if (isJsonOutput) {
@@ -296,19 +303,23 @@ const AutomationOpportunityFinder = () => {
             responseSchema: expectedSchema || { type: "OBJECT", properties: {"output": {type: "STRING"}} } 
         };
     }
-    const apiKey = process.env.REACT_APP_GEMINI_API_KEY || ""; // API_KEY FROM ENVIRONMENT VARIABLE
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+    
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
+        
         if (!response.ok) {
             const errorBody = await response.text(); 
             console.error("Gemini API error response body:", errorBody); 
+            console.error("API Key (first 10 chars):", apiKey ? apiKey.substring(0, 10) + "..." : "undefined");
             throw new Error(`API request failed with status ${response.status}. Full error: ${errorBody}`);
         }
+        
         const result = await response.json();
         if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
             const rawText = result.candidates[0].content.parts[0].text;
@@ -323,8 +334,7 @@ const AutomationOpportunityFinder = () => {
         } else if (result.promptFeedback && result.promptFeedback.blockReason) {
             console.error("Gemini API prompt blocked:", result.promptFeedback);
             throw new Error(`AI request was blocked: ${result.promptFeedback.blockReason}. ${result.promptFeedback.blockReasonMessage || ''}`);
-        }
-         else {
+        } else {
             console.error("Unexpected response structure from Gemini:", result);
             throw new Error("AI did not return valid content.");
         }
@@ -337,6 +347,12 @@ const AutomationOpportunityFinder = () => {
   const handlePersonalizeQuestions = async () => {
     setAssessmentStage('personalizing');
     setFunnyLoadingMessageIndex(0); 
+    
+    // DEBUG: Check if API key is loaded
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    console.log("API Key Status:", apiKey ? "✅ Found" : "❌ Missing");
+    console.log("API Key Preview:", apiKey ? apiKey.substring(0, 10) + "..." : "undefined");
+    console.log("All env vars:", Object.keys(process.env).filter(key => key.startsWith('REACT_APP')));
     
     const questionsToPersonalize = baseQuestions.map(q => ({
         id: q.id,
@@ -856,7 +872,7 @@ const AutomationOpportunityFinder = () => {
   }
   
   if (assessmentStage === 'personalizing') {
-    const currentFunnyMessage = funnyLoadingMessages[funnyLoadingMessageIndex];
+    const currentLoadingMessage = initialLoadingMessages[initialLoadingMessageIndex];
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center text-center px-4" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
         <div className="flex items-center justify-center mb-6">
@@ -865,10 +881,10 @@ const AutomationOpportunityFinder = () => {
           <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.4s'}}></div>
         </div>
         <div className="flex items-center justify-center mb-4">
-          {currentFunnyMessage.icon}
-          <p className="text-xl" style={{color: textColorSecondary}}>{currentFunnyMessage.text}</p>
+          {currentLoadingMessage.icon}
+          <p className="text-xl" style={{color: textColorSecondary}}>{currentLoadingMessage.text}</p>
         </div>
-        {businessName && <p className="text-md mt-1" style={{color: textColorMuted}}>Crafting genius for {businessName} in the {selectedIndustry} sector!</p>}
+        {businessName && <p className="text-md mt-1" style={{color: textColorMuted}}>Tailoring questions for {businessName} in the {selectedIndustry} sector!</p>}
       </div>
     );
   }
@@ -886,15 +902,6 @@ const AutomationOpportunityFinder = () => {
             <div className="max-w-3xl mx-auto p-4 sm:p-6">
                 {assessmentStage === 'initialName' && (
                     <div className="mb-10 sm:mb-12">
-                        <div className="flex items-center justify-center mb-6">
-                          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor}}></div>
-                          <div className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.2s'}}></div>
-                          <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: accentColor, animationDelay: '0.4s'}}></div>
-                        </div>
-                        <div className="flex items-center justify-center mb-4">
-                          {initialLoadingMessages[initialLoadingMessageIndex].icon}
-                          <p className="text-sm" style={{color: textColorMuted}}>{initialLoadingMessages[initialLoadingMessageIndex].text}</p>
-                        </div>
                         <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight flex items-center justify-center" style={{color: textColorPrimary}}>
                             What's your business name?
                         </h2>
