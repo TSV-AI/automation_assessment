@@ -1252,136 +1252,153 @@ const AutomationOpportunityFinder = () => {
    actualCurrentQuestionData = questionsSource[displayableQuestionOriginalIndex];
  }
 
- if (assessmentStage === 'mainAssessment' && !actualCurrentQuestionData) {
-   if (displayableQuestionsOrder.length === 0 && currentStepInDisplayable === 0) {
-       return (
-            <div className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-               <HelpCircle className="w-12 h-12 text-yellow-400 mb-4" />
-               <p className="text-xl" style={{color: textColorSecondary}}>No applicable questions based on current selections.</p>
-               <button onClick={() => setShowResults(true)} className="mt-4 px-6 py-2 rounded-lg" style={{background: accentColor, color: popupCtaTextColor}}>Show Summary</button>
-           </div>
-       );
-   }
-   return (
-       <div className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundColor: pageBgColor, color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-           <Loader2 className="w-12 h-12 animate-spin mb-4" style={{color: accentColor}} />
-           <p className="text-xl" style={{color: textColorSecondary}}>Loading questions...</p>
-       </div>
-   );
- }
+if (assessmentStage === 'mainAssessment' && actualCurrentQuestionData) {
+    const currentQuestionAnswer = answers[actualCurrentQuestionData.id];
+    const isAnswered = actualCurrentQuestionData.type === 'multiple'
+      ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
+      : (currentQuestionAnswer !== '' && currentQuestionAnswer !== undefined && currentQuestionAnswer !== null);
+    
+    const contextualHelpText = actualCurrentQuestionData.contextualHelp && actualCurrentQuestionData.contextualHelp[selectedIndustry]
+      ? actualCurrentQuestionData.contextualHelp[selectedIndustry]
+      : null;
 
- if (assessmentStage === 'mainAssessment' && actualCurrentQuestionData) {
-   const currentQuestionAnswer = answers[actualCurrentQuestionData.id];
-   const isAnswered = actualCurrentQuestionData.type === 'multiple'
-     ? (currentQuestionAnswer && currentQuestionAnswer.length > 0)
-     : (currentQuestionAnswer !== '' && currentQuestionAnswer !== undefined && currentQuestionAnswer !== null);
-   
-   const contextualHelpText = actualCurrentQuestionData.contextualHelp && actualCurrentQuestionData.contextualHelp[selectedIndustry]
-     ? actualCurrentQuestionData.contextualHelp[selectedIndustry]
-     : null;
+    return (
+      <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
+        {/* Header with progress bar */}
+        <div className="flex-shrink-0 p-6 sm:p-8 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/90 backdrop-blur-md"> 
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-lg sm:text-2xl font-bold tracking-tight" style={{color: textColorPrimary}}>
+                  AI Automation Assessment
+                </h1>
+                {businessName && <p className="text-sm sm:text-base font-medium mt-1" style={{color: accentColor}}>{businessName}</p>}
+                <p className="mt-1 text-xs sm:text-sm" style={{color: textColorSecondary}}>Industry: {selectedIndustry || "Not Selected"}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-medium" style={{color: textColorMuted}}>Step {currentStepInDisplayable + 1} of {displayableQuestionsOrder.length || 1}</span>
+                <div className="text-lg sm:text-xl font-bold" style={{color: accentColor}}>{Math.round(((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100)}%</div>
+              </div>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="w-full rounded-full h-1.5 sm:h-2" style={{backgroundColor: 'rgba(239,239,234,0.15)'}}> 
+              <div className="h-full rounded-full transition-all duration-500 ease-out"
+                   style={{ 
+                     width: `${((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100}%`, 
+                     backgroundColor: accentColor,
+                     boxShadow: `0 0 8px ${accentColor}33`
+                   }} />
+            </div>
+          </div>
+        </div>
 
-   return (
-     <div className="w-full h-screen flex flex-col bg-[#0a0a0a]" style={{color: textColorPrimary, fontFamily: 'Inter, system-ui, sans-serif'}}>
-       {/* Header with progress bar */}
-       <div className="flex-shrink-0 p-6 sm:p-8 sticky top-0 z-10 border-b border-slate-700/50 bg-[#0a0a0a]/90 backdrop-blur-md"> 
-         <div className="max-w-5xl mx-auto">
-           <div className="flex items-center justify-between mb-6 sm:mb-8">
-             <div>
-               <h1 className="text-xl sm:text-3xl font-bold tracking-tight" style={{color: textColorPrimary}}>
-                 AI Automation Assessment
-               </h1>
-               {businessName && <p className="text-base sm:text-lg font-medium mt-1" style={{color: accentColor}}>{businessName}</p>}
-               <p className="mt-1 text-sm sm:text-base" style={{color: textColorSecondary}}>Industry: {selectedIndustry || "Not Selected"}</p>
-             </div>
-             <div className="text-right">
-               <span className="text-sm font-medium" style={{color: textColorMuted}}>Step {currentStepInDisplayable + 1} of {displayableQuestionsOrder.length || 1}</span>
-               <div className="text-xl sm:text-2xl font-bold" style={{color: accentColor}}>{Math.round(((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100)}%</div>
-             </div>
-           </div>
-           
-           {/* Progress bar */}
-           <div className="w-full rounded-full h-2 sm:h-3" style={{backgroundColor: 'rgba(239,239,234,0.15)'}}> 
-             <div className="h-full rounded-full transition-all duration-500 ease-out"
-                  style={{ 
-                    width: `${((currentStepInDisplayable + 1) / (displayableQuestionsOrder.length || 1)) * 100}%`, 
-                    backgroundColor: accentColor,
-                    boxShadow: `0 0 10px ${accentColor}33`
-                  }} />
-           </div>
-         </div>
-       </div>
+        {/* Question content area - Much more spacious */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-3xl mx-auto p-8 sm:p-12"> 
+            <div className="mb-16 sm:mb-20"> 
+              <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-8 tracking-tight leading-relaxed max-w-2xl" style={{color: textColorPrimary}}>
+                {personalizeText(actualCurrentQuestionData.title)}
+              </h2>
+              
+              {actualCurrentQuestionData.subtitle && (
+                <p className="mb-8 sm:mb-12 text-sm sm:text-base leading-relaxed max-w-xl" style={{color: textColorSecondary}}>
+                  {personalizeText(actualCurrentQuestionData.subtitle)}
+                </p>
+              )}
+              
+              {contextualHelpText && (
+                <div className="mt-6 mb-10 p-4 rounded-lg flex items-start border" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}>
+                  <HelpCircle className="w-4 h-4 mr-3 mt-0.5 flex-shrink-0" style={{color: accentColor}}/>
+                  <span className="text-xs leading-relaxed" style={{color: textColorSecondary}}>
+                    {personalizeText(contextualHelpText)}
+                  </span>
+                </div>
+              )}
+              
+              {/* Much more spacious options */}
+              <div className="space-y-6 sm:space-y-8 mt-10"> 
+                {actualCurrentQuestionData.options.map((option) => {
+                  let isSelected;
+                  if (actualCurrentQuestionData.type === 'multiple') {
+                      isSelected = Array.isArray(answers[actualCurrentQuestionData.id]) && answers[actualCurrentQuestionData.id].includes(option.value);
+                  } else {
+                      isSelected = answers[actualCurrentQuestionData.id] === option.value;
+                  }
+                  
+                  return (
+                    <label key={option.value} className="block cursor-pointer group"> 
+                      <div 
+                        className={`p-4 sm:p-5 rounded-xl transition-all duration-300 flex items-start border hover:border-opacity-80 hover:shadow-sm ${isSelected ? 'shadow-sm' : ''}`}
+                        style={{ 
+                          borderColor: isSelected ? accentColor : 'rgba(239,239,234,0.2)', 
+                          backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(239,239,234,0.04)', 
+                          minHeight: '60px'
+                        }}
+                      >
+                        <input 
+                          type={actualCurrentQuestionData.type === 'multiple' ? 'checkbox' : 'radio'} 
+                          name={actualCurrentQuestionData.id} 
+                          value={option.value} 
+                          checked={isSelected} 
+                          onChange={() => handleAnswer(actualCurrentQuestionData.id, option.value, actualCurrentQuestionData.type === 'multiple')}
+                          className="mr-3 sm:mr-4 mt-1 scale-110 flex-shrink-0" 
+                          style={{accentColor: accentColor}} 
+                        />
+                        <div className="flex-1 min-w-0"> 
+                          <span className="font-medium text-sm sm:text-base leading-relaxed block" style={{color: textColorPrimary}}>
+                            {personalizeText(option.label)}
+                          </span>
+                          {option.description && (
+                            <p className="text-xs sm:text-sm mt-2 leading-relaxed" style={{color: textColorSecondary}}>
+                              {personalizeText(option.description)}
+                            </p>
+                          )}
+                        </div>
+                        {isSelected && <CheckCircle className="w-5 h-5 ml-3 flex-shrink-0 mt-0.5" style={{color: accentColor}}/>}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
 
-       {/* Question content area */}
-       <div className="flex-1 overflow-y-auto">
-         <div className="max-w-4xl mx-auto p-6 sm:p-8"> 
-           <div className="mb-12 sm:mb-16"> 
-             <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 tracking-tight leading-tight" style={{color: textColorPrimary}}>
-               {personalizeText(actualCurrentQuestionData.title)}
-             </h2>
-             
-             {actualCurrentQuestionData.subtitle && (
-               <p className="mb-6 text-base sm:text-lg leading-relaxed max-w-3xl" style={{color: textColorSecondary}}>
-                 {personalizeText(actualCurrentQuestionData.subtitle)}
-               </p>
-             )}
-             
-             {contextualHelpText && (
-               <div className="mt-4 mb-8 p-4 rounded-xl flex items-start border" style={{backgroundColor: accentColorBgLowOpacity, borderColor: accentColorBorderLowOpacity}}>
-                 <HelpCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" style={{color: accentColor}}/>
-                 <span className="text-sm leading-relaxed" style={{color: textColorSecondary}}>
-                   {personalizeText(contextualHelpText)}
-                 </span>
-               </div>
-             )}
-             
-             <div className="space-y-4 sm:space-y-5 mt-8"> 
-               {actualCurrentQuestionData.options.map((option) => {
-                 let isSelected;
-                 if (actualCurrentQuestionData.type === 'multiple') {
-                     isSelected = Array.isArray(answers[actualCurrentQuestionData.id]) && answers[actualCurrentQuestionData.id].includes(option.value);
-                 } else {
-                     isSelected = answers[actualCurrentQuestionData.id] === option.value;
-                 }
-                 
-                 return (
-                   <label key={option.value} className="block cursor-pointer group"> 
-                     <div 
-                       className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 flex items-center border-2 hover:border-opacity-80 hover:shadow-lg ${isSelected ? 'shadow-lg' : ''}`}
-                       style={{ 
-                         borderColor: isSelected ? accentColor : 'rgba(239,239,234,0.2)', 
-                         backgroundColor: isSelected ? accentColorBgLowOpacity : 'rgba(239,239,234,0.06)', 
-                         minHeight: '80px',
-                         transform: isSelected ? 'translateY(-2px)' : 'translateY(0)'
-                       }}
-                     >
-                       <input 
-                         type={actualCurrentQuestionData.type === 'multiple' ? 'checkbox' : 'radio'} 
-                         name={actualCurrentQuestionData.id} 
-                         value={option.value} 
-                         checked={isSelected} 
-                         onChange={() => handleAnswer(actualCurrentQuestionData.id, option.value, actualCurrentQuestionData.type === 'multiple')}
-                         className="mr-4 sm:mr-5 mt-0.5 scale-125 flex-shrink-0" 
-                         style={{accentColor: accentColor}} 
-                       />
-                       <div className="flex-1"> 
-                         <span className="font-semibold text-base sm:text-lg" style={{color: textColorPrimary}}>
-                           {personalizeText(option.label)}
-                         </span>
-                         {option.description && (
-                           <p className="text-sm sm:text-base mt-2 leading-relaxed" style={{color: textColorSecondary}}>
-                             {personalizeText(option.description)}
-                           </p>
-                         )}
-                       </div>
-                       {isSelected && <CheckCircle className="w-6 h-6 ml-4 flex-shrink-0" style={{color: accentColor}}/>}
-                     </div>
-                   </label>
-                 );
-               })}
-             </div>
-           </div>
-         </div>
-       </div>
+        {/* Navigation buttons - cleaner and more compact */}
+        <div className="flex-shrink-0 p-6 sm:p-8 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/90 backdrop-blur-md"> 
+          <div className="max-w-4xl mx-auto flex justify-between">
+            <button 
+              onClick={prevStep} 
+              disabled={assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0} 
+              className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-all border hover:bg-slate-700/30 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'rgba(239,239,234,0.08)', 
+                borderColor: 'rgba(239,239,234,0.3)',
+                color: (assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0) ? textColorVeryMuted : textColorPrimary
+              }}
+            >
+              Previous
+            </button>
+            
+            <button 
+              onClick={nextStep} 
+              disabled={!isAnswered}
+              className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium flex items-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                background: !isAnswered ? 'rgba(239,239,234,0.1)' : accentColor, 
+                color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, 
+                border: `1px solid ${!isAnswered ? 'rgba(239,239,234,0.1)' : accentColor}`
+              }}
+            > 
+              {currentStepInDisplayable === displayableQuestionsOrder.length - 1 ? 'Get My Analysis' : 'Continue'}
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
        {/* Navigation buttons */}
        <div className="flex-shrink-0 p-6 sm:p-8 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/90 backdrop-blur-md"> 
