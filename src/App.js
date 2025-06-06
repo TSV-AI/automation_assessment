@@ -1397,43 +1397,8 @@ if (assessmentStage === 'mainAssessment' && actualCurrentQuestionData) {
           </div>
         </div>
       </div>
-    );
+      );
   }
-
-       {/* Navigation buttons */}
-       <div className="flex-shrink-0 p-6 sm:p-8 sticky bottom-0 z-10 border-t border-slate-700/50 bg-[#0a0a0a]/90 backdrop-blur-md"> 
-         <div className="max-w-5xl mx-auto flex justify-between">
-           <button 
-             onClick={prevStep} 
-             disabled={assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0} 
-             className="px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all border-2 hover:bg-slate-700/30 disabled:opacity-40 disabled:cursor-not-allowed"
-             style={{
-               backgroundColor: 'rgba(239,239,234,0.08)', 
-               borderColor: 'rgba(239,239,234,0.3)',
-               color: (assessmentStage === 'mainAssessment' && currentStepInDisplayable === 0) ? textColorVeryMuted : textColorPrimary
-             }}
-           >
-             Previous
-           </button>
-           
-           <button 
-             onClick={nextStep} 
-             disabled={!isAnswered}
-             className="px-8 sm:px-10 py-3 sm:py-4 rounded-xl font-semibold flex items-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-             style={{ 
-               background: !isAnswered ? 'rgba(239,239,234,0.1)' : accentColor, 
-               color: !isAnswered ? textColorVeryMuted : popupCtaTextColor, 
-               border: `2px solid ${!isAnswered ? 'rgba(239,239,234,0.1)' : accentColor}`
-             }}
-           > 
-             {currentStepInDisplayable === displayableQuestionsOrder.length - 1 ? 'Get My Analysis' : 'Continue'}
-             <ChevronRight className="w-5 h-5 ml-2 sm:ml-3" />
-           </button>
-         </div>
-       </div>
-     </div>
-   );
- }
 
  // Fallback initial loading state if no other stage matches
  return (
