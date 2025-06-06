@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, Lightbulb, AlertTriangle } from 'lucide-react';
+import { ChevronRight, Clock, TrendingUp, CheckCircle, Zap, Eye, Download, Mail, ArrowDownCircle, X as XIcon, Sparkles, Loader2, HelpCircle, Cpu, AlertTriangle } from 'lucide-react';
+/* eslint-disable no-unused-vars */
 
 // --- Color Palette (retained for UI consistency) ---
 const pageBgColor = '#0a0a0a';
